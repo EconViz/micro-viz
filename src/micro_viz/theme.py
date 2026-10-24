@@ -8,6 +8,7 @@ from mosaickit import (
     Config as MosaicConfig,
 )
 from mosaickit import (
+    DashStyle,
     Fill,
     MathFont,
     Stroke,
@@ -28,6 +29,11 @@ class PlotTheme:
     axis_color: str
     label_color: str
     primary_color: str
+    secondary_color: str
+    accent_color: str
+    increasing_fill_color: str
+    diminishing_fill_color: str
+    negative_fill_color: str
     line_scale: float = 1.0
     label_scale: float = 1.0
     font: str = "sans"
@@ -44,6 +50,11 @@ class PlotTheme:
             axis_color=_color(colors["ink"]),
             label_color=_color(colors["ink"]),
             primary_color=_color(colors["primary"]),
+            secondary_color=_color(colors["secondary"]),
+            accent_color=_color(colors["accent"]),
+            increasing_fill_color=_color(colors["fill.light"]),
+            diminishing_fill_color=_color(colors["fill.mid"]),
+            negative_fill_color=_color(colors["fill.dark"]),
             line_scale=tokens.line_scale,
             label_scale=tokens.label_scale,
         )
@@ -68,6 +79,43 @@ class PlotTheme:
                 "primary": StyleBundle(
                     stroke=Stroke(color=self.primary_color, width=2.5 * self.line_scale),
                     text=text,
+                ),
+                "micro.production.total": StyleBundle(
+                    stroke=Stroke(color=self.primary_color, width=2.5 * self.line_scale),
+                    text=TextStyle(
+                        color=self.primary_color,
+                        size=11.0 * self.label_scale,
+                        font=self.font,
+                    ),
+                ),
+                "micro.production.average": StyleBundle(
+                    stroke=Stroke(
+                        color=self.secondary_color,
+                        width=2.25 * self.line_scale,
+                        dash=DashStyle.DASHED,
+                    ),
+                    text=TextStyle(
+                        color=self.secondary_color,
+                        size=11.0 * self.label_scale,
+                        font=self.font,
+                    ),
+                ),
+                "micro.production.marginal": StyleBundle(
+                    stroke=Stroke(color=self.accent_color, width=2.25 * self.line_scale),
+                    text=TextStyle(
+                        color=self.accent_color,
+                        size=11.0 * self.label_scale,
+                        font=self.font,
+                    ),
+                ),
+                "micro.production.region.increasing": StyleBundle(
+                    fill=Fill(color=self.increasing_fill_color, opacity=0.10)
+                ),
+                "micro.production.region.diminishing": StyleBundle(
+                    fill=Fill(color=self.diminishing_fill_color, opacity=0.08)
+                ),
+                "micro.production.region.negative": StyleBundle(
+                    fill=Fill(color=self.negative_fill_color, opacity=0.10)
                 ),
                 "title": StyleBundle(
                     text=TextStyle(

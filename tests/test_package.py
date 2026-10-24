@@ -26,6 +26,8 @@ def test_public_api_is_explicit() -> None:
         "ShortRunProductionFunction",
         "__version__",
         "analyze_production",
+        "average_marginal_product_canvas",
         "default_theme",
         "shared_theme",
+        "total_product_canvas",
     }
