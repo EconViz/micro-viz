@@ -68,8 +68,11 @@ class ShortRunProductionFunction:
 
     def to_dict(self) -> dict[str, object]:
         """Serialize coefficients together with the equation and sign convention."""
+        variable = self.input_symbol
         return {
-            "equation": "Q(L) = aL + bL^2 + cL^3",
+            "equation": (
+                f"{self.output_symbol}({variable}) = a{variable} + b{variable}^2 + c{variable}^3"
+            ),
             "sign_convention": "a >= 0, b > 0, c < 0",
             "coefficients": {
                 "a": self.linear,

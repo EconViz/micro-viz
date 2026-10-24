@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+from importlib.metadata import requires
 from pathlib import Path
 
 PACKAGE_ROOT = Path(__file__).parents[1] / "src" / "micro_viz"
@@ -57,3 +58,7 @@ def test_future_domain_modules_stay_independent_of_mosaickit() -> None:
         if any(name == "mosaickit" or name.startswith("mosaickit.") for name in _imports(path))
     }
     assert offenders == {}
+
+
+def test_p0_declares_only_mosaickit_as_a_runtime_dependency() -> None:
+    assert requires("micro-viz") == ["mosaickit>=1.0.0rc9,<2.0.0"]

@@ -13,7 +13,7 @@ from micro_viz.production import (
 from micro_viz.theme import PlotTheme, shared_theme
 from micro_viz.visuals import average_marginal_product_canvas, total_product_canvas
 
-__version__ = "0.1.0.dev0"
+__version__ = "0.2.0.dev0"
 
 __all__ = [
     "Config",

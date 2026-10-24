@@ -83,6 +83,11 @@ def test_default_visuals_are_coloured_on_white(analysis: ProductionAnalysis) -> 
     assert _stroke_color(total, total_layers["micro.production.tp"]) == "#377eb8"
     assert _stroke_color(products, product_layers["micro.production.ap"]) == "#4daf4a"
     assert _stroke_color(products, product_layers["micro.production.mp"]) == "#e41a1c"
+    region = total_layers["micro.production.region.increasing"]
+    assert isinstance(region, FillLayer)
+    region_style = total.theme.resolve(region.role, fallback_category=region.fallback_category)
+    assert region_style.stroke is not None
+    assert region_style.stroke.opacity == 0.0
 
 
 def test_manual_visuals_are_black_and_white(analysis: ProductionAnalysis) -> None:

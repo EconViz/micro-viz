@@ -89,6 +89,18 @@ def test_serialized_result_documents_equation_and_sign_convention(
     assert points[0]["average_product"] is None
 
 
+def test_serialized_equation_uses_custom_input_and_output_symbols() -> None:
+    production = ShortRunProductionFunction(
+        linear=1.0,
+        quadratic=1.0,
+        cubic=-0.1,
+        input_symbol="N",
+        output_symbol="Y",
+    )
+
+    assert production.to_dict()["equation"] == "Y(N) = aN + bN^2 + cN^3"
+
+
 @pytest.mark.parametrize(  # type: ignore[untyped-decorator]
     ("linear", "quadratic", "cubic", "message"),
     [

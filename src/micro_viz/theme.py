@@ -109,13 +109,16 @@ class PlotTheme:
                     ),
                 ),
                 "micro.production.region.increasing": StyleBundle(
-                    fill=Fill(color=self.increasing_fill_color, opacity=0.10)
+                    stroke=Stroke(opacity=0.0),
+                    fill=Fill(color=self.increasing_fill_color, opacity=0.10),
                 ),
                 "micro.production.region.diminishing": StyleBundle(
-                    fill=Fill(color=self.diminishing_fill_color, opacity=0.08)
+                    stroke=Stroke(opacity=0.0),
+                    fill=Fill(color=self.diminishing_fill_color, opacity=0.08),
                 ),
                 "micro.production.region.negative": StyleBundle(
-                    fill=Fill(color=self.negative_fill_color, opacity=0.10)
+                    stroke=Stroke(opacity=0.0),
+                    fill=Fill(color=self.negative_fill_color, opacity=0.10),
                 ),
                 "title": StyleBundle(
                     text=TextStyle(
