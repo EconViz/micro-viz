@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Run ruff
+        run: |
+          uv run ruff check src tests examples/scripts
+          uv run ruff format --check src tests examples/scripts
+
+      - name: Run mypy
+        run: uv run mypy
+
+      - name: Run tests
+        run: uv run pytest --cov=micro_viz --cov-report=term-missing
+
+      - name: Build distributions
+        run: uv build
