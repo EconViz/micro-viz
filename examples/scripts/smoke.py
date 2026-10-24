@@ -7,7 +7,7 @@ from pathlib import Path
 
 from mosaickit import Canvas, CanvasSpec, PathLayer, quadrant_axes
 
-from micro_viz import default_theme
+from micro_viz import Config
 
 
 def smoke_canvas(*, title: str | None = None) -> Canvas:
@@ -22,7 +22,7 @@ def smoke_canvas(*, title: str | None = None) -> Canvas:
         y_label="",
         title=title,
     )
-    theme = default_theme()
+    theme = Config.from_dict({"base": "manual"}).theme
     canvas = Canvas(spec=spec, config=theme.mosaickit_config())
     canvas.extend(quadrant_axes(10.0, 10.0))
     canvas.add(

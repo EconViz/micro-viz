@@ -39,7 +39,9 @@ uv sync --frozen
 
 Every EconViz diagram package reads the same `econ-viz.toml`. `micro-viz` declares its
 configuration schema to MosaicKit and does not parse TOML itself. With no settings file,
-figures use the black-and-white `manual` theme. Shared settings such as `base`, fonts,
+figures use the same colour `default` theme as `principle-viz`, always on a white background.
+Manuals, documentation, and bundled examples explicitly select the black-and-white `manual`
+theme. Shared settings such as `base`, fonts,
 axis and label colours, and per-figure label nudges work across installed EconViz packages.
 
 ```toml
@@ -59,7 +61,7 @@ Package-specific options, once introduced by real diagram features, will live be
 ## Scaffold example
 
 The smoke example verifies the public MosaicKit scene-to-renderer path without inventing
-an economic model:
+an economic model. Like all bundled examples, it explicitly uses the `manual` theme:
 
 ```bash
 uv run python examples/scripts/smoke.py

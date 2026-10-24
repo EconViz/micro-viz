@@ -18,13 +18,16 @@ def reset_config() -> Iterator[None]:
     Config.reset()
 
 
-def test_defaults_to_manual_theme() -> None:
+def test_defaults_to_color_theme_on_white() -> None:
     theme = Config().theme
-    assert theme.name == "manual"
-    assert theme.background_color == "#ffffff"
-    assert theme.axis_color == "#1a1a1a"
-    assert theme.label_color == "#1a1a1a"
-    assert theme.primary_color == "#8c8c8c"
+    assert theme.name == "default"
+    assert theme.background_color is None
+    assert theme.axis_color == "#222222"
+    assert theme.label_color == "#222222"
+    assert theme.primary_color == "#377EB8"
+    canvas_style = theme.to_mosaickit().resolve("canvas", fallback_category="fill")
+    assert canvas_style.fill is not None
+    assert canvas_style.fill.color.to_hex().lower() == "#ffffff"
 
 
 def test_absent_settings_match_empty_settings(tmp_path: Path) -> None:
@@ -37,9 +40,9 @@ def test_explicit_theme_uses_shared_mosaickit_tokens() -> None:
     assert configured.theme.primary_color == "#377EB8"
 
 
-def test_named_default_is_the_manual_product_default() -> None:
+def test_named_default_is_the_color_product_default() -> None:
     assert Config.from_dict({"base": "default"}).theme == shared_theme("default")
-    assert shared_theme("default").name == "manual"
+    assert shared_theme("default").name == "default"
 
 
 def test_shared_colors_override_the_selected_theme() -> None:

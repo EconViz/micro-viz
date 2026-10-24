@@ -17,9 +17,6 @@ def _base(name: str) -> Callable[[], PlotTheme]:
 
 
 _BASES = {name: _base(name) for name in list_shared_themes()}
-# MosaicKit's Schema uses the key "default" when no file is present. micro-viz's
-# product default is the manual's black-and-white look; colorblind remains available.
-_BASES["default"] = _base("manual")
 
 SCHEMA = econ_toml.register(
     econ_toml.Schema(
@@ -51,7 +48,7 @@ class Config(SCHEMA.config_class()):  # type: ignore[misc]
 
 
 def default_theme() -> PlotTheme:
-    """Return the active theme, or the built-in black-and-white manual theme."""
+    """Return the active theme, or the built-in color default theme."""
     active = Config.active()
     return active.theme if active is not None else Config().theme
 

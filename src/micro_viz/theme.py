@@ -5,7 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from mosaickit import (
-    TRANSPARENT,
+    Config as MosaicConfig,
+)
+from mosaickit import (
     Fill,
     MathFont,
     Stroke,
@@ -13,9 +15,6 @@ from mosaickit import (
     TextFonts,
     TextStyle,
     Theme,
-)
-from mosaickit import (
-    Config as MosaicConfig,
 )
 from mosaickit.themes import ThemeTokens, get_tokens
 
@@ -51,7 +50,8 @@ class PlotTheme:
 
     def to_mosaickit(self) -> Theme:
         """Compile this package theme to public MosaicKit styles."""
-        background = self.background_color if self.background_color is not None else TRANSPARENT
+        # EconViz diagram packages do not provide a dark or transparent canvas.
+        background = self.background_color if self.background_color is not None else "#ffffff"
         text = TextStyle(
             color=self.label_color,
             size=11.0 * self.label_scale,
@@ -91,11 +91,7 @@ class PlotTheme:
 
 def shared_theme(name: str) -> PlotTheme:
     """Build a package theme from a public MosaicKit shared-theme name."""
-    # This package deliberately uses the manual look for its product default. The
-    # shared default and colorblind themes have identical tokens, so users who want
-    # that colored palette can select colorblind without losing a visual option.
-    token_name = "manual" if name.strip().lower() == "default" else name
-    return PlotTheme.from_tokens(get_tokens(token_name))
+    return PlotTheme.from_tokens(get_tokens(name))
 
 
 def _color(value: str | None) -> str:
