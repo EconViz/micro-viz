@@ -4,7 +4,7 @@ import micro_viz
 
 
 def test_version_matches_installed_metadata() -> None:
-    assert micro_viz.__version__ == "0.1.0.dev0"
+    assert micro_viz.__version__ == "0.2.0.dev0"
     assert version("micro-viz") == micro_viz.__version__
 
 
@@ -17,8 +17,17 @@ def test_config_entry_point_is_registered() -> None:
 def test_public_api_is_explicit() -> None:
     assert set(micro_viz.__all__) == {
         "Config",
+        "MarginalReturns",
         "PlotTheme",
+        "ProductionAnalysis",
+        "ProductionError",
+        "ProductionPoint",
+        "ReturnsRegion",
+        "ShortRunProductionFunction",
         "__version__",
+        "analyze_production",
+        "average_marginal_product_canvas",
         "default_theme",
         "shared_theme",
+        "total_product_canvas",
     }

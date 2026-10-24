@@ -1,6 +1,6 @@
 [project]
 name = "micro-viz"
-version = "0.1.0.dev0"
+version = "0.2.0.dev0"
 description = "Renderer-neutral diagrams and analysis for producer theory and market structure."
 readme = "README.md"
 authors = [{ name = "Anthony Sung", email = "sungpinyue@gmail.com" }]
