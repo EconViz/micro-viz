@@ -17,8 +17,15 @@ def test_config_entry_point_is_registered() -> None:
 def test_public_api_is_explicit() -> None:
     assert set(micro_viz.__all__) == {
         "Config",
+        "MarginalReturns",
         "PlotTheme",
+        "ProductionAnalysis",
+        "ProductionError",
+        "ProductionPoint",
+        "ReturnsRegion",
+        "ShortRunProductionFunction",
         "__version__",
+        "analyze_production",
         "default_theme",
         "shared_theme",
     }
