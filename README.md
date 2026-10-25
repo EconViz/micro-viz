@@ -46,9 +46,14 @@ from micro_viz import (
 production = ShortRunProductionFunction(linear=6, quadratic=3, cubic=-0.5)
 result = analyze_production(production, input_range=(0, 6))
 
-total_product_canvas(result, title="Total product").save("total-product.svg")
-average_marginal_product_canvas(result, title=None).save("products.svg")
+total_product_canvas(result).save("total-product.svg")  # no title unless title= is given
+average_marginal_product_canvas(result, title="Short-run products").save("products.svg")
 ```
+
+Both figures mark the three boundary inputs with dashed drop lines: the maximum of MP
+(`L_1`), the maximum of AP where AP = MP (`L_2`) and the maximum of TP where MP = 0 (`L_3`).
+The increasing, diminishing and negative marginal-return regions are shaded and named under
+the horizontal axis.
 
 The returned `ProductionAnalysis` is renderer-neutral and `to_dict()` includes the equation,
 coefficient sign convention, sampled values, and return-region boundaries. Visual layers use
@@ -90,21 +95,54 @@ axis = "#1a1a1a"
 label = "#1a1a1a"
 ```
 
-Package-specific options, once introduced by real diagram features, will live below
-`[micro.*]`. Unknown settings are rejected instead of being silently ignored.
+micro-viz's own options live below `[micro.*]`; unknown settings are rejected instead of
+being silently ignored.
+
+```toml
+[micro]
+language = "zh-TW"        # built-in figure text: en, zh-TW or zh-CN
+
+[micro.color]             # any element of micro_viz.theme.ELEMENT_ROLES
+marginal = "#1a1a1a"
+
+[micro.stroke]            # widths in points
+curve = 3.5
+guide = 1.0
+
+[micro.opacity]
+region = 0.2              # opacity of shaded regions
+
+[micro.label.curve]       # move whole groups of labels: point, curve, region, mark, annotation
+top = "2pt"
+```
+
+Single labels of single figures are moved with `[figure.<file>.label."<layer id>"]`.
+
+## Nothing is hard-coded
+
+Figure titles, axis names, curve and region names, ranges, sample counts, sizes, colours, line
+widths and fonts are arguments or settings, never constants inside a model or a builder.
+Built-in text lives in `src/micro_viz/locale/labels.json`, keyed by stable ids and then by
+language (`en`, `zh-TW`, `zh-CN`); a builder takes `title=`, `x_label=`, `y_label=` and
+`labels={id: text}` to replace any of it. Tests change a parameter and check that the figure
+follows, and scan the source for colour literals, font names and absolute paths.
 
 ## Examples
 
-Bundled examples explicitly select the black-and-white `manual` theme. Generated SVG files
-stay local under `examples/output/` and are ignored by Git.
+Bundled examples use the black-and-white `manual` look (`examples/econ-viz.toml`: TeX Gyre
+Pagella text and math, white background). Generated SVG files stay under `examples/output/`
+and are ignored by Git.
 
 ```bash
 uv run python examples/scripts/production.py
-uv run python examples/scripts/smoke.py
+uv run python examples/scripts/production.py --cubic -0.4 --max-input 8 --title "Own title"
+uv run python examples/scripts/production.py --config examples/econ-viz.zh-TW.toml \
+    --fonts-dir path/to/NotoSerifTC
 ```
 
-The production script writes `total_product.svg` and `average_marginal_product.svg`. The smoke
-figure deliberately has no title by default; pass `--title` to exercise its optional title.
+Every example takes `--output-dir`, `--config` (an `econ-viz.toml`), `--fonts-dir` (where the
+font files named by the settings live; TeX Gyre fonts are found through `kpsewhich`) and the
+economic parameters of its model. Figures carry no title unless `--title` is given.
 
 ## Development
 

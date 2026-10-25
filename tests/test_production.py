@@ -143,3 +143,12 @@ def test_invalid_analysis_inputs_are_rejected(
 ) -> None:
     with pytest.raises(ProductionError, match=message):
         analyze_production(production, input_range=input_range, samples=samples)
+
+
+def test_average_product_peaks_where_it_equals_marginal_product() -> None:
+    function = ShortRunProductionFunction(linear=6.0, quadratic=3.0, cubic=-0.5)
+    peak = function.average_product_max_input
+    assert function.marginal_product(peak) == pytest.approx(function.average_product(peak))
+    assert function.inflection_input < peak < function.total_product_max_input
+    for step in (-0.01, 0.01):
+        assert function.average_product(peak + step) < function.average_product(peak)  # type: ignore[operator]

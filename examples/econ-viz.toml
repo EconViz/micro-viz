@@ -1,0 +1,20 @@
+# Settings of the bundled examples, the EconViz manual look: black and white on white,
+# text in TeX Gyre Pagella and math in Pagella Math. The font files are looked up beside
+# this file; scripts/common.py links them there (see --fonts-dir).
+
+base = "manual"
+
+[font]
+text = "serif"
+math = "texgyrepagella-math.otf"
+
+[fonts]
+serif = [
+  "texgyrepagella-regular.otf",
+  "texgyrepagella-italic.otf",
+  "texgyrepagella-bold.otf",
+  "texgyrepagella-bolditalic.otf",
+]
+
+[micro]
+language = "en"

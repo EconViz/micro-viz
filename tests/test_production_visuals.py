@@ -4,9 +4,18 @@ from pathlib import Path
 from typing import cast
 
 import pytest
-from mosaickit import Canvas, FillLayer, PathLayer, TextLayer
+from mosaickit import (
+    AxisMarkLayer,
+    BraceLayer,
+    Canvas,
+    FillLayer,
+    MarkerLayer,
+    PathLayer,
+    TextLayer,
+)
 
 from micro_viz import (
+    Config,
     ProductionAnalysis,
     ShortRunProductionFunction,
     analyze_production,
@@ -32,74 +41,133 @@ def _stroke_color(canvas: Canvas, layer: PathLayer) -> str:
     return cast(str, style.stroke.color.to_hex()).lower()
 
 
-def test_total_product_canvas_has_semantic_curve_regions_and_label(
+def test_total_product_canvas_has_curve_regions_guides_and_names(
     analysis: ProductionAnalysis,
 ) -> None:
-    canvas = total_product_canvas(analysis)
-    layers = _layers(canvas)
+    layers = _layers(total_product_canvas(analysis))
 
     assert isinstance(layers["micro.production.tp"], PathLayer)
-    assert isinstance(layers["micro.production.tp.label"], TextLayer)
+    assert layers["micro.production.tp.label"].text == "TP"  # type: ignore[attr-defined]
     for name in ("increasing", "diminishing", "negative"):
-        layer = layers[f"micro.production.region.{name}"]
-        assert isinstance(layer, FillLayer)
-        assert layer.role == f"micro.production.region.{name}"
-    assert canvas.spec.x_label == "L"
-    assert canvas.spec.y_label == "Q"
+        fill = layers[f"micro.production.region.{name}"]
+        brace = layers[f"micro.production.region.{name}.brace"]
+        assert isinstance(fill, FillLayer)
+        assert fill.role.startswith("micro.region.")
+        assert isinstance(brace, BraceLayer) and brace.label
+    for name in ("inflection", "average_max", "total_max"):
+        assert isinstance(layers[f"micro.production.guide.{name}"], PathLayer)
+        assert isinstance(layers[f"micro.production.point.{name}"], MarkerLayer)
+        assert isinstance(layers[f"micro.production.mark.{name}"], AxisMarkLayer)
 
 
-def test_average_marginal_canvas_has_distinct_ap_and_mp_curves(
+def test_guides_sit_on_the_exact_boundary_inputs(analysis: ProductionAnalysis) -> None:
+    layers = _layers(total_product_canvas(analysis))
+    for name, expected in (
+        ("inflection", analysis.inflection_input),
+        ("average_max", analysis.average_product_max_input),
+        ("total_max", analysis.total_product_max_input),
+    ):
+        guide = layers[f"micro.production.guide.{name}"]
+        assert isinstance(guide, PathLayer)
+        assert all(point[0] == pytest.approx(expected) for point in guide.path)
+
+
+def test_average_marginal_canvas_marks_ap_equals_mp_and_mp_zero(
     analysis: ProductionAnalysis,
 ) -> None:
-    canvas = average_marginal_product_canvas(analysis)
-    layers = _layers(canvas)
+    function = analysis.production_function
+    layers = _layers(average_marginal_product_canvas(analysis))
 
-    average = layers["micro.production.ap"]
-    marginal = layers["micro.production.mp"]
-    assert isinstance(average, PathLayer)
-    assert isinstance(marginal, PathLayer)
-    assert average.role == "micro.production.average"
-    assert marginal.role == "micro.production.marginal"
-    assert isinstance(layers["micro.production.ap.label"], TextLayer)
-    assert isinstance(layers["micro.production.mp.label"], TextLayer)
+    ap, mp = layers["micro.production.ap"], layers["micro.production.mp"]
+    assert isinstance(ap, PathLayer) and isinstance(mp, PathLayer)
+    assert ap.role == "micro.curve.average" and mp.role == "micro.curve.marginal"
+    meet = layers["micro.production.point.average_max"]
+    zero = layers["micro.production.point.total_max"]
+    assert isinstance(meet, MarkerLayer) and isinstance(zero, MarkerLayer)
+    x, y = meet.points[0]
+    assert y == pytest.approx(function.marginal_product(x))
+    assert y == pytest.approx(function.average_product(x))
+    assert zero.points[0][1] == 0.0
+    assert function.marginal_product(zero.points[0][0]) == pytest.approx(0.0, abs=1e-9)
+    assert isinstance(layers["micro.production.annotation.ap_equals_mp"], object)
+    assert isinstance(layers["micro.production.annotation.mp_zero"], TextLayer)
 
 
-def test_titles_accept_custom_text_or_none(analysis: ProductionAnalysis) -> None:
-    assert total_product_canvas(analysis, title="Short-run output").spec.title == "Short-run output"
-    assert total_product_canvas(analysis, title=None).spec.title is None
-    assert average_marginal_product_canvas(analysis, title="Products").spec.title == "Products"
-    assert average_marginal_product_canvas(analysis, title=None).spec.title is None
+def test_titles_default_to_none_and_follow_the_argument(analysis: ProductionAnalysis) -> None:
+    for builder in (total_product_canvas, average_marginal_product_canvas):
+        assert builder(analysis).spec.title is None
+        assert builder(analysis, title="Own title").spec.title == "Own title"
+
+
+def test_axis_names_ranges_and_texts_are_arguments(analysis: ProductionAnalysis) -> None:
+    canvas = total_product_canvas(
+        analysis,
+        x_label="K",
+        y_label="Y",
+        x_max=9.0,
+        y_range=(0.0, 100.0),
+        labels={"production.tp": "Output"},
+        size=(4.0, 3.0),
+        dpi=72,
+    )
+    assert (canvas.spec.x_label, canvas.spec.y_label) == ("K", "Y")
+    assert canvas.spec.x_range == (0.0, 9.0) and canvas.spec.y_range == (0.0, 100.0)
+    assert (canvas.spec.width, canvas.spec.height, canvas.spec.dpi) == (4.0, 3.0, 72)
+    assert _layers(canvas)["micro.production.tp.label"].text == "Output"  # type: ignore[attr-defined]
+
+
+def test_output_follows_the_production_function() -> None:
+    first = analyze_production(ShortRunProductionFunction(6, 3, -0.5), input_range=(0, 6))
+    second = analyze_production(ShortRunProductionFunction(2, 4, -0.4), input_range=(0, 8))
+    one = total_product_canvas(first).snapshot().layers
+    two = total_product_canvas(second).snapshot().layers
+    assert one != two
+    tp_one = next(layer for layer in one if layer.id == "micro.production.tp")
+    tp_two = next(layer for layer in two if layer.id == "micro.production.tp")
+    assert tp_one.path != tp_two.path
+
+
+def test_no_regions_or_guides_removes_those_layers(analysis: ProductionAnalysis) -> None:
+    layers = _layers(total_product_canvas(analysis, regions=False, guides=False))
+    assert not [name for name in layers if ".region." in name or ".guide." in name]
+
+
+def test_language_changes_every_built_in_text(analysis: ProductionAnalysis) -> None:
+    theme = Config.from_dict({"base": "manual", "micro": {"language": "zh-TW"}}).theme
+    layers = _layers(average_marginal_product_canvas(analysis, theme=theme))
+    brace = layers["micro.production.region.increasing.brace"]
+    assert isinstance(brace, BraceLayer) and brace.label == "報酬遞增"
+    assert average_marginal_product_canvas(analysis, theme=theme).spec.y_label == "產量"
+
+
+def test_group_nudges_move_curve_names(analysis: ProductionAnalysis) -> None:
+    plain = _layers(total_product_canvas(analysis))["micro.production.tp.label"]
+    theme = Config.from_dict({"micro": {"label": {"curve": {"top": "5pt"}}}}).theme
+    moved = _layers(total_product_canvas(analysis, theme=theme))["micro.production.tp.label"]
+    assert plain.nudge is None  # type: ignore[attr-defined]
+    assert moved.nudge.dy == pytest.approx(5.0)  # type: ignore[attr-defined]
 
 
 def test_default_visuals_are_coloured_on_white(analysis: ProductionAnalysis) -> None:
     total = total_product_canvas(analysis)
     products = average_marginal_product_canvas(analysis)
-    total_layers = _layers(total)
-    product_layers = _layers(products)
-
     canvas_style = total.theme.resolve("canvas", fallback_category="fill")
     assert canvas_style.fill is not None and canvas_style.fill.color is not None
     assert canvas_style.fill.color.to_hex().lower() == "#ffffff"
-    assert _stroke_color(total, total_layers["micro.production.tp"]) == "#377eb8"
-    assert _stroke_color(products, product_layers["micro.production.ap"]) == "#4daf4a"
-    assert _stroke_color(products, product_layers["micro.production.mp"]) == "#e41a1c"
-    region = total_layers["micro.production.region.increasing"]
-    assert isinstance(region, FillLayer)
-    region_style = total.theme.resolve(region.role, fallback_category=region.fallback_category)
-    assert region_style.stroke is not None
-    assert region_style.stroke.opacity == 0.0
+    assert _stroke_color(total, _layers(total)["micro.production.tp"]) == "#4daf4a"
+    assert _stroke_color(products, _layers(products)["micro.production.ap"]) == "#377eb8"
+    assert _stroke_color(products, _layers(products)["micro.production.mp"]) == "#e41a1c"
 
 
 def test_manual_visuals_are_black_and_white(analysis: ProductionAnalysis) -> None:
     theme = shared_theme("manual")
-    total = total_product_canvas(analysis, theme=theme)
     products = average_marginal_product_canvas(analysis, theme=theme)
-    total_layers = _layers(total)
-    product_layers = _layers(products)
-
-    assert _stroke_color(total, total_layers["micro.production.tp"]) == "#8c8c8c"
-    assert _stroke_color(products, product_layers["micro.production.ap"]) == "#1a1a1a"
-    assert _stroke_color(products, product_layers["micro.production.mp"]) == "#1a1a1a"
+    layers = _layers(products)
+    assert _stroke_color(products, layers["micro.production.ap"]) == "#8c8c8c"
+    assert _stroke_color(products, layers["micro.production.mp"]) == "#1a1a1a"
+    for name in ("light", "mid", "dark"):
+        style = products.theme.resolve(f"micro.region.{name}", fallback_category="region")
+        assert style.fill is not None and style.fill.opacity == theme.region_opacity
 
 
 def test_both_production_canvases_render_to_svg(
@@ -111,6 +179,5 @@ def test_both_production_canvases_render_to_svg(
     ):
         output = tmp_path / f"{name}.svg"
         canvas.save(output)
-        svg = output.read_text(encoding="utf-8")
         assert output.stat().st_size > 0
-        assert "micro.production" in svg
+        assert "micro.production" in output.read_text(encoding="utf-8")
