@@ -15,6 +15,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Optional `micro-viz[animation]` extra (kinetickit): `micro_viz.animation.save_svg` and `save_gif`
+  animate any figure through its own canvas builder; an architecture test keeps static figures
+  independent of kinetickit.
 - `[micro]` settings: `language`, `color`, `stroke`, `marker`, `opacity` and `label.<group>`.
 - `ProductionAnalysis.average_product_max_input` (the AP = MP input).
 - Typed, renderer-neutral short-run cubic production functions and TP/AP/MP analysis.

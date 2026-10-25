@@ -118,6 +118,29 @@ top = "2pt"
 
 Single labels of single figures are moved with `[figure.<file>.label."<layer id>"]`.
 
+## Animation
+
+A figure about a shift, a sweep or an adjustment animates through the same canvas builder that
+draws it. Install the optional extra (`pip install "micro-viz[animation]"`, which adds
+`kinetickit[raster]`); static figures never import kinetickit and work without it.
+
+```python
+from micro_viz.animation import save_gif, save_svg
+
+def frame(linear: float):          # the figure's own builder for one parameter value
+    function = ShortRunProductionFunction(linear=linear, quadratic=3, cubic=-0.5)
+    result = analyze_production(function, input_range=(0, 6))
+    return average_marginal_product_canvas(result, y_range=(-25, 25), x_max=6.6)
+
+save_svg(frame, [4, 6, 8], "products.svg")          # native Animated SVG, curves morph
+save_gif(frame, [4, 6, 8], "products.gif", fps=15)  # mosaickit-rendered frames
+```
+
+mosaickit draws every frame; kinetickit moves between frames and matches layers by their stable
+ids. The axes and size must be fixed across values (pass `x_max=`, `y_range=` and `size=`). The
+animated SVG places text from the layers' anchors (no automatic collision avoidance); the GIF
+uses mosaickit's placement exactly. See `examples/scripts/animate_production.py`.
+
 ## Nothing is hard-coded
 
 Figure titles, axis names, curve and region names, ranges, sample counts, sizes, colours, line

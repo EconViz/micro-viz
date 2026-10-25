@@ -29,6 +29,11 @@ Repository = "https://github.com/EconViz/micro-viz"
 Issues = "https://github.com/EconViz/micro-viz/issues"
 Changelog = "https://github.com/EconViz/micro-viz/blob/main/CHANGELOG.md"
 
+[project.optional-dependencies]
+animation = [
+    "kinetickit[raster]>=1.0.0b2,<2.0.0",
+]
+
 [build-system]
 requires = ["uv_build>=0.12.1,<0.13.0"]
 build-backend = "uv_build"

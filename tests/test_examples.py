@@ -84,3 +84,31 @@ def test_bundled_chinese_settings_draw_built_in_text(tmp_path: Path, language: s
         text=True,
     )
     assert (tmp_path / "average_marginal_product.svg").stat().st_size > 0
+
+
+def test_animation_example_writes_an_animated_svg(tmp_path: Path) -> None:
+    pytest.importorskip("kinetickit")
+    config = _plain_config(tmp_path / "config")
+    script = REPOSITORY_ROOT / "examples" / "scripts" / "animate_production.py"
+    subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--output-dir",
+            str(tmp_path),
+            "--config",
+            str(config),
+            "--steps",
+            "2",
+            "--from",
+            "3",
+            "--to",
+            "5",
+        ],
+        cwd=REPOSITORY_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    svg = (tmp_path / "average_marginal_product_animated.svg").read_text(encoding="utf-8")
+    assert "<animate" in svg and "micro.production.mp" in svg
