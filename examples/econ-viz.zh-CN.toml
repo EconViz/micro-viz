@@ -1,0 +1,14 @@
+# The bundled examples in zh-CN. Pass the directory of the Noto Serif SC files with
+# --fonts-dir; math stays in Pagella Math (see econ-viz.toml).
+
+base = "manual"
+
+[font]
+text = "serif"
+math = "texgyrepagella-math.otf"
+
+[fonts]
+serif = ["NotoSerifSC-Regular.ttf", "NotoSerifSC-Bold.ttf"]
+
+[micro]
+language = "zh-CN"

@@ -62,6 +62,7 @@ class ProductionAnalysis:
     points: tuple[ProductionPoint, ...]
     regions: tuple[ReturnsRegion, ...]
     inflection_input: float
+    average_product_max_input: float
     total_product_max_input: float
 
     def to_dict(self) -> dict[str, object]:
@@ -72,6 +73,7 @@ class ProductionAnalysis:
             "points": [point.to_dict() for point in self.points],
             "regions": [region.to_dict() for region in self.regions],
             "inflection_input": self.inflection_input,
+            "average_product_max_input": self.average_product_max_input,
             "total_product_max_input": self.total_product_max_input,
         }
 
@@ -122,6 +124,7 @@ def analyze_production(
         points=points,
         regions=regions,
         inflection_input=inflection,
+        average_product_max_input=production_function.average_product_max_input,
         total_product_max_input=maximum,
     )
 

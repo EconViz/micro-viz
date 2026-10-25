@@ -61,6 +61,11 @@ class ShortRunProductionFunction:
         return -self.quadratic / (3 * self.cubic)
 
     @property
+    def average_product_max_input(self) -> float:
+        """Input where AP peaks; there AP = MP, since ``AP' = 0`` means ``MP = AP``."""
+        return -self.quadratic / (2 * self.cubic)
+
+    @property
     def total_product_max_input(self) -> float:
         """Positive input where marginal product is zero and total product peaks."""
         discriminant = (2 * self.quadratic) ** 2 - 12 * self.cubic * self.linear

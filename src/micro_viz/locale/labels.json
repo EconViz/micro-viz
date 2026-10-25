@@ -1,0 +1,53 @@
+{
+  "en": {
+    "production.tp": "TP",
+    "production.ap": "AP",
+    "production.mp": "MP",
+    "production.product": "Product",
+    "production.region.increasing": "Increasing returns",
+    "production.region.increasing.short": "I",
+    "production.region.diminishing": "Diminishing returns",
+    "production.region.diminishing.short": "II",
+    "production.region.negative": "Negative returns",
+    "production.region.negative.short": "III",
+    "production.mark.inflection": "{input}_1",
+    "production.mark.average_max": "{input}_2",
+    "production.mark.total_max": "{input}_3",
+    "production.annotation.ap_equals_mp": "AP = MP",
+    "production.annotation.mp_zero": "MP = 0"
+  },
+  "zh-TW": {
+    "production.tp": "TP",
+    "production.ap": "AP",
+    "production.mp": "MP",
+    "production.product": "產量",
+    "production.region.increasing": "報酬遞增",
+    "production.region.increasing.short": "I",
+    "production.region.diminishing": "報酬遞減",
+    "production.region.diminishing.short": "II",
+    "production.region.negative": "報酬為負",
+    "production.region.negative.short": "III",
+    "production.mark.inflection": "{input}_1",
+    "production.mark.average_max": "{input}_2",
+    "production.mark.total_max": "{input}_3",
+    "production.annotation.ap_equals_mp": "AP = MP",
+    "production.annotation.mp_zero": "MP = 0"
+  },
+  "zh-CN": {
+    "production.tp": "TP",
+    "production.ap": "AP",
+    "production.mp": "MP",
+    "production.product": "产量",
+    "production.region.increasing": "报酬递增",
+    "production.region.increasing.short": "I",
+    "production.region.diminishing": "报酬递减",
+    "production.region.diminishing.short": "II",
+    "production.region.negative": "报酬为负",
+    "production.region.negative.short": "III",
+    "production.mark.inflection": "{input}_1",
+    "production.mark.average_max": "{input}_2",
+    "production.mark.total_max": "{input}_3",
+    "production.annotation.ap_equals_mp": "AP = MP",
+    "production.annotation.mp_zero": "MP = 0"
+  }
+}
