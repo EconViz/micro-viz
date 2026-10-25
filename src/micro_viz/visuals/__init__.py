@@ -85,6 +85,9 @@ from micro_viz.visuals.monopoly import (
     multiplant_canvas,
 )
 from micro_viz.visuals.oligopoly import (
+    cartel_elasticity_canvas,
+    dominant_firm_canvas,
+    kinked_demand_canvas,
     price_reaction_canvas,
     reaction_curves_canvas,
     residual_demand_canvas,
@@ -105,6 +108,7 @@ __all__ = [
     "average_marginal_product_canvas",
     "block_pricing_canvas",
     "capital_adjustment_canvas",
+    "cartel_elasticity_canvas",
     "competitive_firm_canvas",
     "competitive_pair_canvas",
     "constant_cost_canvas",
@@ -112,6 +116,7 @@ __all__ = [
     "cost_minimization_canvas",
     "cost_shift_canvas",
     "derived_demand_canvas",
+    "dominant_firm_canvas",
     "economic_rent_canvas",
     "entry_canvas",
     "excess_capacity_grid",
@@ -128,6 +133,7 @@ __all__ = [
     "input_price_change_canvas",
     "intertemporal_pricing_canvas",
     "isoquant_map_canvas",
+    "kinked_demand_canvas",
     "lac_lmc_canvas",
     "land_rent_canvas",
     "lerner_markup_canvas",

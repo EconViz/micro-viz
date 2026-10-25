@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Kinked demand, dominant firm and cartel with a competitive fringe in `micro_viz.oligopoly`
+  (`KinkedDemand`, `DominantFirm`) with `kinked_demand_canvas`, `dominant_firm_canvas`,
+  `cartel_elasticity_canvas` and the example `dominant_firm.py`.
 - Time-based pricing: `IntertemporalPricing` and `PeakLoadPricing` in `micro_viz.pricing` with
   `intertemporal_pricing_canvas`, `peak_load_canvas` and the example `time_pricing.py`.
 - Factor markets: derived demand (VMP, MRP), firm hiring, capital adjustment, industry and

@@ -221,3 +221,140 @@ def bertrand(duopoly: DifferentiatedDuopoly) -> BertrandEquilibrium:
         d.alpha_2 + d.beta_2 * d.cost_2 - d.gamma_1 * d.cost_1,
     )
     return BertrandEquilibrium(nash, collusive, d.profits(*nash), d.profits(*collusive))
+
+
+@dataclass(frozen=True, slots=True)
+class KinkedDemand:
+    """Kinked demand through ``(quantity, price)``: the segment above the kink has the flatter
+    slope ``upper_slope`` (rivals do not follow a price rise) and the one below the steeper
+    ``lower_slope`` (rivals match a cut). Inverse form ``P = P0 - slope (Q - Q0)``."""
+
+    quantity: float
+    price: float
+    upper_slope: float
+    lower_slope: float
+
+    def __post_init__(self) -> None:
+        _positive("quantity", self.quantity)
+        _positive("price", self.price)
+        _positive("upper_slope", self.upper_slope)
+        if self.lower_slope <= self.upper_slope:
+            raise OligopolyError("The lower segment must be steeper than the upper one.")
+        if self.price - self.lower_slope * self.quantity < 0:
+            raise OligopolyError("Marginal revenue below the kink must stay nonnegative.")
+
+    def demand(self, quantity: float) -> float:
+        slope = self.upper_slope if quantity <= self.quantity else self.lower_slope
+        return self.price - slope * (quantity - self.quantity)
+
+    def marginal_revenue(self, quantity: float) -> float:
+        """Marginal revenue: ``a - 2 slope Q`` on whichever segment applies."""
+        slope = self.upper_slope if quantity <= self.quantity else self.lower_slope
+        return self.price + slope * self.quantity - 2 * slope * quantity
+
+    @property
+    def gap(self) -> tuple[float, float]:
+        """``(low, high)`` of the vertical marginal-revenue gap at the kink."""
+        return (
+            self.price - self.lower_slope * self.quantity,
+            self.price - self.upper_slope * self.quantity,
+        )
+
+    def keeps_price(self, marginal_cost: float) -> bool:
+        """Whether a flat marginal cost leaves the kink as the profit maximum."""
+        low, high = self.gap
+        return low - 1e-12 <= marginal_cost <= high + 1e-12
+
+
+@dataclass(frozen=True, slots=True)
+class DominantFirmOutcome:
+    """Equilibrium of a dominant firm (or cartel) facing a competitive fringe."""
+
+    price: float
+    dominant_quantity: float
+    fringe_quantity: float
+    total_quantity: float
+    marginal_revenue: float
+
+
+@dataclass(frozen=True, slots=True)
+class DominantFirm:
+    """Market demand ``Q = demand_intercept - demand_slope P``, fringe supply
+    ``Q_F = fringe_slope (P - fringe_start)`` (zero below ``fringe_start``) and the dominant
+    firm's marginal cost ``MC = cost_intercept + cost_slope Q``. The dominant firm faces the
+    residual demand ``D - S_F`` and sets ``MR = MC`` on it."""
+
+    demand_intercept: float
+    demand_slope: float
+    fringe_start: float
+    fringe_slope: float
+    cost_intercept: float
+    cost_slope: float = 0.0
+
+    def __post_init__(self) -> None:
+        _positive("demand_intercept", self.demand_intercept)
+        _positive("demand_slope", self.demand_slope)
+        _positive("fringe_slope", self.fringe_slope)
+        if not math.isfinite(self.cost_slope) or self.cost_slope < 0:
+            raise OligopolyError("cost_slope must be finite and nonnegative.")
+        if not 0 <= self.fringe_start < self.demand_intercept / self.demand_slope:
+            raise OligopolyError("fringe_start must lie in [0, choke price).")
+        if not 0 <= self.cost_intercept:
+            raise OligopolyError("cost_intercept must be nonnegative.")
+
+    def market_demand(self, price: float) -> float:
+        return max(self.demand_intercept - self.demand_slope * price, 0.0)
+
+    def fringe_supply(self, price: float) -> float:
+        return max(self.fringe_slope * (price - self.fringe_start), 0.0)
+
+    def residual_demand(self, price: float) -> float:
+        return max(self.market_demand(price) - self.fringe_supply(price), 0.0)
+
+    @property
+    def choke_price(self) -> float:
+        return self.demand_intercept / self.demand_slope
+
+    @property
+    def residual_choke_price(self) -> float:
+        """Price at which the fringe supplies all of demand (residual demand reaches zero)."""
+        return (self.demand_intercept + self.fringe_slope * self.fringe_start) / (
+            self.demand_slope + self.fringe_slope
+        )
+
+    @property
+    def kink_quantity(self) -> float:
+        """Residual quantity at the fringe's start price, where its slope changes."""
+        return self.market_demand(self.fringe_start)
+
+    def residual_segments(self) -> tuple[tuple[float, float], tuple[float, float]]:
+        """Inverse residual demand ``P = A - B Q`` as ``(A, B)`` for the upper segment (below the
+        kink quantity, fringe active) and the lower segment (fringe inactive)."""
+        total = self.demand_slope + self.fringe_slope
+        upper = (self.residual_choke_price, 1.0 / total)
+        lower = (self.choke_price, 1.0 / self.demand_slope)
+        return upper, lower
+
+    def inverse_residual(self, quantity: float) -> float:
+        upper, lower = self.residual_segments()
+        a, b = upper if quantity <= self.kink_quantity else lower
+        return a - b * quantity
+
+    def solve(self) -> DominantFirmOutcome:
+        """Try each segment of residual demand for ``MR = MC`` inside its quantity range."""
+        upper, lower = self.residual_segments()
+        k = self.kink_quantity
+        for (a, b), low, high in ((upper, 0.0, k), (lower, k, self.demand_intercept)):
+            quantity = (a - self.cost_intercept) / (2 * b + self.cost_slope)
+            if low - 1e-12 <= quantity <= high + 1e-12 and quantity >= 0:
+                price = a - b * quantity
+                return DominantFirmOutcome(
+                    price=price,
+                    dominant_quantity=quantity,
+                    fringe_quantity=self.fringe_supply(price),
+                    total_quantity=self.market_demand(price),
+                    marginal_revenue=a - 2 * b * quantity,
+                )
+        # MR = MC falls in the vertical gap at the kink: the kink quantity is optimal.
+        price = self.fringe_start
+        return DominantFirmOutcome(price, k, 0.0, self.market_demand(price), price)

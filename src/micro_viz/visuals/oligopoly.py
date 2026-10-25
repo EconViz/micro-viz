@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 
-from mosaickit import Canvas
+from mosaickit import Canvas, CanvasGrid
 
 from micro_viz.oligopoly import (
     DifferentiatedDuopoly,
+    DominantFirm,
     Duopoly,
+    KinkedDemand,
     bertrand,
     collusive_total,
     competitive_total,
@@ -18,7 +20,7 @@ from micro_viz.oligopoly import (
 )
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import FIGURE_DPI, FIGURE_SIZE, MARGIN, Texts, resolve_theme
-from micro_viz.visuals.plane import Plane, linear
+from micro_viz.visuals.plane import PANEL, Plane, linear
 
 STEPS = 40
 """Points per sampled reaction curve."""
@@ -179,8 +181,201 @@ def price_reaction_canvas(
     return plane.finish()
 
 
+def kinked_demand_canvas(
+    kinked: KinkedDemand,
+    marginal_costs: Sequence[float],
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """Kinked demand and its marginal revenue with the vertical gap at the kink. Each marginal
+    cost in ``marginal_costs`` is drawn flat; the first is the thick curve and the rest thin and
+    solid. Those inside the gap leave price and quantity at the kink."""
+    q0, p0 = kinked.quantity, kinked.price
+    top_intercept = p0 + kinked.upper_slope * q0
+    reach = (p0 + kinked.lower_slope * q0) / kinked.lower_slope
+    plane = Plane(
+        prefix="oligopoly.kinked",
+        x_label="Q",
+        y_label="p",
+        x_max=reach,
+        y_max=top_intercept,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    plane.line(
+        ((0.0, top_intercept), (q0, p0), (reach, 0.0)),
+        plane.t("oligopoly.curve.kinked"),
+        role="micro.curve.demand",
+    )
+    low, high = kinked.gap
+    mr_upper_end = top_intercept / (2 * kinked.upper_slope)
+    mr_upper = (
+        (0.0, top_intercept),
+        (min(q0, mr_upper_end), top_intercept - 2 * kinked.upper_slope * min(q0, mr_upper_end)),
+    )
+    plane.line(
+        mr_upper, plane.t("oligopoly.curve.mr_kinked"), role="micro.curve.marginal_revenue", at=0.9
+    )
+    lower_intercept = p0 + kinked.lower_slope * q0
+    plane.line(
+        ((q0, low), (lower_intercept / (2 * kinked.lower_slope), 0.0)),
+        None,
+        role="micro.curve.marginal_revenue",
+    )
+    plane.guide((q0, high), (q0, low))
+    for index, cost in enumerate(marginal_costs):
+        points = ((0.0, cost), (plane.x_max, cost))
+        if index == 0:
+            plane.line(points, plane.t("oligopoly.curve.mc_index", index=index + 1))
+        else:
+            plane.thin(points, plane.t("oligopoly.curve.mc_index", index=index + 1))
+    plane.point(
+        q0,
+        p0,
+        xtext=plane.t("oligopoly.mark.q_star"),
+        ytext=plane.t("oligopoly.mark.p_star"),
+    )
+    return plane.finish()
+
+
+def dominant_firm_canvas(
+    firm: DominantFirm,
+    *,
+    cartel: bool = False,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+    prefix: str = "oligopoly.dominant",
+) -> Canvas:
+    """Market demand ``D``, fringe supply ``S_F`` and the residual demand ``D_D = D - S_F`` with
+    its marginal revenue and the firm's marginal cost; the firm sets ``MR = MC`` and the fringe
+    supplies the rest at the same price. ``cartel`` switches the names to the cartel's."""
+    kind = "cartel" if cartel else "dominant"
+    outcome = firm.solve()
+    reach = firm.demand_intercept
+    plane = Plane(
+        prefix=prefix,
+        x_label="Q",
+        y_label="p",
+        x_max=reach,
+        y_max=firm.choke_price,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    plane.line(
+        ((0.0, firm.choke_price), (reach, 0.0)),
+        plane.t("oligopoly.curve.market_demand"),
+        role="micro.curve.demand",
+    )
+    top = firm.choke_price
+    start = firm.fringe_start
+    end = min(top, start + reach / firm.fringe_slope)
+    plane.line(
+        ((0.0, start), (firm.fringe_supply(end), end)),
+        plane.t("oligopoly.curve.fringe"),
+    )
+    upper, lower = firm.residual_segments()
+    k = firm.kink_quantity
+    residual = [
+        (0.0, upper[0]),
+        (k, start),
+        (reach, 0.0),
+    ]
+    plane.thin(residual, plane.t(f"oligopoly.curve.{kind}_demand"), at=0.55)
+    mr_points = [
+        (0.0, upper[0]),
+        (
+            min(k, upper[0] / (2 * upper[1])),
+            upper[0] - 2 * upper[1] * min(k, upper[0] / (2 * upper[1])),
+        ),
+    ]
+    plane.line(
+        mr_points,
+        plane.t(f"oligopoly.curve.{kind}_mr"),
+        role="micro.curve.marginal_revenue",
+        at=0.95,
+    )
+    lower_start = lower[0] - 2 * lower[1] * k
+    if lower_start > 0:
+        plane.line(
+            ((k, lower_start), (lower[0] / (2 * lower[1]), 0.0)),
+            None,
+            role="micro.curve.marginal_revenue",
+        )
+    mc = [(0.0, firm.cost_intercept), (reach, firm.cost_intercept + firm.cost_slope * reach)]
+    plane.line(mc, plane.t(f"oligopoly.curve.{kind}_mc"), role="micro.curve.marginal")
+    q, p = outcome.dominant_quantity, outcome.price
+    plane.point(
+        q,
+        p,
+        xtext=plane.t(f"oligopoly.mark.{kind}_quantity"),
+        ytext=plane.t("oligopoly.mark.p_star"),
+    )
+    plane.dot((q, outcome.marginal_revenue))
+    plane.guide((q, outcome.marginal_revenue), (q, p))
+    plane.xmark(outcome.total_quantity, plane.t("oligopoly.mark.total_quantity"))
+    plane.guide((q, p), (outcome.total_quantity, p))
+    plane.dot((outcome.total_quantity, p))
+    return plane.finish()
+
+
+def cartel_elasticity_canvas(
+    inelastic: DominantFirm,
+    elastic: DominantFirm,
+    *,
+    titles: tuple[str | None, str | None] = (None, None),
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = PANEL,
+    dpi: int = FIGURE_DPI,
+) -> CanvasGrid:
+    """The cartel-with-fringe diagram for inelastic demand beside elastic demand (little market
+    power)."""
+    cells = [
+        dominant_firm_canvas(
+            model,
+            cartel=True,
+            title=title,
+            theme=theme,
+            labels=labels,
+            margin=margin,
+            size=size,
+            dpi=dpi,
+            prefix=f"oligopoly.cartel.{name}",
+        )
+        for name, model, title in zip(
+            ("inelastic", "elastic"), (inelastic, elastic), titles, strict=True
+        )
+    ]
+    return CanvasGrid([cells])
+
+
 def _text(theme: PlotTheme | None, labels: Mapping[str, str] | None, key: str) -> str:
     return Texts(resolve_theme(theme), labels)(key)
 
 
-__all__ = ["price_reaction_canvas", "reaction_curves_canvas", "residual_demand_canvas"]
+__all__ = [
+    "cartel_elasticity_canvas",
+    "dominant_firm_canvas",
+    "kinked_demand_canvas",
+    "price_reaction_canvas",
+    "reaction_curves_canvas",
+    "residual_demand_canvas",
+]
