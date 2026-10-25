@@ -14,7 +14,6 @@ from micro_viz import (
     MultiplantMonopoly,
     analyze_costs,
     elasticity,
-    firm_demand_canvas,
     lerner_markup_canvas,
     marginal_revenue,
     monopoly_canvas,
@@ -102,7 +101,6 @@ def test_builders_return_canvases_with_stable_ids() -> None:
     assert monopoly_totals_canvas(outcome, output_range=(2.0, 10.0)).snapshot().layers
     assert monopoly_totals_grid(outcome, unit) is not None
     assert lerner_markup_canvas((outcome, outcome), (unit, unit)) is not None
-    assert firm_demand_canvas(DEMAND, LinearDemand(26.0, 2.0), 18.0) is not None
     plants = (CubicCost(10.0, 4.0, -1.0, 0.12), CubicCost(10.0, 8.0, -1.5, 0.15))
     multi = MultiplantMonopoly(LinearDemand(30.0, 0.8), plants)
     assert multiplant_canvas(multi, multi.solve()) is not None

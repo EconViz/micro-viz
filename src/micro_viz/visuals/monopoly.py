@@ -560,8 +560,10 @@ def multiplant_canvas(
             (path, curve_name(path, start.texts("monopoly.plant", index=index + 1)))
         )
         start.layers.append(
-            guide((0.0, level), (output, level), layer_id=f"{_PREFIX}.guide.plant.{index + 1}")
+            guide((0.0, level), (reach, level), layer_id=f"{_PREFIX}.guide.plant.{index + 1}")
         )
+        if index == 0:
+            _level_mark(start, level, "monopoly.mark.marginal", mark_id="level", dotted=False)
         start.layers.append(
             drop_line(output, level, layer_id=f"{_PREFIX}.guide.plant.{index + 1}.output")
         )
@@ -603,7 +605,6 @@ def multiplant_canvas(
     )
     start.layers.append(guide((0.0, level), (total, level), layer_id=f"{_PREFIX}.guide.level"))
     start.layers.append(dot((total, level), layer_id=f"{_PREFIX}.point.total"))
-    _level_mark(start, level, "monopoly.mark.marginal", mark_id="level", dotted=False)
     cells.append(_finish(start))
     links = []
     xs = [cell.spec.x_range[1] for cell in cells]
@@ -665,61 +666,6 @@ def lerner_markup_canvas(
                 z_index=8,
             )
         )
-        cells.append(_finish(start))
-    return CanvasGrid([cells])
-
-
-def firm_demand_canvas(
-    market: LinearDemand,
-    firm: LinearDemand,
-    price: float,
-    *,
-    symbol: str = "Q",
-    titles: tuple[str | None, str | None] = (None, None),
-    theme: PlotTheme | None = None,
-    labels: Mapping[str, str] | None = None,
-    margin: float = MARGIN,
-    size: tuple[float, float] = PANEL_SIZE,
-    dpi: int = FIGURE_DPI,
-) -> CanvasGrid:
-    """Market demand ``D`` beside the more elastic demand ``d`` facing one firm at ``price``."""
-    cells = []
-    ceiling = pad_range(0.0, max(market.intercept, firm.intercept), margin)
-    for demand, key, name in (
-        (market, "monopoly.demand", titles[0]),
-        (firm, "monopoly.firm_demand", titles[1]),
-    ):
-        start = _begin(
-            demand,
-            None,
-            theme=theme,
-            labels=labels,
-            x_label=None,
-            y_label=None,
-            x_max=None,
-            y_range=ceiling,
-            margin=margin,
-            title=name,
-            size=size,
-            dpi=dpi,
-            symbol=symbol,
-        )
-        _demand_curves(start, demand, key=key, mr=False)
-        quantity = demand.quantity(price)
-        start.layers.append(
-            guide((0.0, price), (quantity, price), layer_id=f"{_PREFIX}.guide.price")
-        )
-        start.layers.append(drop_line(quantity, price, layer_id=f"{_PREFIX}.guide.output"))
-        start.layers.append(dot((quantity, price), layer_id=f"{_PREFIX}.point.price"))
-        start.layers.append(
-            axis_mark(
-                "x",
-                quantity,
-                start.texts("monopoly.mark.output", output=symbol),
-                layer_id=f"{_PREFIX}.mark.output",
-            )
-        )
-        _level_mark(start, price, "monopoly.mark.price", mark_id="price", dotted=False)
         cells.append(_finish(start))
     return CanvasGrid([cells])
 
@@ -828,7 +774,6 @@ def monopoly_totals_grid(
 
 
 __all__ = [
-    "firm_demand_canvas",
     "lerner_markup_canvas",
     "monopoly_canvas",
     "monopoly_demand_shift_canvas",

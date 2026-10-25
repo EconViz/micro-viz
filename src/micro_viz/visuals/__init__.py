@@ -93,7 +93,6 @@ from micro_viz.visuals.monopolistic import (
     monopolistic_long_run_canvas,
 )
 from micro_viz.visuals.monopoly import (
-    firm_demand_canvas,
     lerner_markup_canvas,
     monopoly_canvas,
     monopoly_demand_shift_canvas,
@@ -168,7 +167,6 @@ __all__ = [
     "excess_capacity_grid",
     "expansion_path_canvas",
     "factor_equilibrium_canvas",
-    "firm_demand_canvas",
     "firm_hiring_canvas",
     "firm_supply_canvas",
     "first_degree_canvas",

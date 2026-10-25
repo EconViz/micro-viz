@@ -13,7 +13,6 @@ from micro_viz import (
     MultiplantMonopoly,
     PlotTheme,
     analyze_costs,
-    firm_demand_canvas,
     lerner_markup_canvas,
     monopoly_canvas,
     monopoly_demand_shift_canvas,
@@ -49,8 +48,6 @@ def monopoly_examples(
     plant_demand: LinearDemand,
     elastic: LinearDemand,
     inelastic: LinearDemand,
-    firm_demand: LinearDemand,
-    market_price: float,
     tax: float,
     lost_profit: tuple[float, float],
     min_output: float,
@@ -99,7 +96,6 @@ def monopoly_examples(
         "lerner_markup.svg": lerner_markup_canvas(
             (elastic_outcome, inelastic_outcome), (unit, unit), theme=theme
         ),
-        "firm_demand.svg": firm_demand_canvas(demand, firm_demand, market_price, theme=theme),
     }
     paths = []
     for name, figure in figures.items():
@@ -119,8 +115,6 @@ def main() -> None:
     args_parser.add_argument("--plant-demand", default="30:0.8")
     args_parser.add_argument("--elastic-demand", default="20:0.5")
     args_parser.add_argument("--inelastic-demand", default="40:3")
-    args_parser.add_argument("--firm-demand", default="26:2")
-    args_parser.add_argument("--market-price", type=float, default=18.0)
     args_parser.add_argument("--tax", type=float, default=4.0)
     args_parser.add_argument("--lost-profit", type=float, nargs=2, default=[4.5, 8.0])
     args_parser.add_argument("--min-output", type=float, default=2.0)
@@ -141,8 +135,6 @@ def main() -> None:
             plant_demand=demand_from(args.plant_demand),
             elastic=demand_from(args.elastic_demand),
             inelastic=demand_from(args.inelastic_demand),
-            firm_demand=demand_from(args.firm_demand),
-            market_price=args.market_price,
             tax=args.tax,
             lost_profit=(args.lost_profit[0], args.lost_profit[1]),
             min_output=args.min_output,

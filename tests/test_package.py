@@ -180,7 +180,6 @@ def test_public_api_is_explicit() -> None:
         "expansion_path",
         "expansion_path_canvas",
         "factor_equilibrium_canvas",
-        "firm_demand_canvas",
         "firm_hiring_canvas",
         "firm_supply_canvas",
         "first_degree",
