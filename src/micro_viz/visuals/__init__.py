@@ -124,9 +124,12 @@ from micro_viz.visuals.production_extras import (
 )
 from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_canvas
 from micro_viz.visuals.uncertainty import (
+    mean_variance_frontier_canvas,
     risk_attitude_canvas,
     risk_premium_canvas,
     risk_return_choice_canvas,
+    state_claims_canvas,
+    stochastic_dominance_canvas,
     utility_of_income_canvas,
 )
 from micro_viz.visuals.vertical import (
@@ -178,6 +181,7 @@ __all__ = [
     "long_run_firm_canvas",
     "market_and_firm_canvas",
     "market_supply_canvas",
+    "mean_variance_frontier_canvas",
     "mixed_bundling_canvas",
     "monopolistic_competition_grid",
     "monopolistic_long_run_canvas",
@@ -217,6 +221,8 @@ __all__ = [
     "short_long_run_canvas",
     "signaling_canvas",
     "single_price_canvas",
+    "state_claims_canvas",
+    "stochastic_dominance_canvas",
     "supply_elasticity_canvas",
     "tariff_profit_canvas",
     "technical_change_canvas",
