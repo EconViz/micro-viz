@@ -60,6 +60,10 @@ from micro_viz.visuals.monopoly import (
     monopoly_totals_grid,
     multiplant_canvas,
 )
+from micro_viz.visuals.pricing import (
+    tariff_profit_canvas,
+    two_part_tariff_canvas,
+)
 from micro_viz.visuals.production import (
     average_marginal_product_canvas,
     total_product_canvas,
@@ -108,9 +112,11 @@ __all__ = [
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
     "single_price_canvas",
+    "tariff_profit_canvas",
     "technical_change_canvas",
     "third_degree_canvas",
     "total_cost_canvas",
     "total_product_canvas",
+    "two_part_tariff_canvas",
     "unit_cost_canvas",
 ]
