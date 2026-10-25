@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Oligopoly: `micro_viz.oligopoly` (`Duopoly`, `cournot`, `stackelberg`, `DifferentiatedDuopoly`,
+  `bertrand`) with `residual_demand_canvas`, `reaction_curves_canvas`, `price_reaction_canvas` and the
+  example `oligopoly.py`.
 - Bundling in valuation space: `micro_viz.bundling` (`ValuationProfile`, `Offer`, `choice_regions`,
   `best_separate`, `best_pure`, `best_mixed`) with `valuation_scatter_canvas`,
   `separate_selling_regions_canvas`, `pure_bundling_canvas`, `mixed_bundling_canvas` and the example

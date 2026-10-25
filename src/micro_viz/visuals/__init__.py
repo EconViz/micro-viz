@@ -66,6 +66,11 @@ from micro_viz.visuals.monopoly import (
     monopoly_totals_grid,
     multiplant_canvas,
 )
+from micro_viz.visuals.oligopoly import (
+    price_reaction_canvas,
+    reaction_curves_canvas,
+    residual_demand_canvas,
+)
 from micro_viz.visuals.pricing import (
     tariff_profit_canvas,
     two_part_tariff_canvas,
@@ -114,9 +119,12 @@ __all__ = [
     "piecewise_cost_canvas",
     "plant_family_canvas",
     "price_ceiling_canvas",
+    "price_reaction_canvas",
     "producer_surplus_canvas",
     "pure_bundling_canvas",
+    "reaction_curves_canvas",
     "rent_canvas",
+    "residual_demand_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
     "separate_selling_regions_canvas",
