@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Isoquants: `micro_viz.isoquant` (`CobbDouglas`, `PerfectSubstitutes`, `FixedProportions`, MRTS,
+  returns to scale) with `isoquant_map_canvas`, `mrts_steps_canvas`, `returns_to_scale_grid` and the
+  example `isoquants.py`.
 - Monopoly regulation: `micro_viz.regulation` (price ceiling, natural-monopoly pricing) with
   `price_ceiling_canvas`, `natural_monopoly_canvas` and the example `regulation.py`.
 - Monopolistic competition: `micro_viz.monopolistic` (short run, long-run tangency, excess

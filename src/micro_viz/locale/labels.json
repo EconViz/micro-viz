@@ -99,7 +99,16 @@
     "regulation.mark.output_ac": "{output}_r",
     "regulation.mark.price_ac": "p_r",
     "regulation.loss": "Loss",
-    "regulation.ceiling_curve": "$\\mathrm{AR}_{r}=\\mathrm{MR}_{r}$"
+    "regulation.ceiling_curve": "$\\mathrm{AR}_{r}=\\mathrm{MR}_{r}$",
+    "isoquant.axis.capital": "K",
+    "isoquant.curve": "$Q_{{{index}}}$",
+    "isoquant.level": "{value}",
+    "isoquant.point_names": "ABCDEFGH",
+    "isoquant.mark.labor": "{symbol}_{index}",
+    "isoquant.mark.capital": "{symbol}_{index}",
+    "isoquant.delta_labor": "Δ{symbol}",
+    "isoquant.delta_capital": "Δ{symbol}",
+    "isoquant.ray": "Expansion ray"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -201,7 +210,16 @@
     "regulation.mark.output_ac": "{output}_r",
     "regulation.mark.price_ac": "p_r",
     "regulation.loss": "虧損",
-    "regulation.ceiling_curve": "$\\mathrm{AR}_{r}=\\mathrm{MR}_{r}$"
+    "regulation.ceiling_curve": "$\\mathrm{AR}_{r}=\\mathrm{MR}_{r}$",
+    "isoquant.axis.capital": "K",
+    "isoquant.curve": "$Q_{{{index}}}$",
+    "isoquant.level": "{value}",
+    "isoquant.point_names": "ABCDEFGH",
+    "isoquant.mark.labor": "{symbol}_{index}",
+    "isoquant.mark.capital": "{symbol}_{index}",
+    "isoquant.delta_labor": "Δ{symbol}",
+    "isoquant.delta_capital": "Δ{symbol}",
+    "isoquant.ray": "擴張線"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -303,6 +321,15 @@
     "regulation.mark.output_ac": "{output}_r",
     "regulation.mark.price_ac": "p_r",
     "regulation.loss": "亏损",
-    "regulation.ceiling_curve": "$\\mathrm{AR}_{r}=\\mathrm{MR}_{r}$"
+    "regulation.ceiling_curve": "$\\mathrm{AR}_{r}=\\mathrm{MR}_{r}$",
+    "isoquant.axis.capital": "K",
+    "isoquant.curve": "$Q_{{{index}}}$",
+    "isoquant.level": "{value}",
+    "isoquant.point_names": "ABCDEFGH",
+    "isoquant.mark.labor": "{symbol}_{index}",
+    "isoquant.mark.capital": "{symbol}_{index}",
+    "isoquant.delta_labor": "Δ{symbol}",
+    "isoquant.delta_capital": "Δ{symbol}",
+    "isoquant.ray": "扩张线"
   }
 }
