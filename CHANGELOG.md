@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Auctions: first- and second-price bid functions, revenue equivalence, and a pooling signal figure (`Auction`, `bid_functions_canvas`, `revenue_equivalence_canvas`, `Signaling.pooling`).
 - Uncertainty, second part: `StateClaims` (insurance with fair and unfair premiums), stochastic
   dominance of uniform lotteries and `TwoAssetFrontier` with `state_claims_canvas`,
   `stochastic_dominance_canvas` and `mean_variance_frontier_canvas`.
