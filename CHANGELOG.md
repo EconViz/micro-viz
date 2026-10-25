@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Competition figures: no duplicate `p` in the market panel, dashed guides that lie on a solid line are dropped (their marks stay; `drop_covered_guides`), and industry supply is drawn as the firms' panels beside the industry panel (`industry_supply_panels`).
 - Cost figures: AVC named at its right end, wider cubic AVC figure (`--avc-reach`), and `cost_curves_panels` so each panel of the cost-curves figure also stands alone.
 - Marginal-return regions: shade is optional (`[micro.region] fill`), can stop at the curve (`extent`), and each region takes its own colour (`region_colors`).
 - Auctions: first- and second-price bid functions, revenue equivalence, and a pooling signal figure (`Auction`, `bid_functions_canvas`, `revenue_equivalence_canvas`, `Signaling.pooling`).

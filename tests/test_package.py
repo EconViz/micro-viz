@@ -190,6 +190,7 @@ def test_public_api_is_explicit() -> None:
         "increasing_cost_canvas",
         "industry_factor_demand_canvas",
         "industry_supply_canvas",
+        "industry_supply_panels",
         "input_price_change_canvas",
         "integrated_firm_canvas",
         "intertemporal_pricing_canvas",

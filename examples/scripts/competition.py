@@ -17,14 +17,15 @@ from micro_viz import (
     cost_shift_canvas,
     firm_supply_canvas,
     industry_supply_canvas,
+    industry_supply_panels,
     market_and_firm_canvas,
     producer_surplus_canvas,
     revenue_cost_profit_canvas,
     solve_competitive_firm,
 )
 
-FIRMS = "50:24:-6:0.6 50:30:-6:0.6 50:36:-6:0.6"
-"""Preset: three firms ``fixed:linear:quadratic:cubic`` with different lowest AVC."""
+FIRMS = "50:24:-6:0.6 50:42:-9:0.75 50:66:-12:0.8"
+"""Preset: three firms ``fixed:linear:quadratic:cubic`` with different lowest AVC and output."""
 
 
 def parse_firms(text: str) -> tuple[CubicCost, ...]:
@@ -97,10 +98,19 @@ def competition_examples(
         "unit_tax.svg": cost_shift_canvas(
             unit, taxed, profit_price, tax=tax, theme=theme, title=title
         ),
-        "industry_supply.svg": industry_supply_canvas(
+        "industry_supply.svg": industry_supply_panels(
             IndustrySupply(firms),
             prices=industry_prices,
             price_max=max(industry_prices) * 1.1,
+            theme=theme,
+            titles=(title,),
+            size=(4.2, 4.2),
+        ),
+        "industry_supply_total.svg": industry_supply_canvas(
+            IndustrySupply(firms),
+            prices=industry_prices,
+            price_max=max(industry_prices) * 1.1,
+            firm_curves=False,
             theme=theme,
             title=title,
         ),
@@ -130,7 +140,7 @@ def main() -> None:
     args_parser.add_argument("--supply-prices", type=float, nargs=2, default=[12.0, 18.0])
     args_parser.add_argument("--tax", type=float, default=4.0)
     args_parser.add_argument("--firms", default=FIRMS, help="fixed:linear:quadratic:cubic ...")
-    args_parser.add_argument("--industry-prices", type=float, nargs="*", default=[11.0, 14.0, 20.0])
+    args_parser.add_argument("--industry-prices", type=float, nargs="*", default=[11.0, 17.0, 24.0])
     args_parser.add_argument("--demand-intercept", type=float, default=12.0)
     args_parser.add_argument("--demand-slope", type=float, default=0.5)
     args_parser.add_argument("--market-price", type=float, default=4.0)
