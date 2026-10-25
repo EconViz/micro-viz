@@ -116,6 +116,12 @@ from micro_viz.visuals.production_extras import (
     technology_shift_canvas,
 )
 from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_canvas
+from micro_viz.visuals.uncertainty import (
+    risk_attitude_canvas,
+    risk_premium_canvas,
+    risk_return_choice_canvas,
+    utility_of_income_canvas,
+)
 from micro_viz.visuals.vertical import (
     double_marginalization_canvas,
     integrated_firm_canvas,
@@ -192,6 +198,9 @@ __all__ = [
     "resource_price_path_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
+    "risk_attitude_canvas",
+    "risk_premium_canvas",
+    "risk_return_choice_canvas",
     "scale_vs_learning_canvas",
     "separate_selling_regions_canvas",
     "short_long_run_canvas",
@@ -208,5 +217,6 @@ __all__ = [
     "two_sector_labor_canvas",
     "union_wage_canvas",
     "unit_cost_canvas",
+    "utility_of_income_canvas",
     "valuation_scatter_canvas",
 ]
