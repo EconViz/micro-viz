@@ -9,6 +9,9 @@ from micro_viz.visuals.bundling import (
     separate_selling_regions_canvas,
     valuation_scatter_canvas,
 )
+from micro_viz.visuals.capital import (
+    resource_price_path_canvas,
+)
 from micro_viz.visuals.competition import (
     competitive_firm_canvas,
     cost_shift_canvas,
@@ -186,6 +189,7 @@ __all__ = [
     "reaction_curves_canvas",
     "rent_canvas",
     "residual_demand_canvas",
+    "resource_price_path_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
     "scale_vs_learning_canvas",
