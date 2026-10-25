@@ -1,5 +1,8 @@
 """Public mosaickit visual builders."""
 
+from micro_viz.visuals.advertising import (
+    advertising_effect_canvas,
+)
 from micro_viz.visuals.bundling import (
     mixed_bundling_canvas,
     pure_bundling_canvas,
@@ -112,6 +115,7 @@ from micro_viz.visuals.production_extras import (
 from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_canvas
 
 __all__ = [
+    "advertising_effect_canvas",
     "average_marginal_product_canvas",
     "block_pricing_canvas",
     "capital_adjustment_canvas",

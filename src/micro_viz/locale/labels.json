@@ -323,7 +323,18 @@
     "production.technology.tp": "$\\mathrm{{TP}}_{{{index}}}$",
     "production.frontier.axis.x": "$L$",
     "production.frontier.axis.y": "$Q$",
-    "production.frontier.curve": "Frontier"
+    "production.frontier.curve": "Frontier",
+    "advertising.profit_before": "Profit before",
+    "advertising.profit_after": "Profit after",
+    "advertising.ar": "AR",
+    "advertising.ar_new": "$\\mathrm{AR}^{\\prime}$",
+    "advertising.mr": "MR",
+    "advertising.mr_new": "$\\mathrm{MR}^{\\prime}$",
+    "advertising.mc": "MC",
+    "advertising.ac": "AC",
+    "advertising.ac_new": "$\\mathrm{AC}^{\\prime}$",
+    "advertising.mark.quantity": "$Q_{{{index}}}$",
+    "advertising.mark.price": "$p_{{{index}}}$"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -649,7 +660,18 @@
     "production.technology.tp": "$\\mathrm{{TP}}_{{{index}}}$",
     "production.frontier.axis.x": "$L$",
     "production.frontier.axis.y": "$Q$",
-    "production.frontier.curve": "生產前緣"
+    "production.frontier.curve": "生產前緣",
+    "advertising.profit_before": "廣告前利潤",
+    "advertising.profit_after": "廣告後利潤",
+    "advertising.ar": "AR",
+    "advertising.ar_new": "$\\mathrm{AR}^{\\prime}$",
+    "advertising.mr": "MR",
+    "advertising.mr_new": "$\\mathrm{MR}^{\\prime}$",
+    "advertising.mc": "MC",
+    "advertising.ac": "AC",
+    "advertising.ac_new": "$\\mathrm{AC}^{\\prime}$",
+    "advertising.mark.quantity": "$Q_{{{index}}}$",
+    "advertising.mark.price": "$p_{{{index}}}$"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -975,6 +997,17 @@
     "production.technology.tp": "$\\mathrm{{TP}}_{{{index}}}$",
     "production.frontier.axis.x": "$L$",
     "production.frontier.axis.y": "$Q$",
-    "production.frontier.curve": "生产前缘"
+    "production.frontier.curve": "生产前缘",
+    "advertising.profit_before": "广告前利润",
+    "advertising.profit_after": "广告后利润",
+    "advertising.ar": "AR",
+    "advertising.ar_new": "$\\mathrm{AR}^{\\prime}$",
+    "advertising.mr": "MR",
+    "advertising.mr_new": "$\\mathrm{MR}^{\\prime}$",
+    "advertising.mc": "MC",
+    "advertising.ac": "AC",
+    "advertising.ac_new": "$\\mathrm{AC}^{\\prime}$",
+    "advertising.mark.quantity": "$Q_{{{index}}}$",
+    "advertising.mark.price": "$p_{{{index}}}$"
   }
 }

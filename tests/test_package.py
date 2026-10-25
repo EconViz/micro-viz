@@ -16,6 +16,9 @@ def test_config_entry_point_is_registered() -> None:
 
 def test_public_api_is_explicit() -> None:
     assert set(micro_viz.__all__) == {
+        "AdvertisingDecision",
+        "AdvertisingError",
+        "AdvertisingOutcome",
         "BertrandEquilibrium",
         "Block",
         "BlockPricing",
@@ -107,6 +110,7 @@ def test_public_api_is_explicit() -> None:
         "UnionWageSetting",
         "ValuationProfile",
         "__version__",
+        "advertising_effect_canvas",
         "analyze_costs",
         "analyze_production",
         "analyze_revenue_cost",
