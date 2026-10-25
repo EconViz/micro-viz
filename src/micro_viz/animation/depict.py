@@ -242,7 +242,16 @@ class Depictor:
     # -- layers -----------------------------------------------------------------------
 
     def depict(self, layer: Layer) -> list[Node]:
-        """The nodes that draw ``layer`` (none for a layer kind that has no depiction)."""
+        """The nodes that draw ``layer``; a hidden layer's nodes are fully transparent.
+
+        A layer kind without a depiction gives no nodes (and is reported by ``skipped``).
+        """
+        nodes = self._depict(layer)
+        if layer.visible:
+            return nodes
+        return [replace(node, opacity=0.0) for node in nodes]
+
+    def _depict(self, layer: Layer) -> list[Node]:
         if isinstance(layer, PathLayer):
             return self._path(layer)
         if isinstance(layer, FillLayer):

@@ -47,6 +47,8 @@ ELEMENT_ROLES: Mapping[str, str] = MappingProxyType(
         "total": "secondary",
         "average": "primary",
         "marginal": "accent",
+        "variable": "tertiary",
+        "fixed": "muted",
         "region_light": "fill.light",
         "region_mid": "fill.mid",
         "region_dark": "fill.dark",
@@ -61,6 +63,8 @@ WHITE = Color(1.0, 1.0, 1.0)
 
 CURVE_WIDTH = 3.5
 """Default width in points of a main curve (``[micro.stroke] curve``)."""
+DASHED_WIDTH = 2.0
+"""Default width in points of a dashed curve (``[micro.stroke] dashed``)."""
 THIN_WIDTH = 1.0
 """Default width in points of axes and guide lines (``[micro.stroke] guide``)."""
 MARKER_DIAMETER = 6.5
@@ -83,6 +87,7 @@ class PlotTheme:
     colors: Mapping[str, str] = field(hash=False)
     background: str | None = None
     curve_width: float = CURVE_WIDTH
+    dashed_width: float = DASHED_WIDTH
     guide_width: float = THIN_WIDTH
     marker_diameter: float = MARKER_DIAMETER
     region_opacity: float = REGION_OPACITY
@@ -138,6 +143,7 @@ class PlotTheme:
             },
             "background": tokens.colors["background"],
             "curve_width": CURVE_WIDTH * tokens.line_scale,
+            "dashed_width": DASHED_WIDTH * tokens.line_scale,
             "guide_width": THIN_WIDTH * tokens.line_scale,
             "marker_diameter": MARKER_DIAMETER * tokens.marker_scale,
             "label_scale": tokens.label_scale,
@@ -175,8 +181,9 @@ class PlotTheme:
         dot = Marker(color=c["marker"], size=diameter**2, edge_color=c["marker"], edge_width=0)
 
         def curve(element: str, dash: DashStyle = DashStyle.SOLID) -> StyleBundle:
+            width = self.curve_width if dash == DashStyle.SOLID else self.dashed_width
             return StyleBundle(
-                stroke=Stroke(color=c[element], width=self.curve_width, dash=dash),
+                stroke=Stroke(color=c[element], width=width, dash=dash),
                 text=TextStyle(color=c[element], size=LABEL_SIZE * size),
             )
 
@@ -197,6 +204,10 @@ class PlotTheme:
             "micro.curve.total": curve("total"),
             "micro.curve.average": curve("average"),
             "micro.curve.marginal": curve("marginal"),
+            "micro.curve.variable": curve("variable"),
+            "micro.curve.fixed": curve("fixed", DashStyle.DASHED),
+            "micro.curve.average.variable": curve("variable"),
+            "micro.curve.average.fixed": curve("fixed", DashStyle.DASHED),
             "micro.guide": StyleBundle(
                 stroke=Stroke(color=c["guide"], width=self.guide_width, dash=DashStyle.DASHED),
                 text=note,

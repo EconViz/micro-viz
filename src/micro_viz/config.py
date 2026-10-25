@@ -21,6 +21,7 @@ the fonts and the axis and label colours; micro-viz's own settings live in ``[mi
 
     [micro.stroke]            # widths in points
     curve = 3.5
+    dashed = 2.0
     guide = 1.0
 
     [micro.marker]
@@ -136,6 +137,7 @@ SCHEMA = econ_toml.register(
                 for element in COLOR_ELEMENTS
             },
             "stroke.curve": econ_toml.positive("theme.curve_width"),
+            "stroke.dashed": econ_toml.positive("theme.dashed_width"),
             "stroke.guide": econ_toml.positive("theme.guide_width"),
             "marker.diameter": econ_toml.positive("theme.marker_diameter"),
             "opacity.region": econ_toml.number(
@@ -159,6 +161,7 @@ SCHEMA = econ_toml.register(
         docs={
             "language": "language of built-in figure text",
             "stroke.curve": "main curve width in points",
+            "stroke.dashed": "dashed curve width in points",
             "stroke.guide": "axis and guide line width in points",
             "marker.diameter": "marked point diameter in points",
             "opacity.region": "opacity of shaded regions, above 0 and at most 1",

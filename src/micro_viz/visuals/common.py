@@ -110,11 +110,16 @@ def curve(
     return PathLayer(tuple(points), id=layer_id, role=role, model=model, z_index=2)
 
 
-def curve_name(curve_layer: PathLayer, text: str) -> PointLabelLayer:
-    """The curve's name beside its right-most end; mosaickit keeps it clear of everything else."""
-    end = max(curve_layer.path, key=lambda point: (point[0], point[1]))
+def curve_name(curve_layer: PathLayer, text: str, *, at: float = 1.0) -> PointLabelLayer:
+    """The curve's name beside the point ``at`` of the way along it (1 is its right-most end).
+
+    mosaickit places the text next to that point where it covers no line, marker or text; give
+    curves that end close together different ``at`` values to name them apart.
+    """
+    ordered = sorted(curve_layer.path)
+    anchor = ordered[min(len(ordered) - 1, max(0, round(at * (len(ordered) - 1))))]
     return PointLabelLayer(
-        end, text, id=f"{curve_layer.id}.label", role=curve_layer.role, z_index=7
+        anchor, text, id=f"{curve_layer.id}.label", role=curve_layer.role, z_index=7
     )
 
 

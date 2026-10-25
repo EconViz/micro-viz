@@ -162,3 +162,25 @@ def test_animation_uses_the_configured_fonts_when_present() -> None:
     assert asset.width > 0
     math_asset = Typography(canvas).asset("L_1", "serif", 11.0, 400, True)
     assert math_asset.width > 0
+
+
+def test_layers_missing_from_some_frames_fade_in_instead_of_failing() -> None:
+    from micro_viz import CostSegment, PiecewiseCost, analyze_costs, piecewise_cost_canvas
+
+    analysis = analyze_costs(
+        PiecewiseCost((CostSegment(6.0, 11.4), CostSegment(9.0, 13.0))), output_range=(0.0, 9.0)
+    )
+
+    def frame(price: float) -> Canvas:
+        return piecewise_cost_canvas(
+            analysis, prices=(price,), x_max=10.0, y_range=(0.0, 16.0), theme=shared_theme("manual")
+        )
+
+    # a price below the first step has no output point; the higher prices do
+    canvases = canvases_for(frame, (5.0, 12.0, 14.0))
+    ids = [{layer.id for layer in canvas.snapshot().layers} for canvas in canvases]
+    assert "micro.cost.point.output.1" not in ids[0] and "micro.cost.point.output.1" in ids[1]
+    animation, _ = animation_from_canvases(canvases)
+    dot = "micro.cost.point.output.1.0"
+    assert animation.sample(0.0).get(dot).opacity == 0.0
+    assert animation.sample(animation.duration).get(dot).opacity == 1.0
