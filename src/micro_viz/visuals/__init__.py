@@ -58,6 +58,13 @@ from micro_viz.visuals.factors import (
     two_sector_labor_canvas,
     union_wage_canvas,
 )
+from micro_viz.visuals.information import (
+    bonus_schedule_canvas,
+    efficiency_wage_canvas,
+    lemons_market_canvas,
+    moral_hazard_canvas,
+    signaling_canvas,
+)
 from micro_viz.visuals.isocost import (
     cost_minimization_canvas,
     expansion_path_canvas,
@@ -132,6 +139,7 @@ __all__ = [
     "advertising_effect_canvas",
     "average_marginal_product_canvas",
     "block_pricing_canvas",
+    "bonus_schedule_canvas",
     "capital_adjustment_canvas",
     "cartel_elasticity_canvas",
     "competitive_firm_canvas",
@@ -144,6 +152,7 @@ __all__ = [
     "dominant_firm_canvas",
     "double_marginalization_canvas",
     "economic_rent_canvas",
+    "efficiency_wage_canvas",
     "entry_canvas",
     "excess_capacity_grid",
     "expansion_path_canvas",
@@ -164,6 +173,7 @@ __all__ = [
     "lac_lmc_canvas",
     "land_rent_canvas",
     "learning_curve_canvas",
+    "lemons_market_canvas",
     "lerner_markup_canvas",
     "long_run_firm_canvas",
     "market_and_firm_canvas",
@@ -180,6 +190,7 @@ __all__ = [
     "monopoly_totals_grid",
     "monopsony_canvas",
     "monopsony_dwl_canvas",
+    "moral_hazard_canvas",
     "mrts_steps_canvas",
     "multiplant_canvas",
     "natural_monopoly_canvas",
@@ -204,6 +215,7 @@ __all__ = [
     "scale_vs_learning_canvas",
     "separate_selling_regions_canvas",
     "short_long_run_canvas",
+    "signaling_canvas",
     "single_price_canvas",
     "supply_elasticity_canvas",
     "tariff_profit_canvas",
