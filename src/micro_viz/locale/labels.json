@@ -92,7 +92,14 @@
     "monopolistic.excess_capacity": "Excess capacity",
     "monopolistic.mark.output_min": "{output}_a",
     "monopolistic.mark.price_min": "p_a",
-    "monopolistic.demand_long": "D"
+    "monopolistic.demand_long": "D",
+    "regulation.mark.ceiling": "p_{max}",
+    "regulation.mark.output_mc": "{output}_c",
+    "regulation.mark.price_mc": "p_c",
+    "regulation.mark.output_ac": "{output}_r",
+    "regulation.mark.price_ac": "p_r",
+    "regulation.loss": "Loss",
+    "regulation.ceiling_curve": "$\\mathrm{AR}_{r}=\\mathrm{MR}_{r}$"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -187,7 +194,14 @@
     "monopolistic.excess_capacity": "超額產能",
     "monopolistic.mark.output_min": "{output}_a",
     "monopolistic.mark.price_min": "p_a",
-    "monopolistic.demand_long": "D"
+    "monopolistic.demand_long": "D",
+    "regulation.mark.ceiling": "p_{max}",
+    "regulation.mark.output_mc": "{output}_c",
+    "regulation.mark.price_mc": "p_c",
+    "regulation.mark.output_ac": "{output}_r",
+    "regulation.mark.price_ac": "p_r",
+    "regulation.loss": "虧損",
+    "regulation.ceiling_curve": "$\\mathrm{AR}_{r}=\\mathrm{MR}_{r}$"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -282,6 +296,13 @@
     "monopolistic.excess_capacity": "超额产能",
     "monopolistic.mark.output_min": "{output}_a",
     "monopolistic.mark.price_min": "p_a",
-    "monopolistic.demand_long": "D"
+    "monopolistic.demand_long": "D",
+    "regulation.mark.ceiling": "p_{max}",
+    "regulation.mark.output_mc": "{output}_c",
+    "regulation.mark.price_mc": "p_c",
+    "regulation.mark.output_ac": "{output}_r",
+    "regulation.mark.price_ac": "p_r",
+    "regulation.loss": "亏损",
+    "regulation.ceiling_curve": "$\\mathrm{AR}_{r}=\\mathrm{MR}_{r}$"
   }
 }

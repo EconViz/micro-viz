@@ -35,8 +35,11 @@ from micro_viz.visuals.production import (
     average_marginal_product_canvas,
     total_product_canvas,
 )
+from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_canvas
 
 __all__ = [
+    "natural_monopoly_canvas",
+    "price_ceiling_canvas",
     "excess_capacity_grid",
     "monopolistic_competition_grid",
     "monopolistic_long_run_canvas",

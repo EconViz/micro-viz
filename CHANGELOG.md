@@ -6,6 +6,8 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Monopoly regulation: `micro_viz.regulation` (price ceiling, natural-monopoly pricing) with
+  `price_ceiling_canvas`, `natural_monopoly_canvas` and the example `regulation.py`.
 - Monopolistic competition: `micro_viz.monopolistic` (short run, long-run tangency, excess
   capacity) with `monopolistic_competition_grid`, `monopolistic_long_run_canvas`,
   `excess_capacity_grid` and the examples `monopolistic_competition.py` and
