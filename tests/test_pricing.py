@@ -55,12 +55,19 @@ def test_canvases_build() -> None:
 
 
 def test_example_runs(tmp_path: Path) -> None:
-    script = ROOT / "examples" / "scripts" / "two_part_tariff.py"
-    done = subprocess.run(
-        [sys.executable, str(script), "--output-dir", str(tmp_path)],
+    config = tmp_path / "econ-viz.toml"
+    config.write_text('base = "manual"\n', encoding="utf-8")
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "examples" / "scripts" / "two_part_tariff.py"),
+            "--output-dir",
+            str(tmp_path / "out"),
+            "--config",
+            str(config),
+        ],
+        cwd=ROOT,
+        check=True,
         capture_output=True,
-        text=True,
-        check=False,
     )
-    assert done.returncode == 0, done.stderr
-    assert (tmp_path / "tariff_profit.svg").exists()
+    assert (tmp_path / "out" / "tariff_profit.svg").exists()
