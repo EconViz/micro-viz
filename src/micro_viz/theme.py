@@ -66,6 +66,10 @@ CURVE_WIDTH = 3.5
 """Default width in points of a main curve (``[micro.stroke] curve``)."""
 DASHED_WIDTH = 2.0
 """Default width in points of a dashed curve (``[micro.stroke] dashed``)."""
+AFTER_WIDTH = 1.5
+"""Default width in points of a curve after a change, thin and solid (``[micro.stroke] after``)."""
+ARROW_WIDTH = 1.2
+"""Default width in points of a movement arrow, solid (``[micro.stroke] arrow``)."""
 THIN_WIDTH = 1.0
 """Default width in points of axes and guide lines (``[micro.stroke] guide``)."""
 BRACE_GAP = 4.0
@@ -92,6 +96,8 @@ class PlotTheme:
     curve_width: float = CURVE_WIDTH
     dashed_width: float = DASHED_WIDTH
     guide_width: float = THIN_WIDTH
+    after_width: float = AFTER_WIDTH
+    arrow_width: float = ARROW_WIDTH
     marker_diameter: float = MARKER_DIAMETER
     brace_gap: float = BRACE_GAP
     region_opacity: float = REGION_OPACITY
@@ -149,6 +155,8 @@ class PlotTheme:
             "curve_width": CURVE_WIDTH * tokens.line_scale,
             "dashed_width": DASHED_WIDTH * tokens.line_scale,
             "guide_width": THIN_WIDTH * tokens.line_scale,
+            "after_width": AFTER_WIDTH * tokens.line_scale,
+            "arrow_width": ARROW_WIDTH * tokens.line_scale,
             "marker_diameter": MARKER_DIAMETER * tokens.marker_scale,
             "label_scale": tokens.label_scale,
         }
@@ -216,12 +224,10 @@ class PlotTheme:
             "micro.curve.price": curve("price"),
             "micro.curve.demand": curve("average"),
             "micro.curve.marginal_revenue": curve("variable"),
-            "micro.curve.after": curve("marginal", width=(self.curve_width + self.guide_width) / 2),
-            "micro.curve.after.demand": curve(
-                "average", width=(self.curve_width + self.guide_width) / 2
-            ),
+            "micro.curve.after": curve("marginal", width=self.after_width),
+            "micro.curve.after.demand": curve("average", width=self.after_width),
             "micro.arrow": StyleBundle(
-                stroke=Stroke(color=c["guide"], width=(self.curve_width + self.guide_width) / 2),
+                stroke=Stroke(color=c["guide"], width=self.arrow_width),
                 text=note,
             ),
             "micro.curve.average.variable": curve("variable"),
