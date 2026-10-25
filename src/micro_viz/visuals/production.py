@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
+from dataclasses import replace
 
 from mosaickit import Canvas, Layer, PointLabelLayer, TextLayer
+from mosaickit.styles import Fill
 
 from micro_viz.production import MarginalReturns, ProductionAnalysis
 from micro_viz.theme import LABEL_SIZE, PlotTheme
@@ -43,27 +45,54 @@ MARK_GAP_PT = 4.0
 """Gap in points between the x axis and a mark written under it."""
 
 
+def _region_polygon(
+    start: float, end: float, low: float, high: float, top: Callable[[float], float] | None
+) -> tuple[Point, ...]:
+    """A region from ``low`` up to ``high``, or up to ``top(x)`` when the shade stops at the
+    curve (capped at ``high``)."""
+    if top is None:
+        return ((start, low), (end, low), (end, high), (start, high))
+    steps = 24
+    xs = [start + (end - start) * i / steps for i in range(steps + 1)]
+    upper = tuple((x, min(max(top(x), low), high)) for x in xs)
+    return ((start, low), (end, low), *reversed(upper))
+
+
 def _region_layers(
-    result: ProductionAnalysis, frame: Frame, high: float, texts: Texts
+    result: ProductionAnalysis,
+    frame: Frame,
+    high: float,
+    texts: Texts,
+    *,
+    theme: PlotTheme,
+    top: Callable[[float], float],
+    colors: Mapping[str, str] | None,
 ) -> tuple[Layer, ...]:
-    """The shaded regions from ``frame.fill_low`` up to ``high``, each with its brace and name."""
+    """The regions from ``frame.fill_low`` up to ``high`` (or the curve ``top``), each with its
+    brace and name. ``theme.region_fill`` switches the shade off; ``colors`` maps a region kind
+    to its own colour."""
     layers: list[Layer] = []
     for item in result.regions:
         kind = item.kind.value
         layer_id = f"micro.production.region.{kind}"
-        layers.append(
-            region(
-                (
-                    (item.start_input, frame.fill_low),
-                    (item.end_input, frame.fill_low),
-                    (item.end_input, high),
-                    (item.start_input, high),
+        if theme.region_fill:
+            shaded = region(
+                _region_polygon(
+                    item.start_input,
+                    item.end_input,
+                    frame.fill_low,
+                    high,
+                    top if theme.region_extent == "curve" else None,
                 ),
                 layer_id=layer_id,
                 shade=_SHADES[item.kind],
                 model=item,
             )
-        )
+            if colors and kind in colors:
+                shaded = replace(
+                    shaded, fill=Fill(color=colors[kind], opacity=theme.region_opacity)
+                )
+            layers.append(shaded)
         if frame.brace_y is not None:
             layers.append(
                 region_brace(
@@ -177,6 +206,7 @@ def total_product_canvas(
     y_range: Range | None = None,
     margin: float = MARGIN,
     regions: bool = True,
+    region_colors: Mapping[str, str] | None = None,
     guides: bool = True,
     size: tuple[float, float] = FIGURE_SIZE,
     dpi: int = FIGURE_DPI,
@@ -187,6 +217,9 @@ def total_product_canvas(
     regions with braces under them, ``theme.brace_gap`` points below the shaded area;
     ``guides`` marks the inflection (MP maximum), the AP maximum (the ray from the origin is
     tangent to TP there) and the TP maximum with dashed drop lines and marks under the axis.
+    ``region_colors`` maps a region kind (``increasing``, ``diminishing``, ``negative``) to its
+    own colour; whether regions are shaded and whether the shade stops at the curve are the
+    theme's ``region_fill`` and ``region_extent`` (``[micro.region]``).
     ``title=None`` draws no title; ``labels`` replaces built-in texts by id.
     """
     selected = resolve_theme(theme)
@@ -213,7 +246,17 @@ def total_product_canvas(
         y_text_id=None,
     )
     if regions:
-        layers.extend(_region_layers(result, frame, natural[1], texts))
+        layers.extend(
+            _region_layers(
+                result,
+                frame,
+                natural[1],
+                texts,
+                theme=selected,
+                top=function.total_product,
+                colors=region_colors,
+            )
+        )
     tp = curve(points, layer_id="micro.production.tp", role="micro.curve.total", model=result)
     layers.extend((tp, curve_name(tp, texts("production.tp"))))
     if guides:
@@ -246,6 +289,7 @@ def average_marginal_product_canvas(
     y_range: Range | None = None,
     margin: float = MARGIN,
     regions: bool = True,
+    region_colors: Mapping[str, str] | None = None,
     guides: bool = True,
     size: tuple[float, float] = FIGURE_SIZE,
     dpi: int = FIGURE_DPI,
@@ -285,8 +329,22 @@ def average_marginal_product_canvas(
         dpi=dpi,
         y_text_id="production.product",
     )
+
+    def upper(x: float) -> float:
+        return max(function.average_product(x) or 0.0, function.marginal_product(x))
+
     if regions:
-        layers.extend(_region_layers(result, frame, natural[1], texts))
+        layers.extend(
+            _region_layers(
+                result,
+                frame,
+                natural[1],
+                texts,
+                theme=selected,
+                top=upper,
+                colors=region_colors,
+            )
+        )
     ap = curve(average, layer_id="micro.production.ap", role="micro.curve.average", model=result)
     mp = curve(marginal, layer_id="micro.production.mp", role="micro.curve.marginal", model=result)
     layers.extend(

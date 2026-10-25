@@ -30,6 +30,10 @@ the fonts and the axis and label colours; micro-viz's own settings live in ``[mi
     [micro.brace]
     gap = 4.0                 # gap in points between a shaded region and its brace
 
+    [micro.region]
+    fill = true               # shade regions; false keeps only their braces and names
+    extent = "top"            # "top" reaches the top of the plot, "curve" stops at the curve
+
     [micro.opacity]
     region = 0.3              # opacity of shaded regions
 
@@ -60,7 +64,7 @@ from mosaickit.themes import list_shared_themes
 
 from micro_viz.i18n import LANGUAGES
 from micro_viz.label_groups import LABEL_GROUPS, LABEL_SIDES
-from micro_viz.theme import ELEMENT_ROLES, PlotTheme, shared_theme
+from micro_viz.theme import ELEMENT_ROLES, REGION_EXTENTS, PlotTheme, shared_theme
 
 COLOR_MODELS = list_shared_themes()
 COLOR_ELEMENTS = tuple(ELEMENT_ROLES)
@@ -149,6 +153,8 @@ SCHEMA = econ_toml.register(
             "opacity.region": econ_toml.number(
                 "theme.region_opacity", minimum=0, maximum=1, exclusive_minimum=True
             ),
+            "region.fill": econ_toml.boolean("theme.region_fill"),
+            "region.extent": econ_toml.choice("theme.region_extent", REGION_EXTENTS),
             **{
                 f"label.{group}.{side}": econ_toml.length(f"nudges.{group}_{side}")
                 for group in LABEL_GROUPS
@@ -174,6 +180,8 @@ SCHEMA = econ_toml.register(
             "marker.diameter": "marked point diameter in points",
             "brace.gap": "gap in points between a shaded region and its brace",
             "opacity.region": "opacity of shaded regions, above 0 and at most 1",
+            "region.fill": "shade the marginal-return regions (false keeps braces and names)",
+            "region.extent": "shade to the top of the plot (top) or only under the curve (curve)",
             **{f"color.{element}": "unset keeps the theme's colour" for element in COLOR_ELEMENTS},
             **{
                 f"label.{group}.{side}": f"move {group} labels {_DIRECTIONS[side]} (a length)"
