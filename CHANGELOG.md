@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Long-run competition: `micro_viz.entry` (`IndustryEntry`: entry, exit, long-run supply) with
+  `long_run_firm_canvas`, `entry_canvas`, `rent_canvas`, `constant_cost_canvas`,
+  `increasing_cost_canvas` and the example `long_run_competition.py`.
 - Long-run costs: `micro_viz.longrun` (`PlantFamily`: SAC, LAC envelope, LMC) with `lac_lmc_canvas`,
   `plant_family_canvas` and the example `long_run_costs.py`; the shared `Plane` drawing kit.
 - Isoquants: `micro_viz.isoquant` (`CobbDouglas`, `PerfectSubstitutes`, `FixedProportions`, MRTS,

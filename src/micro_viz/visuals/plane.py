@@ -86,7 +86,9 @@ class Plane:
         at: float = 1.0,
     ) -> None:
         """A curve through ``points`` named at the fraction ``at`` along it (1 = right end)."""
-        path = curve(points, layer_id=self._id("curve"), role=role)
+        ceiling = self.start.y_range[1]
+        visible = [point for point in points if point[1] <= ceiling] or list(points)
+        path = curve(visible, layer_id=self._id("curve"), role=role)
         self.start.layers.append(path)
         if name:
             self.start.layers.append(curve_name(path, name, at=at))

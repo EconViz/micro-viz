@@ -15,6 +15,13 @@ from micro_viz.visuals.costs import (
     total_cost_canvas,
     unit_cost_canvas,
 )
+from micro_viz.visuals.entry import (
+    constant_cost_canvas,
+    entry_canvas,
+    increasing_cost_canvas,
+    long_run_firm_canvas,
+    rent_canvas,
+)
 from micro_viz.visuals.isoquant import (
     isoquant_map_canvas,
     mrts_steps_canvas,
@@ -49,15 +56,19 @@ from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_
 __all__ = [
     "average_marginal_product_canvas",
     "competitive_firm_canvas",
+    "constant_cost_canvas",
     "cost_curves_grid",
     "cost_shift_canvas",
+    "entry_canvas",
     "excess_capacity_grid",
     "firm_demand_canvas",
     "firm_supply_canvas",
+    "increasing_cost_canvas",
     "industry_supply_canvas",
     "isoquant_map_canvas",
     "lac_lmc_canvas",
     "lerner_markup_canvas",
+    "long_run_firm_canvas",
     "market_and_firm_canvas",
     "monopolistic_competition_grid",
     "monopolistic_long_run_canvas",
@@ -74,6 +85,7 @@ __all__ = [
     "plant_family_canvas",
     "price_ceiling_canvas",
     "producer_surplus_canvas",
+    "rent_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
     "total_cost_canvas",

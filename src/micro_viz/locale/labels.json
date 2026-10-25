@@ -136,7 +136,11 @@
     "longrun.firm_a": "Marginal firm",
     "longrun.firm_b": "Low-cost firm",
     "longrun.atc_index": "$\\mathrm{{ATC}}_{{{index}}}$",
-    "longrun.mc_index": "$\\mathrm{{MC}}_{{{index}}}$"
+    "longrun.mc_index": "$\\mathrm{{MC}}_{{{index}}}$",
+    "longrun.mc": "MC",
+    "longrun.atc": "ATC",
+    "longrun.mark.price_lr": "p^*",
+    "longrun.point_names": "ABCDEFGH"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -275,7 +279,11 @@
     "longrun.firm_a": "邊際廠商",
     "longrun.firm_b": "低成本廠商",
     "longrun.atc_index": "$\\mathrm{{ATC}}_{{{index}}}$",
-    "longrun.mc_index": "$\\mathrm{{MC}}_{{{index}}}$"
+    "longrun.mc_index": "$\\mathrm{{MC}}_{{{index}}}$",
+    "longrun.mc": "MC",
+    "longrun.atc": "ATC",
+    "longrun.mark.price_lr": "p^*",
+    "longrun.point_names": "ABCDEFGH"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -414,6 +422,10 @@
     "longrun.firm_a": "边际厂商",
     "longrun.firm_b": "低成本厂商",
     "longrun.atc_index": "$\\mathrm{{ATC}}_{{{index}}}$",
-    "longrun.mc_index": "$\\mathrm{{MC}}_{{{index}}}$"
+    "longrun.mc_index": "$\\mathrm{{MC}}_{{{index}}}$",
+    "longrun.mc": "MC",
+    "longrun.atc": "ATC",
+    "longrun.mark.price_lr": "p^*",
+    "longrun.point_names": "ABCDEFGH"
   }
 }
