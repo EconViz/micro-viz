@@ -6,7 +6,14 @@ from pathlib import Path
 
 from common import Session, parser
 
-from micro_viz import PlantFamily, PlotTheme, lac_lmc_canvas, plant_family_canvas
+from micro_viz import (
+    EnvelopeFigure,
+    PlantFamily,
+    PlotTheme,
+    envelope_figure_canvas,
+    lac_lmc_canvas,
+    plant_family_canvas,
+)
 
 
 def long_run_examples(
@@ -17,13 +24,19 @@ def long_run_examples(
     sizes: tuple[float, ...],
     output_max: float,
     smc_for: tuple[int, ...],
+    envelope: EnvelopeFigure,
+    envelope_x_max: float,
+    envelope_ceiling: float,
     title: str | None = None,
 ) -> list[Path]:
     """Write the long-run cost figures into ``output_dir`` and return their paths."""
     output_dir.mkdir(parents=True, exist_ok=True)
     figures = {
         "lac_lmc.svg": lac_lmc_canvas(family, output_max, theme=theme, title=title),
-        "short_run_envelope.svg": plant_family_canvas(
+        "short_run_envelope.svg": envelope_figure_canvas(
+            envelope, envelope_x_max, envelope_ceiling, theme=theme, title=title
+        ),
+        "plant_family.svg": plant_family_canvas(
             family, sizes, output_max, smc_for=smc_for, theme=theme, title=title
         ),
     }
@@ -49,6 +62,25 @@ def main() -> None:
         help="indices of the plants whose SMC is drawn",
     )
     args_parser.add_argument("--output-max", type=float, default=22.0)
+    args_parser.add_argument(
+        "--envelope",
+        type=float,
+        nargs=8,
+        default=[6.0, 52.0, 18.0, 8.0, 88.0, 26.0, 76.0, 10.0],
+        metavar=(
+            "MIN_COST",
+            "MIN_OUTPUT",
+            "LEFT_TANGENT",
+            "LEFT_COST",
+            "RIGHT_TANGENT",
+            "LEFT_MIN_OUTPUT",
+            "RIGHT_MIN_OUTPUT",
+            "UPPER_COST",
+        ),
+        help="the envelope figure: see micro_viz.EnvelopeFigure",
+    )
+    args_parser.add_argument("--envelope-x-max", type=float, default=100.0)
+    args_parser.add_argument("--envelope-ceiling", type=float, default=12.0)
     args_parser.add_argument("--title", default=None)
     args = args_parser.parse_args()
     session = Session(args)
@@ -62,6 +94,9 @@ def main() -> None:
             sizes=tuple(args.sizes),
             output_max=args.output_max,
             smc_for=tuple(args.smc_for),
+            envelope=EnvelopeFigure(*args.envelope),
+            envelope_x_max=args.envelope_x_max,
+            envelope_ceiling=args.envelope_ceiling,
             title=args.title,
         )
     finally:

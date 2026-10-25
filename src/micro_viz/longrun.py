@@ -117,3 +117,92 @@ class PlantFamily:
             else:
                 high = middle
         return (low + high) / 2
+
+
+@dataclass(frozen=True, slots=True)
+class EnvelopeFigure:
+    """A quadratic LAC enveloping three quadratic SAC curves, set by where they touch.
+
+    ``LAC(Q) = C_min + k (Q - Q_e)^2`` is lowest (``minimum_cost``) at ``minimum_output``
+    ``Q_e``; ``k`` follows from ``left_cost``, the LAC at the left tangency ``left_tangent``.
+    SAC1 and SAC3 touch LAC at ``left_tangent`` and ``right_tangent`` with their own lowest
+    points at ``left_minimum`` and ``right_minimum`` (outputs strictly between ``Q_e`` and the
+    tangency, so the SAC lies above LAC); SAC2 has its lowest point on LAC's and passes the
+    point ``(Q_1, upper_cost)`` where ``Q_1`` is the output at which SAC1 comes back up to
+    ``left_cost``. ``SAC_i`` and ``SMC_i = d(Q SAC_i)/dQ`` are quadratics in ``Q``.
+    """
+
+    minimum_cost: float
+    minimum_output: float
+    left_tangent: float
+    left_cost: float
+    right_tangent: float
+    left_minimum: float
+    right_minimum: float
+    upper_cost: float
+
+    def __post_init__(self) -> None:
+        for name in ("minimum_cost", "minimum_output", "left_tangent", "right_tangent"):
+            _positive(name, getattr(self, name))
+        if not 0 < self.left_tangent < self.left_minimum < self.minimum_output:
+            raise LongRunError("Need 0 < left_tangent < left_minimum < minimum_output.")
+        if not self.minimum_output < self.right_minimum < self.right_tangent:
+            raise LongRunError("Need minimum_output < right_minimum < right_tangent.")
+        if self.left_cost <= self.minimum_cost:
+            raise LongRunError("left_cost must exceed minimum_cost.")
+        if self.upper_cost <= self.left_cost:
+            raise LongRunError("upper_cost must exceed left_cost.")
+
+    @property
+    def curvature(self) -> float:
+        """``k`` of ``LAC``."""
+        return (self.left_cost - self.minimum_cost) / (self.minimum_output - self.left_tangent) ** 2
+
+    def lac(self, output: float) -> float:
+        return self.minimum_cost + self.curvature * (output - self.minimum_output) ** 2
+
+    def lmc(self, output: float) -> float:
+        slope = 2 * self.curvature * (output - self.minimum_output)
+        return self.lac(output) + output * slope
+
+    def _plant(self, index: int) -> tuple[float, float, float]:
+        """``(lowest output, lowest cost, curvature)`` of SAC ``index`` (1, 2 or 3)."""
+        if index == 2:
+            q1 = self.upper_output_for(self.left_cost)
+            curvature = (self.upper_cost - self.minimum_cost) / (self.minimum_output - q1) ** 2
+            return self.minimum_output, self.minimum_cost, curvature
+        tangent, low = (
+            (self.left_tangent, self.left_minimum)
+            if index == 1
+            else (self.right_tangent, self.right_minimum)
+        )
+        curvature = self.curvature * (tangent - self.minimum_output) / (tangent - low)
+        cost = self.lac(tangent) - curvature * (tangent - low) ** 2
+        return low, cost, curvature
+
+    def upper_output_for(self, cost: float) -> float:
+        """The output right of SAC1's lowest point where SAC1 equals ``cost``."""
+        low = self.left_minimum
+        k = self.curvature * (self.left_tangent - self.minimum_output) / (self.left_tangent - low)
+        floor = self.lac(self.left_tangent) - k * (self.left_tangent - low) ** 2
+        if cost <= floor:
+            raise LongRunError("cost must exceed the lowest SAC1.")
+        return low + math.sqrt((cost - floor) / k)
+
+    def minimum_point(self, index: int) -> tuple[float, float]:
+        """Lowest point of SAC ``index``."""
+        output, cost, _ = self._plant(index)
+        return output, cost
+
+    def sac(self, index: int, output: float) -> float:
+        low, cost, curvature = self._plant(index)
+        return cost + curvature * (output - low) ** 2
+
+    def smc(self, index: int, output: float) -> float:
+        low, _, curvature = self._plant(index)
+        return self.sac(index, output) + output * 2 * curvature * (output - low)
+
+    @property
+    def right_output(self) -> float:
+        """``Q_1``: where SAC1 is back at ``left_cost``, on its rising branch."""
+        return self.upper_output_for(self.left_cost)

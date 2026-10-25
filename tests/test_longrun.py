@@ -74,3 +74,40 @@ def test_envelope_curves_spread_across_the_axis_and_mark_each_tangency() -> None
     assert {f"micro.longrun.xmark.{n}" for n in (1, 2, 3)} <= ids
     bare = plant_family_canvas(FAMILY, (8.0, 10.0, 12.0), 18.0, drops=False)
     assert "micro.longrun.xmark.1" not in {layer.id for layer in bare.snapshot().layers}
+
+
+def test_envelope_figure_touches_lac_and_smc_passes_the_lowest_sac() -> None:
+    from micro_viz import EnvelopeFigure
+
+    figure = EnvelopeFigure(6.0, 52.0, 18.0, 8.0, 88.0, 26.0, 76.0, 10.0)
+    assert figure.lac(18.0) == pytest.approx(8.0)
+    for index, tangent in ((1, 18.0), (3, 88.0)):
+        assert figure.sac(index, tangent) == pytest.approx(figure.lac(tangent))
+        assert figure.smc(index, tangent) == pytest.approx(figure.lmc(tangent), rel=0.25)
+    for q in (5.0, 30.0, 52.0, 70.0, 95.0):
+        for index in (1, 2, 3):
+            assert figure.sac(index, q) >= figure.lac(q) - 1e-9
+    assert figure.minimum_point(2) == (52.0, 6.0)
+    for index in (1, 2, 3):
+        x, cost = figure.minimum_point(index)
+        assert figure.smc(index, x) == pytest.approx(cost)
+    assert figure.lmc(52.0) == pytest.approx(figure.lac(52.0))
+    assert figure.sac(1, figure.right_output) == pytest.approx(8.0)
+    assert figure.sac(2, figure.right_output) == pytest.approx(10.0)
+    with pytest.raises(LongRunError):
+        EnvelopeFigure(6.0, 52.0, 18.0, 8.0, 88.0, 60.0, 76.0, 10.0)
+
+
+def test_envelope_figure_labels_find_free_places(tmp_path: Path) -> None:
+    import warnings
+
+    from mosaickit.errors import LayoutWarning
+
+    from micro_viz import EnvelopeFigure, envelope_figure_canvas, shared_theme
+
+    figure = EnvelopeFigure(6.0, 52.0, 18.0, 8.0, 88.0, 26.0, 76.0, 10.0)
+    canvas = envelope_figure_canvas(figure, 100.0, 12.0, theme=shared_theme("manual"))
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", LayoutWarning)
+        canvas.save(tmp_path / "envelope.svg")
+    assert canvas.spec.width > 2 * canvas.spec.height

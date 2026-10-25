@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Short-run envelope redrawn after the textbook figure: `EnvelopeFigure` (LAC, SAC1 to SAC3, SMC pieces from tangency and lowest-point outputs) and `envelope_figure_canvas`, wide axes, points A and B, dashed levels and drops `Q_0` to `Q_3`; the plant-family version is `plant_family.svg`.
 - State-claims figures: wider-spread defaults (loss probability 0.5, premiums 0.5 and 0.6, exponent 0.3), budget lines named at their upper-left ends and indifference curves at their lower-right ends; a test renders both figures with layout warnings as errors.
 - Short-run envelope: SAC curves run across the whole output axis so they cross, SMC can be drawn for several plants (`smc_for` takes indices), tangency outputs are marked (`drops`).
 - Natural monopoly: the loss label sits in the free part of the loss rectangle, left of MR, instead of a leader into the curves.

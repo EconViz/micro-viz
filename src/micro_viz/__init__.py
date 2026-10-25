@@ -109,6 +109,7 @@ from micro_viz.isoquant import (
     ray_points,
 )
 from micro_viz.longrun import (
+    EnvelopeFigure,
     LongRunError,
     PlantFamily,
 )
@@ -220,6 +221,7 @@ from micro_viz.visuals import (
     economic_rent_canvas,
     efficiency_wage_canvas,
     entry_canvas,
+    envelope_figure_canvas,
     excess_capacity_grid,
     expansion_path_canvas,
     factor_equilibrium_canvas,
@@ -343,6 +345,7 @@ __all__ = [
     "Duopoly",
     "EfficiencyWage",
     "EfficiencyWageOutcome",
+    "EnvelopeFigure",
     "ExhaustibleResourcePath",
     "Extremum",
     "FactorError",
@@ -465,6 +468,7 @@ __all__ = [
     "efficiency_wage_canvas",
     "elasticity",
     "entry_canvas",
+    "envelope_figure_canvas",
     "evaluate_offer",
     "evaluate_tariff",
     "excess_capacity_grid",

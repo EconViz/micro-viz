@@ -84,6 +84,7 @@ from micro_viz.visuals.isoquant import (
     returns_to_scale_grid,
 )
 from micro_viz.visuals.longrun import (
+    envelope_figure_canvas,
     lac_lmc_canvas,
     plant_family_canvas,
 )
@@ -165,6 +166,7 @@ __all__ = [
     "economic_rent_canvas",
     "efficiency_wage_canvas",
     "entry_canvas",
+    "envelope_figure_canvas",
     "excess_capacity_grid",
     "expansion_path_canvas",
     "factor_equilibrium_canvas",

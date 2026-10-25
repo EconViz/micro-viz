@@ -435,7 +435,11 @@
     "auctions.curve.first": "First price, n = {bidders}",
     "auctions.curve.revenue_first": "First price",
     "auctions.curve.revenue_second": "Second price",
-    "auctions.mark.max_value": "$\\bar v$"
+    "auctions.mark.max_value": "$\\bar v$",
+    "longrun.mark.level_a": "C_A",
+    "longrun.mark.level_b": "C_B",
+    "longrun.point.a": "A",
+    "longrun.point.b": "B"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -873,7 +877,11 @@
     "auctions.curve.first": "第一價格，n = {bidders}",
     "auctions.curve.revenue_first": "第一價格",
     "auctions.curve.revenue_second": "第二價格",
-    "auctions.mark.max_value": "$\\bar v$"
+    "auctions.mark.max_value": "$\\bar v$",
+    "longrun.mark.level_a": "C_A",
+    "longrun.mark.level_b": "C_B",
+    "longrun.point.a": "A",
+    "longrun.point.b": "B"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -1311,6 +1319,10 @@
     "auctions.curve.first": "第一价格，n = {bidders}",
     "auctions.curve.revenue_first": "第一价格",
     "auctions.curve.revenue_second": "第二价格",
-    "auctions.mark.max_value": "$\\bar v$"
+    "auctions.mark.max_value": "$\\bar v$",
+    "longrun.mark.level_a": "C_A",
+    "longrun.mark.level_b": "C_B",
+    "longrun.point.a": "A",
+    "longrun.point.b": "B"
   }
 }
