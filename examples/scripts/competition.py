@@ -29,7 +29,11 @@ FIRMS = "50:24:-6:0.6 50:30:-6:0.6 50:36:-6:0.6"
 
 def parse_firms(text: str) -> tuple[CubicCost, ...]:
     """Cubic cost functions from ``fixed:linear:quadratic:cubic`` items separated by spaces."""
-    return tuple(CubicCost(*(float(part) for part in item.split(":"))) for item in text.split())
+    costs = []
+    for item in text.split():
+        fixed, linear, quadratic, cubic = (float(part) for part in item.split(":"))
+        costs.append(CubicCost(fixed, linear, quadratic, cubic))
+    return tuple(costs)
 
 
 def competition_examples(
