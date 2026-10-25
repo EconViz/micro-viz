@@ -20,6 +20,10 @@ from micro_viz.visuals.isoquant import (
     mrts_steps_canvas,
     returns_to_scale_grid,
 )
+from micro_viz.visuals.longrun import (
+    lac_lmc_canvas,
+    plant_family_canvas,
+)
 from micro_viz.visuals.monopolistic import (
     excess_capacity_grid,
     monopolistic_competition_grid,
@@ -52,6 +56,7 @@ __all__ = [
     "firm_supply_canvas",
     "industry_supply_canvas",
     "isoquant_map_canvas",
+    "lac_lmc_canvas",
     "lerner_markup_canvas",
     "market_and_firm_canvas",
     "monopolistic_competition_grid",
@@ -66,6 +71,7 @@ __all__ = [
     "multiplant_canvas",
     "natural_monopoly_canvas",
     "piecewise_cost_canvas",
+    "plant_family_canvas",
     "price_ceiling_canvas",
     "producer_surplus_canvas",
     "returns_to_scale_grid",
