@@ -102,6 +102,13 @@ from micro_viz.visuals.production import (
     average_marginal_product_canvas,
     total_product_canvas,
 )
+from micro_viz.visuals.production_extras import (
+    learning_curve_canvas,
+    product_transformation_canvas,
+    production_frontier_canvas,
+    scale_vs_learning_canvas,
+    technology_shift_canvas,
+)
 from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_canvas
 
 __all__ = [
@@ -136,6 +143,7 @@ __all__ = [
     "kinked_demand_canvas",
     "lac_lmc_canvas",
     "land_rent_canvas",
+    "learning_curve_canvas",
     "lerner_markup_canvas",
     "long_run_firm_canvas",
     "market_and_firm_canvas",
@@ -161,18 +169,22 @@ __all__ = [
     "price_ceiling_canvas",
     "price_reaction_canvas",
     "producer_surplus_canvas",
+    "product_transformation_canvas",
+    "production_frontier_canvas",
     "pure_bundling_canvas",
     "reaction_curves_canvas",
     "rent_canvas",
     "residual_demand_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
+    "scale_vs_learning_canvas",
     "separate_selling_regions_canvas",
     "short_long_run_canvas",
     "single_price_canvas",
     "supply_elasticity_canvas",
     "tariff_profit_canvas",
     "technical_change_canvas",
+    "technology_shift_canvas",
     "third_degree_canvas",
     "total_cost_canvas",
     "total_product_canvas",
