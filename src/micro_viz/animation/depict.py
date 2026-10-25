@@ -29,6 +29,7 @@ from mosaickit import (
     PathLayer,
     PointLabelLayer,
     RegionLabelLayer,
+    SpanBraceLayer,
     StyleBundle,
     TextLayer,
 )
@@ -38,6 +39,7 @@ from mosaickit.styles import ArrowPlacement
 from mosaickit.themes import resolve
 
 from micro_viz.animation.stage import POINTS_PER_INCH, Stage
+from micro_viz.visuals.common import BRACE_BASE_PT, BRACE_DEPTH_PT
 
 if TYPE_CHECKING:
     from kinetickit.scene import Node
@@ -268,6 +270,8 @@ class Depictor:
             return self._region_label(layer)
         if isinstance(layer, BraceLayer):
             return self._brace(layer)
+        if isinstance(layer, SpanBraceLayer):
+            return self._span_brace(layer)
         self.skipped.append(f"{layer.id} ({type(layer).__name__})")
         return []
 
@@ -510,6 +514,49 @@ class Depictor:
                     Vec2(middle, top - depth),
                     "top",
                     (0.0, -self.stage.gutter / 2),
+                    math_text=layer.math,
+                )
+            )
+        return nodes
+
+    def _span_brace(self, layer: SpanBraceLayer) -> list[Node]:
+        from kinetickit.geometry.two_d import Path2D, Vec2
+        from kinetickit.scene import PathNode2D
+
+        (x0, y0), (x1, y1) = layer.start, layer.end
+        if y0 != y1:
+            self.skipped.append(f"{layer.id} (SpanBraceLayer on a vertical span)")
+            return []
+        left, right = self.world((x0, y0)), self.world((x1, y1))
+        low, high = min(left.x, right.x), max(left.x, right.x)
+        below = layer.side == "below"
+        direction = -1.0 if below else 1.0
+        base = left.y + direction * BRACE_BASE_PT
+        radius = BRACE_DEPTH_PT / 2
+        outline = _brace_outline(low, high, base, radius)
+        if not below:
+            outline = [Vec2(point.x, 2 * base - point.y) for point in outline]
+        style = self.style(layer).stroke
+        width = float(style.width) if style and style.width is not None else 1.0
+        nodes: list[Node] = [
+            PathNode2D(
+                id=layer.id,
+                path=Path2D.polyline(outline),
+                color=self.color(style.color) if style and style.color else None,
+                width=width,
+                z=layer.z_index,
+            )
+        ]
+        if layer.label:
+            tip = base + direction * BRACE_DEPTH_PT
+            nodes.extend(
+                self._text_node(
+                    f"{layer.id}.label",
+                    layer.label,
+                    layer,
+                    Vec2((low + high) / 2, tip),
+                    "top" if below else "bottom",
+                    (0.0, direction * self.stage.gutter / 2),
                     math_text=layer.math,
                 )
             )

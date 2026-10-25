@@ -59,6 +59,33 @@ The returned `ProductionAnalysis` is renderer-neutral and `to_dict()` includes t
 coefficient sign convention, sampled values, and return-region boundaries. Visual layers use
 stable `micro.production.*` IDs and roles.
 
+## Short-run costs
+
+`CubicCost` is the textbook `TC(q) = FC + bq + cq^2 + dq^3` (`b, d > 0`, `c < 0` for the U-shape).
+`PiecewiseCost` is defined by its marginal cost, built from `CostSegment`s that may jump where an
+extra shift or processing unit starts, with a capacity. `analyze_costs` samples every measure
+(TFC, TVC, TC, AFC, AVC, ATC, MC) and reports the exact minimum points: MC crosses AVC and ATC at
+their minima.
+
+```python
+from micro_viz import (
+    CostSegment, CubicCost, PiecewiseCost, analyze_costs,
+    cost_curves_grid, piecewise_cost_canvas, total_cost_canvas, unit_cost_canvas,
+)
+
+cost = CubicCost(fixed_cost=50, linear=36, quadratic=-8, cubic=0.6)
+analysis = analyze_costs(cost, output_range=(1, 11))
+cost_curves_grid(analysis).save("costs.svg")                    # totals above unit costs
+unit_cost_canvas(analysis, curves=("mc", "avc")).save("u.svg")  # a subset of the curves
+
+steps = PiecewiseCost((CostSegment(6, 11.4), CostSegment(9, 13.0)))
+piecewise_cost_canvas(analyze_costs(steps, output_range=(0, 9)), prices=(12.2, 14)).save("s.svg")
+```
+
+`unit_cost_canvas(analysis, output=q)` marks the unit costs at one output, so the figure can be
+swept as output grows (see `examples/scripts/animate_costs.py`); `PiecewiseCost.output_at_price`
+gives the output a price band selects.
+
 ## Install
 
 `micro-viz` requires Python 3.10 or later.

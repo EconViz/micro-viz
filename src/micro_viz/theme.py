@@ -67,6 +67,8 @@ DASHED_WIDTH = 2.0
 """Default width in points of a dashed curve (``[micro.stroke] dashed``)."""
 THIN_WIDTH = 1.0
 """Default width in points of axes and guide lines (``[micro.stroke] guide``)."""
+BRACE_GAP = 4.0
+"""Default gap in points between a shaded region and the brace under it (``[micro.brace] gap``)."""
 MARKER_DIAMETER = 6.5
 """Default diameter in points of a marked point (``[micro.marker] diameter``)."""
 REGION_OPACITY = 0.2
@@ -90,6 +92,7 @@ class PlotTheme:
     dashed_width: float = DASHED_WIDTH
     guide_width: float = THIN_WIDTH
     marker_diameter: float = MARKER_DIAMETER
+    brace_gap: float = BRACE_GAP
     region_opacity: float = REGION_OPACITY
     label_scale: float = 1.0
     # Fonts behave as in every diagram package built on mosaickit: a generic font, files

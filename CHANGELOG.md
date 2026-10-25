@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
+- Region braces of the TP and AP/MP figures hang inside the plot exactly under their shaded
+  regions (`[micro.brace] gap` points below), single row, with the region names kept short in the
+  locale table.
 - Restyled the TP and AP/MP figures to the `principle-viz` manual look: greys from the
   shared `manual` theme, direct curve names, shaded and named marginal-return regions, dashed
   drop lines with axis marks at the MP maximum, the AP = MP point and the MP = 0 point.
@@ -15,6 +18,10 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Short-run costs (#11): `CubicCost`, `PiecewiseCost` (stepped and kinked marginal cost with a
+  capacity), `analyze_costs`, and the `total_cost_canvas`, `unit_cost_canvas`, `cost_curves_grid`
+  and `piecewise_cost_canvas` builders with price bands, minimum-point guides and an optional
+  marked output; examples and an animation of output and price sweeps.
 - Optional `micro-viz[animation]` extra (kinetickit): `micro_viz.animation.save_svg` and `save_gif`
   animate any figure through its own canvas builder; an architecture test keeps static figures
   independent of kinetickit.

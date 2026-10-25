@@ -13,12 +13,12 @@ class Stage:
     """Margins in points around the plot area of an animated SVG.
 
     The plot area is the canvas size (inches times 72) minus the margins. The defaults leave
-    room for axis titles, axis marks and the braces drawn under the horizontal axis.
+    room for axis titles and the marks written under the horizontal axis.
     """
 
     top: float = 36.0
     right: float = 44.0
-    bottom: float = 88.0
+    bottom: float = 44.0
     left: float = 56.0
     gutter: float = 8.0
     """Gap in points between an axis and a mark or name written beside it."""

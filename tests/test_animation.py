@@ -95,6 +95,7 @@ def _mixed_canvas(title: str | None = None) -> Canvas:
         PathLayer,
         PointLabelLayer,
         RegionLabelLayer,
+        SpanBraceLayer,
         TextLayer,
     )
 
@@ -115,6 +116,9 @@ def _mixed_canvas(title: str | None = None) -> Canvas:
             AxisMarkLayer("y", 3.0, "p_1", math=True, id="mark.y"),
             BraceLayer("x", 1.0, 4.0, "Span", side="outside", id="brace"),
             BraceLayer("y", 1.0, 4.0, "Rise", id="brace.y"),
+            SpanBraceLayer((1, 5), (4, 5), "Below", side="below", id="span.below"),
+            SpanBraceLayer((5, 5), (8, 5), "Above", side="above", id="span.above"),
+            SpanBraceLayer((9, 1), (9, 4), "Side", side="right", id="span.side"),
             GroupLayer((PathLayer(((0, 5), (10, 5)), id="grouped"),), id="group"),
             LegendLayer(id="legend"),
         )
@@ -131,7 +135,12 @@ def test_every_layer_kind_has_a_depiction_or_is_reported_once() -> None:
     ids = {node.id for node in nodes}
     assert {"region", "line", "line.label", "dot.0", "text", "mark.x", "brace", "grouped"} <= ids
     assert {"region.label", "here", "math", "mark.y", "brace.label"} <= ids
-    assert depictor.skipped == ["brace.y (BraceLayer on the y axis)", "legend (LegendLayer)"]
+    assert {"span.below", "span.below.label", "span.above", "span.above.label"} <= ids
+    assert depictor.skipped == [
+        "brace.y (BraceLayer on the y axis)",
+        "span.side (SpanBraceLayer on a vertical span)",
+        "legend (LegendLayer)",
+    ]
     assert "line.arrow.end" not in ids
 
 

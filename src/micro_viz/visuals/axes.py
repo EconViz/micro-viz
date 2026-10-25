@@ -86,19 +86,27 @@ def axes_layers(
     arrows: bool = True,
     origin_label: str | None = "0",
     origin: tuple[float, float] | None = None,
+    y_axis_start: float | None = None,
 ) -> tuple[Layer, ...]:
     """Both axes with arrows, their titles and (unless ``None``) the origin label.
 
     The axes cross at ``origin``, by default at the lower-left corner when the ranges start
     at zero or below, and at zero otherwise. A crossing that is not at zero (a range that
-    starts above zero) is marked with an axis break and carries no origin label.
+    starts above zero) is marked with an axis break and carries no origin label. The vertical
+    axis starts at ``y_axis_start`` (default the bottom of the range), so a strip of the plot
+    kept free below the axis, for example for braces, does not extend the axis.
     """
     x0, x1 = x_range
     y0, y1 = y_range
     cross = origin if origin is not None else (max(x0, min(0.0, x1)), max(y0, min(0.0, y1)))
     layers: list[Layer] = [
         _axis("axes.x", (x0, cross[1]), (x1, cross[1]), arrows),
-        _axis("axes.y", (cross[0], y0), (cross[0], y1), arrows),
+        _axis(
+            "axes.y",
+            (cross[0], y0 if y_axis_start is None else y_axis_start),
+            (cross[0], y1),
+            arrows,
+        ),
     ]
     layers.extend(axis_title_layers(x1, y1, x_label=x_label, y_label=y_label, origin=cross))
     broken_y = y0 > 0.0

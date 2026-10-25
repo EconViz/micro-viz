@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import replace
+from dataclasses import dataclass, replace
 
 from mosaickit import (
     AxisMarkLayer,
@@ -15,6 +15,7 @@ from mosaickit import (
     PathLayer,
     PointLabelLayer,
     RegionLabelLayer,
+    SpanBraceLayer,
 )
 from mosaickit.styles.nudge import Nudge
 
@@ -31,6 +32,18 @@ FIGURE_DPI = 150
 """Default resolution of raster output."""
 MARGIN = 0.1
 """Default share of an axis left beyond the data, so curve names fit inside the plot."""
+POINTS_PER_INCH = 72.0
+PLOT_HEIGHT_SHARE = 0.77
+"""Share of the canvas height the plot area takes (mosaickit uses Matplotlib's default
+subplot margins); it converts points to data units for things drawn inside the plot."""
+LABEL_LINE = 1.3
+"""Height of a line of label text, in font sizes."""
+BRACE_BASE_PT = 4.0
+"""Points mosaickit leaves between a span brace's line and the brace itself."""
+BRACE_DEPTH_PT = 8.0
+"""Depth in points of a span brace (its ends to its tip)."""
+BRACE_LABEL_PAD_PT = 8.0
+"""Points kept under a brace tip for the padding around its label and some slack."""
 
 
 class Texts:
@@ -56,6 +69,65 @@ def pad_range(low: float, high: float, margin: float = MARGIN) -> Range:
     if span <= 0:
         return (min(low, 0.0) - 0.5, max(high, 0.0) + 0.5)
     return (low - margin * span if low < 0 else low, high + margin * span)
+
+
+@dataclass(frozen=True, slots=True)
+class Frame:
+    """The vertical layout of a figure with a strip of the plot kept under its regions.
+
+    ``y_range`` is the range of the canvas, including the strip; ``natural_low`` is where
+    the data (and the vertical axis) end; ``fill_low`` is the bottom edge of the shaded
+    regions; ``brace_y`` is the line braces hang from, placed so the braces start ``brace_gap``
+    points below that edge (``None`` without braces); ``unit`` is the data per point.
+    """
+
+    y_range: Range
+    natural_low: float
+    fill_low: float
+    brace_y: float | None
+    unit: float
+
+
+def frame_for(
+    natural: Range,
+    size: tuple[float, float],
+    *,
+    mark_room: float = 0.0,
+    brace_gap: float | None = None,
+    label_size: float = 0.0,
+    label_lines: int = 1,
+) -> Frame:
+    """Lay out ``natural`` with ``mark_room`` points under the axis and, if ``brace_gap`` is
+    given, a strip for braces and their names (``label_lines`` lines of text) below the shaded
+    regions.
+
+    The strip is inside the plot, so the figure needs no extra margin under it: its height in
+    points is the gap, a brace, its name and a pad, converted to data units with the plot
+    height of the canvas.
+    """
+    low, high = natural
+    brace_room = (
+        0.0
+        if brace_gap is None
+        else brace_gap + BRACE_DEPTH_PT + BRACE_LABEL_PAD_PT + LABEL_LINE * label_size * label_lines
+    )
+    reserved = mark_room + brace_room
+    plot_points = size[1] * POINTS_PER_INCH * PLOT_HEIGHT_SHARE
+    unit = (high - low) / (plot_points - reserved)
+    fill_low = low - mark_room * unit
+    return Frame(
+        y_range=(low - reserved * unit, high),
+        natural_low=low,
+        fill_low=fill_low,
+        brace_y=None if brace_gap is None else fill_low - (brace_gap - BRACE_BASE_PT) * unit,
+        unit=unit,
+    )
+
+
+def region_brace(start: float, end: float, y: float, text: str, *, layer_id: str) -> SpanBraceLayer:
+    """A brace exactly spanning ``start`` to ``end`` at height ``y``, opening upward to the
+    region above it, with its name below the tip."""
+    return SpanBraceLayer((start, y), (end, y), text, side="below", id=layer_id, z_index=8)
 
 
 def new_canvas(
@@ -169,17 +241,21 @@ __all__ = [
     "FIGURE_DPI",
     "FIGURE_SIZE",
     "MARGIN",
+    "BRACE_DEPTH_PT",
+    "Frame",
     "Texts",
     "axis_mark",
     "curve",
     "curve_name",
     "dot",
     "drop_line",
+    "frame_for",
     "guide",
     "new_canvas",
     "nudge_labels",
     "pad_range",
     "region",
+    "region_brace",
     "region_name",
     "resolve_theme",
 ]
