@@ -15,6 +15,11 @@ from micro_viz.visuals.costs import (
     total_cost_canvas,
     unit_cost_canvas,
 )
+from micro_viz.visuals.monopolistic import (
+    excess_capacity_grid,
+    monopolistic_competition_grid,
+    monopolistic_long_run_canvas,
+)
 from micro_viz.visuals.monopoly import (
     firm_demand_canvas,
     lerner_markup_canvas,
@@ -32,6 +37,9 @@ from micro_viz.visuals.production import (
 )
 
 __all__ = [
+    "excess_capacity_grid",
+    "monopolistic_competition_grid",
+    "monopolistic_long_run_canvas",
     "firm_demand_canvas",
     "lerner_markup_canvas",
     "monopoly_canvas",

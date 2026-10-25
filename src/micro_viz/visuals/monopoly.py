@@ -4,7 +4,15 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 
-from mosaickit import AxisMarkLayer, Canvas, CanvasGrid, GridLink, RegionLabelLayer, SpanBraceLayer
+from mosaickit import (
+    AxisMarkLayer,
+    Canvas,
+    CanvasGrid,
+    GridLink,
+    Layer,
+    RegionLabelLayer,
+    SpanBraceLayer,
+)
 
 from micro_viz.competition import LinearDemand
 from micro_viz.costs import CostAnalysis
@@ -140,17 +148,19 @@ def _point_marks(
     mark_id: str,
     output_key: str = "monopoly.mark.output",
     price_key: str = "monopoly.mark.price",
+    output_mark: bool = True,
 ) -> None:
     """Dashed guides from the point ``(quantity, price)`` to both axes with their names."""
     start.layers.append(drop_line(quantity, price, layer_id=f"{_PREFIX}.guide.{mark_id}.output"))
-    start.layers.append(
-        axis_mark(
-            "x",
-            quantity,
-            start.texts(output_key, output=symbol),
-            layer_id=f"{_PREFIX}.mark.{mark_id}",
+    if output_mark:
+        start.layers.append(
+            axis_mark(
+                "x",
+                quantity,
+                start.texts(output_key, output=symbol),
+                layer_id=f"{_PREFIX}.mark.{mark_id}",
+            )
         )
-    )
     _level_mark(start, price, price_key, mark_id=mark_id, dotted=False)
     start.layers.append(
         guide((0.0, price), (quantity, price), layer_id=f"{_PREFIX}.guide.{mark_id}.price")
@@ -185,6 +195,8 @@ def monopoly_canvas(
     curves: Sequence[str] = ("mc", "atc"),
     profit: bool = False,
     lost_profit: tuple[float, float] | None = None,
+    extra: Sequence[Layer] = (),
+    output_mark: bool = True,
     title: str | None = None,
     theme: PlotTheme | None = None,
     labels: Mapping[str, str] | None = None,
@@ -219,7 +231,13 @@ def monopoly_canvas(
         dpi=dpi,
     )
     q, price = outcome.quantity, outcome.price
-    if profit and outcome.average_total_cost is not None and q > 0:
+    gap = price - outcome.average_total_cost if outcome.average_total_cost is not None else 0.0
+    if (
+        profit
+        and outcome.average_total_cost is not None
+        and q > 0
+        and abs(gap) > 1e-9 * max(1.0, price)
+    ):
         layer_id = f"{_PREFIX}.profit"
         polygon = _rectangle(0.0, q, outcome.average_total_cost, price)
         start.layers.append(region(polygon, layer_id=layer_id, shade="mid", model=outcome))
@@ -243,7 +261,7 @@ def monopoly_canvas(
             _region_label(start, layer_id, "monopoly.lost_profit")
     _demand_curves(start, demand, model=outcome)
     _cost_curves(start, analysis, curves)
-    _point_marks(start, symbol, q, price, mark_id="monopoly")
+    _point_marks(start, symbol, q, price, mark_id="monopoly", output_mark=output_mark)
     start.layers.append(dot((q, price), layer_id=f"{_PREFIX}.point.monopoly"))
     start.layers.append(dot((q, outcome.marginal_cost), layer_id=f"{_PREFIX}.point.mr_mc"))
     if lost_profit is not None:
@@ -264,6 +282,7 @@ def monopoly_canvas(
             start.layers.append(
                 _x_mark(start, symbol, value, f"{_PREFIX}.mark.lost.{index}", index)
             )
+    start.layers.extend(extra)
     return _finish(start)
 
 

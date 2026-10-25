@@ -6,6 +6,10 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Monopolistic competition: `micro_viz.monopolistic` (short run, long-run tangency, excess
+  capacity) with `monopolistic_competition_grid`, `monopolistic_long_run_canvas`,
+  `excess_capacity_grid` and the examples `monopolistic_competition.py` and
+  `animate_monopolistic.py`.
 - Monopoly: `micro_viz.monopoly` (`Monopolist`, `MultiplantMonopoly`, Lerner index, deadweight
   loss) with `monopoly_canvas`, `monopoly_dwl_canvas`, `monopoly_tax_canvas`,
   `monopoly_demand_shift_canvas`, `multiplant_canvas`, `lerner_markup_canvas`,

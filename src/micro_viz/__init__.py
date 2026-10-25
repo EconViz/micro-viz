@@ -27,6 +27,11 @@ from micro_viz.costs import (
     PiecewiseCost,
     analyze_costs,
 )
+from micro_viz.monopolistic import (
+    MonopolisticOutcome,
+    long_run_demand,
+    solve_monopolistic_competition,
+)
 from micro_viz.monopoly import (
     Monopolist,
     MonopolyError,
@@ -51,11 +56,14 @@ from micro_viz.visuals import (
     competitive_firm_canvas,
     cost_curves_grid,
     cost_shift_canvas,
+    excess_capacity_grid,
     firm_demand_canvas,
     firm_supply_canvas,
     industry_supply_canvas,
     lerner_markup_canvas,
     market_and_firm_canvas,
+    monopolistic_competition_grid,
+    monopolistic_long_run_canvas,
     monopoly_canvas,
     monopoly_demand_shift_canvas,
     monopoly_dwl_canvas,
@@ -74,6 +82,9 @@ from micro_viz.visuals import (
 __version__ = "0.2.0.dev0"
 
 __all__ = [
+    "MonopolisticOutcome",
+    "long_run_demand",
+    "solve_monopolistic_competition",
     "CompetitionError",
     "CompetitiveOutcome",
     "Config",
@@ -114,12 +125,15 @@ __all__ = [
     "cost_shift_canvas",
     "default_theme",
     "elasticity",
+    "excess_capacity_grid",
     "firm_demand_canvas",
     "firm_supply_canvas",
     "industry_supply_canvas",
     "lerner_markup_canvas",
     "marginal_revenue",
     "market_and_firm_canvas",
+    "monopolistic_competition_grid",
+    "monopolistic_long_run_canvas",
     "monopoly_canvas",
     "monopoly_demand_shift_canvas",
     "monopoly_dwl_canvas",
