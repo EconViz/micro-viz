@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, replace
 
@@ -200,6 +201,55 @@ def guide(start: Point, end: Point, *, layer_id: str) -> PathLayer:
     return PathLayer((start, end), id=layer_id, role="micro.guide", z_index=3)
 
 
+DASHED_CURVE_ROLES = frozenset({"micro.curve.fixed", "micro.curve.average.fixed"})
+"""Curve roles drawn dashed: a guide on top of one of these is still drawn."""
+COVER_TOLERANCE = 1e-9
+"""Relative distance within which a guide counts as lying on a curve."""
+
+
+def _on_segment(point: Point, a: Point, b: Point) -> bool:
+    """Whether ``point`` lies on the straight segment from ``a`` to ``b``."""
+    scale = max(1.0, *(abs(v) for v in (*a, *b)))
+    cross = (b[0] - a[0]) * (point[1] - a[1]) - (b[1] - a[1]) * (point[0] - a[0])
+    length = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
+    if abs(cross) / length > COVER_TOLERANCE * scale:
+        return False
+    low_x, high_x = sorted((a[0], b[0]))
+    low_y, high_y = sorted((a[1], b[1]))
+    slack = COVER_TOLERANCE * scale
+    return (
+        low_x - slack <= point[0] <= high_x + slack and low_y - slack <= point[1] <= high_y + slack
+    )
+
+
+def drop_covered_guides(layers: Iterable[Layer]) -> list[Layer]:
+    """``layers`` without the dashed guides that lie entirely on a solid straight curve piece.
+
+    A dashed guide drawn along a solid line only adds noise (the price line carrying a dashed
+    level guide, say); the axis mark that names the level is a separate layer and stays.
+    """
+    items = list(layers)
+    solid = [
+        layer.path
+        for layer in items
+        if isinstance(layer, PathLayer)
+        and layer.role.startswith("micro.curve")
+        and layer.role not in DASHED_CURVE_ROLES
+    ]
+    kept: list[Layer] = []
+    for layer in items:
+        if isinstance(layer, PathLayer) and layer.role == "micro.guide" and len(layer.path) == 2:
+            a, b = layer.path
+            if any(
+                _on_segment(a, p, q) and _on_segment(b, p, q)
+                for path in solid
+                for p, q in zip(path, path[1:], strict=False)
+            ):
+                continue
+        kept.append(layer)
+    return kept
+
+
 def drop_line(x: float, y: float, *, layer_id: str, floor: float = 0.0) -> PathLayer:
     """A dashed guide from the point ``(x, y)`` straight down (or up) to the axis at ``floor``."""
     return guide((x, floor), (x, y), layer_id=layer_id)
@@ -248,6 +298,7 @@ __all__ = [
     "curve",
     "curve_name",
     "dot",
+    "drop_covered_guides",
     "drop_line",
     "frame_for",
     "guide",

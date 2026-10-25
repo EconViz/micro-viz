@@ -106,3 +106,38 @@ def test_example_writes_figures_from_arguments(tmp_path: Path) -> None:
     names = {path.name for path in (tmp_path / "out").glob("*.svg")}
     assert {"firm_profit.svg", "firm_supply.svg", "producer_surplus.svg"} <= names
     assert "Own title" in (tmp_path / "out" / "firm_profit.svg").read_text(encoding="utf-8")
+
+
+def test_guide_lying_on_a_solid_line_is_dropped_but_not_others() -> None:
+    from mosaickit import PathLayer
+
+    from micro_viz.visuals.common import curve, drop_covered_guides, guide
+
+    price = curve(((0.0, 5.0), (10.0, 5.0)), layer_id="price", role="micro.curve.price")
+    dashed = curve(((0.0, 3.0), (10.0, 3.0)), layer_id="afc", role="micro.curve.fixed")
+    covered = guide((0.0, 5.0), (10.0, 5.0), layer_id="g.covered")
+    inside = guide((0.0, 5.0), (4.0, 5.0), layer_id="g.inside")
+    under_dashed = guide((0.0, 3.0), (4.0, 3.0), layer_id="g.dashed")
+    drop = guide((4.0, 0.0), (4.0, 5.0), layer_id="g.drop")
+    kept = drop_covered_guides([price, dashed, covered, inside, under_dashed, drop])
+    ids = [layer.id for layer in kept if isinstance(layer, PathLayer)]
+    assert ids == ["price", "afc", "g.dashed", "g.drop"]
+
+
+def test_price_level_keeps_its_mark_without_a_dashed_line() -> None:
+    cost = CubicCost(30.0, 36.0, -8.0, 0.6)
+    canvas = competitive_firm_canvas(
+        analyze_costs(cost, output_range=(3.0, 8.6)), solve_competitive_firm(cost, 8.0)
+    )
+    ids = {layer.id for layer in canvas.snapshot().layers}
+    assert "micro.competition.mark.price" in ids
+    assert "micro.competition.guide.price" not in ids
+
+
+def test_industry_panels_link_the_price_across_every_panel() -> None:
+    from micro_viz import industry_supply_panels
+
+    industry = IndustrySupply((CubicCost(50.0, 24.0, -6.0, 0.6), CubicCost(50.0, 42.0, -9.0, 0.75)))
+    grid = industry_supply_panels(industry, prices=(11.0, 17.0), price_max=20.0)
+    assert len(grid.placements) == 3
+    assert len(grid.links) == 2 * 2

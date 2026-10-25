@@ -30,6 +30,7 @@ from micro_viz.visuals.common import (
     curve,
     curve_name,
     dot,
+    drop_covered_guides,
     drop_line,
     guide,
     new_canvas,
@@ -90,7 +91,8 @@ def _start(
 
 
 def _finish(start: _Start) -> Canvas:
-    start.canvas.extend(nudge_labels(start.layers, start.theme.label_nudges))
+    layers = drop_covered_guides(start.layers)
+    start.canvas.extend(nudge_labels(layers, start.theme.label_nudges))
     return start.canvas
 
 
@@ -714,6 +716,7 @@ def industry_supply_canvas(
     y_range: Range | None = None,
     margin: float = MARGIN,
     samples: int = SAMPLES,
+    firm_curves: bool = True,
     size: tuple[float, float] = FIGURE_SIZE,
     dpi: int = FIGURE_DPI,
 ) -> Canvas:
@@ -722,6 +725,8 @@ def industry_supply_canvas(
     Each firm's supply (MC above its lowest AVC) is a dashed curve; the industry supply, the
     sum of the firms' quantities at each price, is solid and steps where a firm enters at its
     shutdown price. Each price in ``prices`` is a dashed line to the industry quantity.
+    ``firm_curves=False`` leaves out the firms' curves (see :func:`industry_supply_panels` for
+    the firms side by side).
     """
     symbol = industry.firms[0].output_symbol
     total = industry.curve(price_max, samples=samples)
@@ -740,9 +745,9 @@ def industry_supply_canvas(
         dpi=dpi,
     )
     texts = start.texts
-    for index, firm in enumerate(industry.firms, start=1):
-        from micro_viz.competition import FirmSupply
+    from micro_viz.competition import FirmSupply
 
+    for index, firm in enumerate(industry.firms if firm_curves else (), start=1):
         points = FirmSupply(firm).curve(price_max, samples=samples)
         path = curve(
             tuple(points),
@@ -768,6 +773,135 @@ def industry_supply_canvas(
                 index=index,
             )
     return _finish(start)
+
+
+def industry_supply_panels(
+    industry: IndustrySupply,
+    *,
+    prices: Sequence[float],
+    price_max: float,
+    titles: tuple[str | None, ...] = (),
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    samples: int = SAMPLES,
+    size: tuple[float, float] = PANEL_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> CanvasGrid:
+    """The firms' supply curves side by side and the industry supply that sums them.
+
+    Each firm panel shows its MC above the lowest AVC; each price in ``prices`` is a dashed line
+    across every panel (joined by grid links over the gaps) to the firm's quantity and, in the
+    last panel, to the industry quantity, the sum of the firms' quantities.
+    """
+    from micro_viz.competition import FirmSupply
+
+    selected = resolve_theme(theme)
+    symbol = industry.firms[0].output_symbol
+    supplies = [FirmSupply(firm) for firm in industry.firms]
+    firm_top = max(supply.quantity(price_max) for supply in supplies) * (1 + margin)
+    total = industry.curve(price_max, samples=samples)
+    total_top = max(point[0] for point in total) * (1 + margin)
+    height = pad_range(0.0, price_max, margin)
+    names = (*titles, *([None] * (len(supplies) + 1 - len(titles))))
+    cells: list[Canvas] = []
+    for index, supply in enumerate(supplies, start=1):
+        panel = _start(
+            theme=selected,
+            labels=labels,
+            x_symbol=symbol,
+            x_label=None,
+            y_label=None,
+            y_text_id="competition.axis.price",
+            x_max=firm_top,
+            y_range=height,
+            title=names[index - 1],
+            size=size,
+            dpi=dpi,
+        )
+        path = curve(
+            tuple(supply.curve(price_max, samples=samples)),
+            layer_id=f"micro.competition.firm.{index}",
+            role="micro.curve.marginal",
+        )
+        panel.layers.extend((path, curve_name(path, panel.texts("competition.firm", index=index))))
+        for number, price in enumerate(prices, start=1):
+            if index == 1:
+                _level_mark(
+                    panel,
+                    price,
+                    "competition.mark.price_index",
+                    mark_id=f"price.{number}",
+                    dotted=False,
+                    index=number,
+                )
+            panel.layers.append(
+                guide(
+                    (0.0, price),
+                    (panel.x_axis[1], price),
+                    layer_id=f"micro.competition.guide.firm.{index}.price.{number}",
+                )
+            )
+            quantity = supply.quantity(price)
+            if quantity > 0:
+                panel.layers.append(
+                    drop_line(
+                        quantity, price, layer_id=f"micro.competition.guide.firm.{index}.q.{number}"
+                    )
+                )
+                panel.layers.append(
+                    dot(
+                        (quantity, price), layer_id=f"micro.competition.point.firm.{index}.{number}"
+                    )
+                )
+        cells.append(_finish(panel))
+    market = _start(
+        theme=selected,
+        labels=labels,
+        x_symbol=panel.texts("competition.axis.industry_output"),
+        x_label=None,
+        y_label=None,
+        y_text_id="competition.axis.price",
+        x_max=total_top,
+        y_range=height,
+        title=names[len(supplies)],
+        size=size,
+        dpi=dpi,
+    )
+    supply_path = curve(total, layer_id="micro.competition.industry", role="micro.curve.marginal")
+    market.layers.extend((supply_path, curve_name(supply_path, market.texts("competition.supply"))))
+    for number, price in enumerate(prices, start=1):
+        quantity = industry.quantity(price)
+        market.layers.append(
+            guide(
+                (0.0, price),
+                (quantity, price),
+                layer_id=f"micro.competition.guide.price.{number}",
+            )
+        )
+        if quantity > 0:
+            _output_marks(
+                market,
+                "Q",
+                quantity,
+                price,
+                mark_id=f"output.{number}",
+                key="competition.mark.output_index",
+                index=number,
+            )
+    cells.append(_finish(market))
+    links = [
+        GridLink(
+            cell,
+            (firm_top if cell < len(supplies) else total_top, price),
+            cell + 1,
+            (0.0, price),
+            role="micro.guide",
+        )
+        for cell in range(len(supplies))
+        for price in prices
+    ]
+    return CanvasGrid([cells], links=links)
 
 
 def market_and_firm_canvas(
@@ -844,7 +978,6 @@ def market_and_firm_canvas(
         mark_id="market_output",
         key="competition.mark.industry_output",
     )
-    _level_mark(market, price, "competition.mark.price", mark_id="market_price", dotted=False)
     upper = _finish(firm)
     lower = _finish(market)
     link = GridLink(0, (firm_output_max, price), 1, (0.0, price), role="micro.guide")
@@ -857,6 +990,7 @@ __all__ = [
     "cost_shift_canvas",
     "firm_supply_canvas",
     "industry_supply_canvas",
+    "industry_supply_panels",
     "market_and_firm_canvas",
     "producer_surplus_canvas",
     "revenue_cost_profit_canvas",
