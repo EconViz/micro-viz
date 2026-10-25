@@ -36,6 +36,10 @@ from micro_viz.isoquant import (
     Technology,
     ray_points,
 )
+from micro_viz.longrun import (
+    LongRunError,
+    PlantFamily,
+)
 from micro_viz.monopolistic import (
     MonopolisticOutcome,
     long_run_demand,
@@ -77,6 +81,7 @@ from micro_viz.visuals import (
     firm_supply_canvas,
     industry_supply_canvas,
     isoquant_map_canvas,
+    lac_lmc_canvas,
     lerner_markup_canvas,
     market_and_firm_canvas,
     monopolistic_competition_grid,
@@ -91,6 +96,7 @@ from micro_viz.visuals import (
     multiplant_canvas,
     natural_monopoly_canvas,
     piecewise_cost_canvas,
+    plant_family_canvas,
     price_ceiling_canvas,
     producer_surplus_canvas,
     returns_to_scale_grid,
@@ -120,6 +126,7 @@ __all__ = [
     "IndustrySupply",
     "IsoquantError",
     "LinearDemand",
+    "LongRunError",
     "MarginalReturns",
     "Monopolist",
     "MonopolisticOutcome",
@@ -130,6 +137,7 @@ __all__ = [
     "NaturalMonopolyPricing",
     "PerfectSubstitutes",
     "PiecewiseCost",
+    "PlantFamily",
     "PlotTheme",
     "PricingPoint",
     "ProductionAnalysis",
@@ -158,6 +166,7 @@ __all__ = [
     "firm_supply_canvas",
     "industry_supply_canvas",
     "isoquant_map_canvas",
+    "lac_lmc_canvas",
     "lerner_markup_canvas",
     "long_run_demand",
     "marginal_revenue",
@@ -175,6 +184,7 @@ __all__ = [
     "natural_monopoly_canvas",
     "natural_monopoly_pricing",
     "piecewise_cost_canvas",
+    "plant_family_canvas",
     "price_ceiling_canvas",
     "price_ceiling_outcome",
     "producer_surplus_canvas",

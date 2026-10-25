@@ -6,6 +6,8 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Long-run costs: `micro_viz.longrun` (`PlantFamily`: SAC, LAC envelope, LMC) with `lac_lmc_canvas`,
+  `plant_family_canvas` and the example `long_run_costs.py`; the shared `Plane` drawing kit.
 - Isoquants: `micro_viz.isoquant` (`CobbDouglas`, `PerfectSubstitutes`, `FixedProportions`, MRTS,
   returns to scale) with `isoquant_map_canvas`, `mrts_steps_canvas`, `returns_to_scale_grid` and the
   example `isoquants.py`.
