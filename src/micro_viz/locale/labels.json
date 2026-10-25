@@ -427,7 +427,16 @@
     "uncertainty.mark.minimum_variance": "G",
     "uncertainty.mark.asset": "$A_{{{index}}}$",
     "uncertainty.region.a": "A",
-    "uncertainty.region.b": "B"
+    "uncertainty.region.b": "B",
+    "auctions.axis.value": "$v$",
+    "auctions.axis.bid": "$b$",
+    "auctions.axis.bidders": "$n$",
+    "auctions.axis.revenue": "Expected revenue",
+    "auctions.curve.second": "Second price",
+    "auctions.curve.first": "First price, n = {bidders}",
+    "auctions.curve.revenue_first": "First price",
+    "auctions.curve.revenue_second": "Second price",
+    "auctions.mark.max_value": "$\\bar v$"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -857,7 +866,16 @@
     "uncertainty.mark.minimum_variance": "G",
     "uncertainty.mark.asset": "$A_{{{index}}}$",
     "uncertainty.region.a": "A",
-    "uncertainty.region.b": "B"
+    "uncertainty.region.b": "B",
+    "auctions.axis.value": "$v$",
+    "auctions.axis.bid": "$b$",
+    "auctions.axis.bidders": "$n$",
+    "auctions.axis.revenue": "預期收益",
+    "auctions.curve.second": "第二價格",
+    "auctions.curve.first": "第一價格，n = {bidders}",
+    "auctions.curve.revenue_first": "第一價格",
+    "auctions.curve.revenue_second": "第二價格",
+    "auctions.mark.max_value": "$\\bar v$"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -1287,6 +1305,15 @@
     "uncertainty.mark.minimum_variance": "G",
     "uncertainty.mark.asset": "$A_{{{index}}}$",
     "uncertainty.region.a": "A",
-    "uncertainty.region.b": "B"
+    "uncertainty.region.b": "B",
+    "auctions.axis.value": "$v$",
+    "auctions.axis.bid": "$b$",
+    "auctions.axis.bidders": "$n$",
+    "auctions.axis.revenue": "预期收益",
+    "auctions.curve.second": "第二价格",
+    "auctions.curve.first": "第一价格，n = {bidders}",
+    "auctions.curve.revenue_first": "第一价格",
+    "auctions.curve.revenue_second": "第二价格",
+    "auctions.mark.max_value": "$\\bar v$"
   }
 }

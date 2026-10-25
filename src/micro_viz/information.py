@@ -92,6 +92,10 @@ class Signaling:
         """Whether ``signal`` is bought only by the high group."""
         return self.low_ceiling <= signal <= self.high_ceiling
 
+    def pooling(self, signal: float) -> bool:
+        """Whether both groups find ``signal`` worth buying (a pooling signal)."""
+        return 0 <= signal <= self.low_ceiling
+
     @property
     def separating_signal(self) -> float:
         """The midpoint of the separating range."""

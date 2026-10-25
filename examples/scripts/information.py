@@ -41,6 +41,7 @@ def information_examples(
     figures = {
         "lemons.svg": lemons_market_canvas(lemons, shares, theme=theme),
         "signaling.svg": signaling_canvas(signaling, theme=theme),
+        "pooling.svg": signaling_canvas(signaling, signaling.low_ceiling / 2, theme=theme),
         "moral_hazard.svg": moral_hazard_canvas(hazard, theme=theme, title=title),
         "bonus_schedule.svg": bonus_schedule_canvas(
             bonus, capacities, reach, theme=theme, title=title

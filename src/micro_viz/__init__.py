@@ -5,6 +5,10 @@ from micro_viz.advertising import (
     AdvertisingError,
     AdvertisingOutcome,
 )
+from micro_viz.auctions import (
+    Auction,
+    AuctionError,
+)
 from micro_viz.bundling import (
     BundlingError,
     BundlingOutcome,
@@ -198,6 +202,7 @@ from micro_viz.vertical import (
 from micro_viz.visuals import (
     advertising_effect_canvas,
     average_marginal_product_canvas,
+    bid_functions_canvas,
     block_pricing_canvas,
     bonus_schedule_canvas,
     capital_adjustment_canvas,
@@ -270,6 +275,7 @@ from micro_viz.visuals import (
     resource_price_path_canvas,
     returns_to_scale_grid,
     revenue_cost_profit_canvas,
+    revenue_equivalence_canvas,
     risk_attitude_canvas,
     risk_premium_canvas,
     risk_return_choice_canvas,
@@ -302,6 +308,8 @@ __all__ = [
     "AdvertisingDecision",
     "AdvertisingError",
     "AdvertisingOutcome",
+    "Auction",
+    "AuctionError",
     "BertrandEquilibrium",
     "Block",
     "BlockPricing",
@@ -425,6 +433,7 @@ __all__ = [
     "best_pure",
     "best_separate",
     "best_tariff",
+    "bid_functions_canvas",
     "block_pricing",
     "block_pricing_canvas",
     "bonus_schedule_canvas",
@@ -522,6 +531,7 @@ __all__ = [
     "resource_price_path_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
+    "revenue_equivalence_canvas",
     "risk_attitude_canvas",
     "risk_premium_canvas",
     "risk_return_choice_canvas",

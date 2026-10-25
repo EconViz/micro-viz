@@ -3,6 +3,10 @@
 from micro_viz.visuals.advertising import (
     advertising_effect_canvas,
 )
+from micro_viz.visuals.auctions import (
+    bid_functions_canvas,
+    revenue_equivalence_canvas,
+)
 from micro_viz.visuals.bundling import (
     mixed_bundling_canvas,
     pure_bundling_canvas,
@@ -141,6 +145,7 @@ from micro_viz.visuals.vertical import (
 __all__ = [
     "advertising_effect_canvas",
     "average_marginal_product_canvas",
+    "bid_functions_canvas",
     "block_pricing_canvas",
     "bonus_schedule_canvas",
     "capital_adjustment_canvas",
@@ -213,6 +218,7 @@ __all__ = [
     "resource_price_path_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
+    "revenue_equivalence_canvas",
     "risk_attitude_canvas",
     "risk_premium_canvas",
     "risk_return_choice_canvas",
