@@ -349,7 +349,17 @@
     "vertical.mark.price_integrated": "$p_i$",
     "vertical.mark.price_final": "$p$",
     "vertical.mark.transfer_stacked": "$W_s$",
-    "vertical.mark.market_price": "$P_m$"
+    "vertical.mark.market_price": "$P_m$",
+    "capital.axis.time": "$t$",
+    "capital.axis.quantity": "Q",
+    "capital.curve.price": "$p(t)$",
+    "capital.curve.cost": "MC",
+    "capital.curve.demand": "D",
+    "capital.mark.initial_price": "$p_0$",
+    "capital.mark.horizon": "$T$",
+    "capital.mark.choke": "$p_T$",
+    "capital.mark.quantity": "$Q_{{{index}}}$",
+    "capital.mark.price": "$p_{{{index}}}$"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -701,7 +711,17 @@
     "vertical.mark.price_integrated": "$p_i$",
     "vertical.mark.price_final": "$p$",
     "vertical.mark.transfer_stacked": "$W_s$",
-    "vertical.mark.market_price": "$P_m$"
+    "vertical.mark.market_price": "$P_m$",
+    "capital.axis.time": "$t$",
+    "capital.axis.quantity": "Q",
+    "capital.curve.price": "$p(t)$",
+    "capital.curve.cost": "MC",
+    "capital.curve.demand": "D",
+    "capital.mark.initial_price": "$p_0$",
+    "capital.mark.horizon": "$T$",
+    "capital.mark.choke": "$p_T$",
+    "capital.mark.quantity": "$Q_{{{index}}}$",
+    "capital.mark.price": "$p_{{{index}}}$"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -1053,6 +1073,16 @@
     "vertical.mark.price_integrated": "$p_i$",
     "vertical.mark.price_final": "$p$",
     "vertical.mark.transfer_stacked": "$W_s$",
-    "vertical.mark.market_price": "$P_m$"
+    "vertical.mark.market_price": "$P_m$",
+    "capital.axis.time": "$t$",
+    "capital.axis.quantity": "Q",
+    "capital.curve.price": "$p(t)$",
+    "capital.curve.cost": "MC",
+    "capital.curve.demand": "D",
+    "capital.mark.initial_price": "$p_0$",
+    "capital.mark.horizon": "$T$",
+    "capital.mark.choke": "$p_T$",
+    "capital.mark.quantity": "$Q_{{{index}}}$",
+    "capital.mark.price": "$p_{{{index}}}$"
   }
 }

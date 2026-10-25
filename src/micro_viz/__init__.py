@@ -17,6 +17,10 @@ from micro_viz.bundling import (
     choice_regions,
     evaluate_offer,
 )
+from micro_viz.capital import (
+    CapitalError,
+    ExhaustibleResourcePath,
+)
 from micro_viz.competition import (
     CompetitionError,
     CompetitiveOutcome,
@@ -235,6 +239,7 @@ from micro_viz.visuals import (
     reaction_curves_canvas,
     rent_canvas,
     residual_demand_canvas,
+    resource_price_path_canvas,
     returns_to_scale_grid,
     revenue_cost_profit_canvas,
     scale_vs_learning_canvas,
@@ -270,6 +275,7 @@ __all__ = [
     "BundlingOutcome",
     "BuyerType",
     "CapitalAdjustment",
+    "CapitalError",
     "CeilingOutcome",
     "ChainOutcome",
     "CobbDouglas",
@@ -289,6 +295,7 @@ __all__ = [
     "DominantFirm",
     "DominantFirmOutcome",
     "Duopoly",
+    "ExhaustibleResourcePath",
     "Extremum",
     "FactorError",
     "FactorMarket",
@@ -454,6 +461,7 @@ __all__ = [
     "reaction_curves_canvas",
     "rent_canvas",
     "residual_demand_canvas",
+    "resource_price_path_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
     "scale_vs_learning_canvas",

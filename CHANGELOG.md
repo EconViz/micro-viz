@@ -6,6 +6,8 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Exhaustible resource: `micro_viz.capital` (`ExhaustibleResourcePath`) with
+  `resource_price_path_canvas` and the example `exhaustible_resource.py`.
 - Vertical chains: `micro_viz.vertical` (`VerticalChain`, `transfer_pricing`) with
   `double_marginalization_canvas`, `integrated_firm_canvas`, `transfer_price_outside_market_canvas` and
   the example `vertical.py`.
