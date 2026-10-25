@@ -91,6 +91,7 @@ from micro_viz.visuals.monopolistic import (
     excess_capacity_grid,
     monopolistic_competition_grid,
     monopolistic_long_run_canvas,
+    monopolistic_short_run_canvas,
 )
 from micro_viz.visuals.monopoly import (
     lerner_markup_canvas,
@@ -192,6 +193,7 @@ __all__ = [
     "mixed_bundling_canvas",
     "monopolistic_competition_grid",
     "monopolistic_long_run_canvas",
+    "monopolistic_short_run_canvas",
     "monopoly_canvas",
     "monopoly_demand_shift_canvas",
     "monopoly_dwl_canvas",

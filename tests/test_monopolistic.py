@@ -15,6 +15,7 @@ from micro_viz import (
     long_run_demand,
     monopolistic_competition_grid,
     monopolistic_long_run_canvas,
+    monopolistic_short_run_canvas,
     solve_monopolistic_competition,
 )
 
@@ -64,6 +65,9 @@ def test_builders_return_figures() -> None:
     unit = analyze_costs(COST, output_range=(2.0, 10.0), samples=81)
     assert monopolistic_competition_grid(outcome, unit) is not None
     assert excess_capacity_grid(outcome, unit) is not None
+    short = monopolistic_short_run_canvas(outcome, unit, title="S")
+    assert short.spec.title == "S"
+    assert any(layer.id == "micro.monopoly.profit" for layer in short.snapshot().layers)
     canvas = monopolistic_long_run_canvas(outcome, unit, excess_capacity=True, title="T")
     assert canvas.spec.title == "T"
     assert any(layer.id.endswith("brace.excess") for layer in canvas.snapshot().layers)

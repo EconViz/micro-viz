@@ -69,6 +69,33 @@ def monopolistic_long_run_canvas(
     )
 
 
+def monopolistic_short_run_canvas(
+    outcome: MonopolisticOutcome,
+    analysis: CostAnalysis,
+    *,
+    y_range: Range | None = None,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = PANEL_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """The short run: the monopoly optimum with the profit rectangle before entry."""
+    return monopoly_canvas(
+        outcome.short_run,
+        analysis,
+        profit=True,
+        y_range=y_range,
+        title=title,
+        theme=theme,
+        labels=labels,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+
+
 def monopolistic_competition_grid(
     outcome: MonopolisticOutcome,
     analysis: CostAnalysis,
@@ -81,10 +108,9 @@ def monopolistic_competition_grid(
     dpi: int = FIGURE_DPI,
 ) -> CanvasGrid:
     """Short run (profit rectangle) beside the long run after entry (tangency, no profit)."""
-    short = monopoly_canvas(
-        outcome.short_run,
+    short = monopolistic_short_run_canvas(
+        outcome,
         analysis,
-        profit=True,
         title=titles[0],
         theme=theme,
         labels=labels,
@@ -143,4 +169,9 @@ def excess_capacity_grid(
     return CanvasGrid([[monopolistic, perfect]])
 
 
-__all__ = ["excess_capacity_grid", "monopolistic_competition_grid", "monopolistic_long_run_canvas"]
+__all__ = [
+    "excess_capacity_grid",
+    "monopolistic_competition_grid",
+    "monopolistic_long_run_canvas",
+    "monopolistic_short_run_canvas",
+]
