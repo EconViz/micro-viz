@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- State-claims figures: wider-spread defaults (loss probability 0.5, premiums 0.5 and 0.6, exponent 0.3), budget lines named at their upper-left ends and indifference curves at their lower-right ends; a test renders both figures with layout warnings as errors.
 - Short-run envelope: SAC curves run across the whole output axis so they cross, SMC can be drawn for several plants (`smc_for` takes indices), tangency outputs are marked (`drops`).
 - Natural monopoly: the loss label sits in the free part of the loss rectangle, left of MR, instead of a leader into the curves.
 - Monopolistic competition: the short run is its own figure (`monopolistic_short_run_canvas`, `short_run.svg`) next to `long_run.svg`; the combined `short_and_long_run.svg` is no longer in the example.
