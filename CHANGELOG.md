@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Production extensions: learning curve, scale versus learning, product transformation curve,
+  technology shift and production frontier in `micro_viz.production.extras` with the example
+  `production_extensions.py`.
 - Kinked demand, dominant firm and cartel with a competitive fringe in `micro_viz.oligopoly`
   (`KinkedDemand`, `DominantFirm`) with `kinked_demand_canvas`, `dominant_firm_canvas`,
   `cartel_elasticity_canvas` and the example `dominant_firm.py`.
