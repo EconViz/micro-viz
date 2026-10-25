@@ -12,7 +12,7 @@ ORIGIN_OFFSET_PT = (-7.0, -7.0)
 
 
 def is_symbol(label: str) -> bool:
-    """Single-letter titles (``p``, ``Q``) and ``$...$`` titles are set as math; words stay upright."""
+    """Single letters (``p``, ``Q``) and ``$...$`` titles are set as math; words stay upright."""
     is_math = len(label) > 1 and label.startswith("$") and label.endswith("$")
     return is_math or (len(label) == 1 and label.isalpha())
 

@@ -17,11 +17,6 @@ from types import MappingProxyType
 
 from mosaickit import (
     Color,
-)
-from mosaickit import (
-    Config as MosaicConfig,
-)
-from mosaickit import (
     ConfigurationError,
     DashStyle,
     Fill,
@@ -33,6 +28,9 @@ from mosaickit import (
     TextFonts,
     TextStyle,
     Theme,
+)
+from mosaickit import (
+    Config as MosaicConfig,
 )
 from mosaickit.config import current_config
 from mosaickit.themes import ThemeTokens, get_tokens
@@ -164,7 +162,7 @@ class PlotTheme:
         return replace(
             base,
             fonts=self.fonts if self.fonts is not None else base.fonts,
-            math_font=self.math_font if self.math_font is not None else base.math_font,  # type: ignore[arg-type]
+            math_font=self.math_font if self.math_font is not None else base.math_font,
         )
 
     def to_mosaickit(self) -> Theme:
@@ -190,7 +188,9 @@ class PlotTheme:
 
         roles = {
             "canvas": StyleBundle(
-                fill=Fill(color=self.background if self.background is not None else WHITE, opacity=1)
+                fill=Fill(
+                    color=self.background if self.background is not None else WHITE, opacity=1
+                )
             ),
             "axes": StyleBundle(stroke=Stroke(color=c["axis"], width=self.guide_width), text=label),
             "title": StyleBundle(text=TextStyle(color=c["label"], size=TITLE_SIZE * size)),
@@ -201,7 +201,9 @@ class PlotTheme:
                 stroke=Stroke(color=c["guide"], width=self.guide_width, dash=DashStyle.DASHED),
                 text=note,
             ),
-            "micro.point": StyleBundle(marker=dot, text=TextStyle(color=c["marker"], size=label.size)),
+            "micro.point": StyleBundle(
+                marker=dot, text=TextStyle(color=c["marker"], size=label.size)
+            ),
             "micro.mark": StyleBundle(text=note),
             "micro.region.light": region("region_light"),
             "micro.region.mid": region("region_mid"),

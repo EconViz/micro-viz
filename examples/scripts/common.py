@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import tempfile
 from collections.abc import Sequence
+from dataclasses import replace
 from pathlib import Path
 
 from micro_viz import Config, PlotTheme
@@ -62,10 +63,8 @@ def load_theme(args: argparse.Namespace, workdir: Path) -> PlotTheme:
     copy = workdir / args.config.name
     shutil.copy(args.config, copy)
     config = Config.load(copy).use()
-    theme = config.theme
+    theme: PlotTheme = config.theme
     if args.language is not None:
-        from dataclasses import replace
-
         theme = replace(theme, language=args.language)
     return theme
 

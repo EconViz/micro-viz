@@ -93,7 +93,7 @@ def nudge_labels(layers: Iterable[Layer], nudges: Mapping[str, Nudge]) -> tuple[
             current: Nudge | None = getattr(layer, "nudge", None)
             if current is not None:
                 nudge = Nudge(current.dx + nudge.dx, current.dy + nudge.dy)
-            layer = replace(layer, nudge=nudge)  # type: ignore[type-var]
+            layer = replace(layer, nudge=nudge)
         result.append(layer)
     return tuple(result)
 

@@ -131,7 +131,10 @@ SCHEMA = econ_toml.register(
         base={name: _base(name) for name in COLOR_MODELS},
         fields={
             "language": econ_toml.choice("theme.language", LANGUAGES),
-            **{f"color.{element}": econ_toml.color(f"colors.{element}") for element in COLOR_ELEMENTS},
+            **{
+                f"color.{element}": econ_toml.color(f"colors.{element}")
+                for element in COLOR_ELEMENTS
+            },
             "stroke.curve": econ_toml.positive("theme.curve_width"),
             "stroke.guide": econ_toml.positive("theme.guide_width"),
             "marker.diameter": econ_toml.positive("theme.marker_diameter"),

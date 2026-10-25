@@ -40,9 +40,7 @@ MARK_GAP_PT = 4.0
 """Gap in points between the x axis and a mark written under it."""
 
 
-def _region_layers(
-    result: ProductionAnalysis, y_range: Range, texts: Texts
-) -> tuple[Layer, ...]:
+def _region_layers(result: ProductionAnalysis, y_range: Range, texts: Texts) -> tuple[Layer, ...]:
     low, high = y_range
     layers: list[Layer] = []
     for item in result.regions:
@@ -193,9 +191,14 @@ def total_product_canvas(
             layers.append(drop_line(value, level, layer_id=f"micro.production.guide.{name}"))
             layers.append(dot((value, level), layer_id=f"micro.production.point.{name}"))
             layers.append(
-                axis_mark("x", value, texts(key, input=symbol), layer_id=f"micro.production.mark.{name}")
+                axis_mark(
+                    "x", value, texts(key, input=symbol), layer_id=f"micro.production.mark.{name}"
+                )
             )
-        average_point = (result.average_product_max_input, function.total_product(result.average_product_max_input))
+        average_point = (
+            result.average_product_max_input,
+            function.total_product(result.average_product_max_input),
+        )
         layers.append(guide((0.0, 0.0), average_point, layer_id="micro.production.guide.ray"))
     canvas.extend(nudge_labels(layers, selected.label_nudges))
     return canvas
@@ -251,7 +254,9 @@ def average_marginal_product_canvas(
         layers.extend(_region_layers(result, vertical, texts))
     ap = curve(average, layer_id="micro.production.ap", role="micro.curve.average", model=result)
     mp = curve(marginal, layer_id="micro.production.mp", role="micro.curve.marginal", model=result)
-    layers.extend((ap, curve_name(ap, texts("production.ap")), mp, curve_name(mp, texts("production.mp"))))
+    layers.extend(
+        (ap, curve_name(ap, texts("production.ap")), mp, curve_name(mp, texts("production.mp")))
+    )
     if guides:
         symbol = function.input_symbol
         at_bottom = vertical[0] >= 0.0
@@ -266,7 +271,9 @@ def average_marginal_product_canvas(
         keys = {name: key for name, key, _ in _key_inputs(result)}
         for name, point in points.items():
             if point[1] != 0.0:
-                layers.append(drop_line(point[0], point[1], layer_id=f"micro.production.guide.{name}"))
+                layers.append(
+                    drop_line(point[0], point[1], layer_id=f"micro.production.guide.{name}")
+                )
             layers.append(dot(point, layer_id=f"micro.production.point.{name}"))
             layers.append(
                 _mark(
