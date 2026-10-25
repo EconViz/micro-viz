@@ -6,6 +6,8 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Two-part tariff: `micro_viz.pricing` (`BuyerType`, `TariffOutcome`, `best_tariff`) with
+  `two_part_tariff_canvas`, `tariff_profit_canvas` and the example `two_part_tariff.py`.
 - Price discrimination: `micro_viz.discrimination` (first degree, block pricing, third degree) with
   `single_price_canvas`, `first_degree_canvas`, `block_pricing_canvas`, `third_degree_canvas` and the
   example `price_discrimination.py`.

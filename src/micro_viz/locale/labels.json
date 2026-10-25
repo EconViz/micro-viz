@@ -172,7 +172,20 @@
     "disc.mark.price_index": "p_{index}",
     "disc.mark.marginal": "MC^*",
     "disc.market_title": "Market {index}",
-    "disc.total": "Total"
+    "disc.total": "Total",
+    "pricing.demand_index": "$D_{{{index}}}$",
+    "pricing.mc": "MC",
+    "pricing.entry_fee": "Entry fee",
+    "pricing.sales": "Sales profit",
+    "pricing.mark.usage": "p^*",
+    "pricing.mark.marginal_cost": "MC",
+    "pricing.mark.quantity": "{output}_{index}",
+    "pricing.curve.entry": "Entry fees",
+    "pricing.curve.sales": "Sales",
+    "pricing.curve.total": "Total",
+    "pricing.axis.fee": "T",
+    "pricing.axis.profit": "π",
+    "pricing.mark.fee_index": "T_{index}"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -347,7 +360,20 @@
     "disc.mark.price_index": "p_{index}",
     "disc.mark.marginal": "MC^*",
     "disc.market_title": "市場 {index}",
-    "disc.total": "合計"
+    "disc.total": "合計",
+    "pricing.demand_index": "$D_{{{index}}}$",
+    "pricing.mc": "MC",
+    "pricing.entry_fee": "入場費",
+    "pricing.sales": "銷售利潤",
+    "pricing.mark.usage": "p^*",
+    "pricing.mark.marginal_cost": "MC",
+    "pricing.mark.quantity": "{output}_{index}",
+    "pricing.curve.entry": "入場費利潤",
+    "pricing.curve.sales": "銷售利潤",
+    "pricing.curve.total": "合計",
+    "pricing.axis.fee": "T",
+    "pricing.axis.profit": "π",
+    "pricing.mark.fee_index": "T_{index}"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -522,6 +548,19 @@
     "disc.mark.price_index": "p_{index}",
     "disc.mark.marginal": "MC^*",
     "disc.market_title": "市场 {index}",
-    "disc.total": "合计"
+    "disc.total": "合计",
+    "pricing.demand_index": "$D_{{{index}}}$",
+    "pricing.mc": "MC",
+    "pricing.entry_fee": "入场费",
+    "pricing.sales": "销售利润",
+    "pricing.mark.usage": "p^*",
+    "pricing.mark.marginal_cost": "MC",
+    "pricing.mark.quantity": "{output}_{index}",
+    "pricing.curve.entry": "入场费利润",
+    "pricing.curve.sales": "销售利润",
+    "pricing.curve.total": "合计",
+    "pricing.axis.fee": "T",
+    "pricing.axis.profit": "π",
+    "pricing.mark.fee_index": "T_{index}"
   }
 }
