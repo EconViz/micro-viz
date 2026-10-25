@@ -273,7 +273,19 @@
     "factors.land.curve.demand": "D",
     "factors.land.curve.supply": "S",
     "factors.land.mark.q_star": "$T^*$",
-    "factors.land.mark.p_star": "$R^*$"
+    "factors.land.mark.p_star": "$R^*$",
+    "pricing.curve.demand_index": "$D_{{{index}}}$",
+    "pricing.curve.mr_index": "$\\mathrm{{MR}}_{{{index}}}$",
+    "pricing.mark.price_index": "$p_{{{index}}}$",
+    "pricing.curve.demand_peak": "$D_P$",
+    "pricing.curve.demand_off": "$D_O$",
+    "pricing.curve.mr_peak": "$\\mathrm{MR}_P$",
+    "pricing.curve.mr_off": "$\\mathrm{MR}_O$",
+    "pricing.curve.mc_capacity": "$\\mathrm{MC}+\\mathrm{MC}_K$",
+    "pricing.mark.quantity_peak": "$Q_P$",
+    "pricing.mark.quantity_off": "$Q_O$",
+    "pricing.mark.price_peak": "$p_P$",
+    "pricing.mark.price_off": "$p_O$"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -549,7 +561,19 @@
     "factors.land.curve.demand": "D",
     "factors.land.curve.supply": "S",
     "factors.land.mark.q_star": "$T^*$",
-    "factors.land.mark.p_star": "$R^*$"
+    "factors.land.mark.p_star": "$R^*$",
+    "pricing.curve.demand_index": "$D_{{{index}}}$",
+    "pricing.curve.mr_index": "$\\mathrm{{MR}}_{{{index}}}$",
+    "pricing.mark.price_index": "$p_{{{index}}}$",
+    "pricing.curve.demand_peak": "$D_P$",
+    "pricing.curve.demand_off": "$D_O$",
+    "pricing.curve.mr_peak": "$\\mathrm{MR}_P$",
+    "pricing.curve.mr_off": "$\\mathrm{MR}_O$",
+    "pricing.curve.mc_capacity": "$\\mathrm{MC}+\\mathrm{MC}_K$",
+    "pricing.mark.quantity_peak": "$Q_P$",
+    "pricing.mark.quantity_off": "$Q_O$",
+    "pricing.mark.price_peak": "$p_P$",
+    "pricing.mark.price_off": "$p_O$"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -825,6 +849,18 @@
     "factors.land.curve.demand": "D",
     "factors.land.curve.supply": "S",
     "factors.land.mark.q_star": "$T^*$",
-    "factors.land.mark.p_star": "$R^*$"
+    "factors.land.mark.p_star": "$R^*$",
+    "pricing.curve.demand_index": "$D_{{{index}}}$",
+    "pricing.curve.mr_index": "$\\mathrm{{MR}}_{{{index}}}$",
+    "pricing.mark.price_index": "$p_{{{index}}}$",
+    "pricing.curve.demand_peak": "$D_P$",
+    "pricing.curve.demand_off": "$D_O$",
+    "pricing.curve.mr_peak": "$\\mathrm{MR}_P$",
+    "pricing.curve.mr_off": "$\\mathrm{MR}_O$",
+    "pricing.curve.mc_capacity": "$\\mathrm{MC}+\\mathrm{MC}_K$",
+    "pricing.mark.quantity_peak": "$Q_P$",
+    "pricing.mark.quantity_off": "$Q_O$",
+    "pricing.mark.price_peak": "$p_P$",
+    "pricing.mark.price_off": "$p_O$"
   }
 }

@@ -90,6 +90,8 @@ from micro_viz.visuals.oligopoly import (
     residual_demand_canvas,
 )
 from micro_viz.visuals.pricing import (
+    intertemporal_pricing_canvas,
+    peak_load_canvas,
     tariff_profit_canvas,
     two_part_tariff_canvas,
 )
@@ -124,6 +126,7 @@ __all__ = [
     "industry_factor_demand_canvas",
     "industry_supply_canvas",
     "input_price_change_canvas",
+    "intertemporal_pricing_canvas",
     "isoquant_map_canvas",
     "lac_lmc_canvas",
     "land_rent_canvas",
@@ -146,6 +149,7 @@ __all__ = [
     "mrts_steps_canvas",
     "multiplant_canvas",
     "natural_monopoly_canvas",
+    "peak_load_canvas",
     "piecewise_cost_canvas",
     "plant_family_canvas",
     "price_ceiling_canvas",

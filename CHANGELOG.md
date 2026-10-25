@@ -6,6 +6,8 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Time-based pricing: `IntertemporalPricing` and `PeakLoadPricing` in `micro_viz.pricing` with
+  `intertemporal_pricing_canvas`, `peak_load_canvas` and the example `time_pricing.py`.
 - Factor markets: derived demand (VMP, MRP), firm hiring, capital adjustment, industry and
   short-run/long-run input demand, factor-market equilibrium, economic rent and land rent in
   `micro_viz.factors` and the example `factor_markets.py`.

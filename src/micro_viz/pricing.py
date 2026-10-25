@@ -97,3 +97,93 @@ def profit_by_entry_fee(
 ) -> tuple[TariffOutcome, ...]:
     """The outcome at each entry fee in ``fees`` for a fixed usage fee."""
     return tuple(evaluate_tariff(buyers, marginal_cost, usage_fee, fee) for fee in fees)
+
+
+@dataclass(frozen=True, slots=True)
+class IntertemporalOutcome:
+    """Prices and quantities of a seller that serves the high-valuation buyers first."""
+
+    first_price: float
+    first_quantity: float
+    second_price: float
+    second_quantity: float
+    profit: float
+
+
+@dataclass(frozen=True, slots=True)
+class IntertemporalPricing:
+    """Two buyer groups with linear demands (``first`` buys early, ``second`` later) and a
+    constant marginal cost: each group is priced where its own ``MR = MC``."""
+
+    first: LinearDemand
+    second: LinearDemand
+    marginal_cost: float
+
+    def __post_init__(self) -> None:
+        if not math.isfinite(self.marginal_cost) or self.marginal_cost < 0:
+            raise PricingError("marginal_cost must be finite and nonnegative.")
+        if self.second.intercept > self.first.intercept:
+            raise PricingError("The later group must value the good less than the early group.")
+
+    def _optimum(self, demand: LinearDemand) -> tuple[float, float]:
+        quantity = max((demand.intercept - self.marginal_cost) / (2 * demand.slope), 0.0)
+        return quantity, demand.intercept - demand.slope * quantity
+
+    def solve(self) -> IntertemporalOutcome:
+        q1, p1 = self._optimum(self.first)
+        q2, p2 = self._optimum(self.second)
+        profit = (p1 - self.marginal_cost) * q1 + (p2 - self.marginal_cost) * q2
+        return IntertemporalOutcome(p1, q1, p2, q2, profit)
+
+
+@dataclass(frozen=True, slots=True)
+class PeakLoadOutcome:
+    """Peak-load prices; ``shared_capacity`` is true when both periods use all the capacity."""
+
+    peak_price: float
+    peak_quantity: float
+    off_peak_price: float
+    off_peak_quantity: float
+    capacity: float
+    shared_capacity: bool
+
+
+@dataclass(frozen=True, slots=True)
+class PeakLoadPricing:
+    """Peak and off-peak demands, a running cost ``marginal_cost`` per unit in each period and a
+    capacity cost ``capacity_cost`` per unit of capacity. When the off-peak optimum fits within
+    peak capacity the whole capacity cost falls on the peak (``MR_P = MC + MC_K``,
+    ``MR_O = MC``); otherwise both periods fill capacity and ``MR_P + MR_O = 2 MC + MC_K``."""
+
+    peak: LinearDemand
+    off_peak: LinearDemand
+    marginal_cost: float
+    capacity_cost: float
+
+    def __post_init__(self) -> None:
+        for name, value in (
+            ("marginal_cost", self.marginal_cost),
+            ("capacity_cost", self.capacity_cost),
+        ):
+            if not math.isfinite(value) or value < 0:
+                raise PricingError(f"{name} must be finite and nonnegative.")
+
+    def solve(self) -> PeakLoadOutcome:
+        mc, k = self.marginal_cost, self.capacity_cost
+        peak_q = max((self.peak.intercept - mc - k) / (2 * self.peak.slope), 0.0)
+        off_q = max((self.off_peak.intercept - mc) / (2 * self.off_peak.slope), 0.0)
+        shared = off_q > peak_q
+        if shared:
+            peak_q = off_q = max(
+                (self.peak.intercept + self.off_peak.intercept - 2 * mc - k)
+                / (2 * (self.peak.slope + self.off_peak.slope)),
+                0.0,
+            )
+        return PeakLoadOutcome(
+            peak_price=self.peak.intercept - self.peak.slope * peak_q,
+            peak_quantity=peak_q,
+            off_peak_price=self.off_peak.intercept - self.off_peak.slope * off_q,
+            off_peak_quantity=off_q,
+            capacity=max(peak_q, off_q),
+            shared_capacity=shared,
+        )

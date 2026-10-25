@@ -6,7 +6,13 @@ from collections.abc import Mapping, Sequence
 
 from mosaickit import Canvas
 
-from micro_viz.pricing import BuyerType, TariffOutcome, evaluate_tariff
+from micro_viz.pricing import (
+    BuyerType,
+    IntertemporalPricing,
+    PeakLoadPricing,
+    TariffOutcome,
+    evaluate_tariff,
+)
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import FIGURE_DPI, FIGURE_SIZE, MARGIN, Point
 from micro_viz.visuals.plane import Plane
@@ -123,4 +129,121 @@ def _text(theme: PlotTheme | None, labels: Mapping[str, str] | None, key: str) -
     return Texts(resolve_theme(theme), labels)(key)
 
 
-__all__ = ["tariff_profit_canvas", "two_part_tariff_canvas"]
+def intertemporal_pricing_canvas(
+    pricing: IntertemporalPricing,
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """Two demands and their marginal revenues against a constant ``MC``: the high price is
+    charged to the early group, the lower price to the later one."""
+    outcome = pricing.solve()
+    plane = Plane(
+        prefix="pricing.intertemporal",
+        x_label="Q",
+        y_label="p",
+        x_max=pricing.first.quantity_intercept,
+        y_max=pricing.first.intercept,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    for index, demand in enumerate((pricing.first, pricing.second), start=1):
+        plane.line(
+            ((0.0, demand.intercept), (demand.quantity_intercept, 0.0)),
+            plane.t("pricing.curve.demand_index", index=index),
+            role="micro.curve.demand",
+        )
+        plane.thin(
+            ((0.0, demand.intercept), (demand.quantity_intercept / 2, 0.0)),
+            plane.t("pricing.curve.mr_index", index=index),
+        )
+    mc = pricing.marginal_cost
+    plane.line(((0.0, mc), (plane.x_max, mc)), plane.t("pricing.mc"))
+    plane.point(
+        outcome.first_quantity,
+        outcome.first_price,
+        xtext=plane.t("pricing.mark.quantity", output="Q", index=1),
+        ytext=plane.t("pricing.mark.price_index", index=1),
+    )
+    plane.point(
+        outcome.second_quantity,
+        outcome.second_price,
+        xtext=plane.t("pricing.mark.quantity", output="Q", index=2),
+        ytext=plane.t("pricing.mark.price_index", index=2),
+    )
+    plane.dot((outcome.first_quantity, mc))
+    plane.dot((outcome.second_quantity, mc))
+    return plane.finish()
+
+
+def peak_load_canvas(
+    pricing: PeakLoadPricing,
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """Peak and off-peak demands with their marginal revenues; running cost ``MC`` for both
+    periods and ``MC + MC_K`` (the capacity cost) for the peak."""
+    outcome = pricing.solve()
+    plane = Plane(
+        prefix="pricing.peak",
+        x_label="Q",
+        y_label="p",
+        x_max=max(pricing.peak.quantity_intercept, pricing.off_peak.quantity_intercept),
+        y_max=max(pricing.peak.intercept, pricing.off_peak.intercept),
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    for key, demand in (("peak", pricing.peak), ("off", pricing.off_peak)):
+        plane.line(
+            ((0.0, demand.intercept), (demand.quantity_intercept, 0.0)),
+            plane.t(f"pricing.curve.demand_{key}"),
+            role="micro.curve.demand",
+        )
+        plane.thin(
+            ((0.0, demand.intercept), (demand.quantity_intercept / 2, 0.0)),
+            plane.t(f"pricing.curve.mr_{key}"),
+        )
+    mc, k = pricing.marginal_cost, pricing.capacity_cost
+    plane.line(((0.0, mc), (plane.x_max, mc)), plane.t("pricing.mc"))
+    if k > 0:
+        plane.thin(((0.0, mc + k), (plane.x_max, mc + k)), plane.t("pricing.curve.mc_capacity"))
+    plane.point(
+        outcome.peak_quantity,
+        outcome.peak_price,
+        xtext=plane.t("pricing.mark.quantity_peak"),
+        ytext=plane.t("pricing.mark.price_peak"),
+    )
+    plane.point(
+        outcome.off_peak_quantity,
+        outcome.off_peak_price,
+        xtext=None if outcome.shared_capacity else plane.t("pricing.mark.quantity_off"),
+        ytext=plane.t("pricing.mark.price_off"),
+    )
+    plane.dot((outcome.peak_quantity, mc + k))
+    plane.dot((outcome.off_peak_quantity, mc))
+    return plane.finish()
+
+
+__all__ = [
+    "intertemporal_pricing_canvas",
+    "peak_load_canvas",
+    "tariff_profit_canvas",
+    "two_part_tariff_canvas",
+]
