@@ -6,6 +6,8 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Information economics: `micro_viz.information` (`LemonsMarket`, `Signaling`, `MoralHazard`,
+  `BonusSchedule`, `EfficiencyWage`) with the matching canvases and the example `information.py`.
 - Choice under uncertainty: `micro_viz.uncertainty` (`Gamble`, `IncomeUtility`, `MeanVarianceInvestor`,
   `RiskReturnLine`) with `utility_of_income_canvas`, `risk_premium_canvas`, `risk_attitude_canvas`,
   `risk_return_choice_canvas` and the example `uncertainty.py`.
