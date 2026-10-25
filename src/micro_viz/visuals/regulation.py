@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from mosaickit import Canvas
+from mosaickit import Canvas, TextLayer
 
 from micro_viz.costs import CostAnalysis
 from micro_viz.regulation import CeilingOutcome, NaturalMonopolyPricing
@@ -25,7 +25,6 @@ from micro_viz.visuals.monopoly import (
     _cost_curves,
     _demand_curves,
     _point_marks,
-    _region_label,
 )
 
 _PREFIX = "micro.regulation"
@@ -143,7 +142,19 @@ def natural_monopoly_canvas(
         layer_id = f"{_PREFIX}.loss"
         polygon = _rectangle(0.0, mc_point.quantity, mc_point.price, atc)
         start.layers.append(region(polygon, layer_id=layer_id, shade="mid", model=pricing))
-        _region_label(start, layer_id, "regulation.loss")
+        # Named left of MR, in the part of the rectangle that no other curve crosses.
+        middle = (mc_point.price + atc) / 2
+        left_of_mr = (demand.intercept - middle) / (2 * demand.slope)
+        start.layers.append(
+            TextLayer(
+                (min(left_of_mr, mc_point.quantity) / 2, middle),
+                start.texts("regulation.loss"),
+                id=f"{layer_id}.label",
+                role="micro.annotation",
+                anchor="center",
+                z_index=8,
+            )
+        )
     _demand_curves(start, demand, model=pricing)
     _cost_curves(start, analysis, ("mc", "atc"))
     _point_marks(

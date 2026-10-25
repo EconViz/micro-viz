@@ -86,3 +86,23 @@ def test_builders_and_example(tmp_path: Path) -> None:
         capture_output=True,
     )
     assert "Own title" in (tmp_path / "out" / "price_ceiling.svg").read_text(encoding="utf-8")
+
+
+def test_loss_is_the_gap_between_atc_and_price_at_the_regulated_output() -> None:
+    from mosaickit import FillLayer, TextLayer
+
+    firm = Monopolist(LinearDemand(30.0, 1.0), NATURAL)
+    pricing = natural_monopoly_pricing(firm)
+    analysis = analyze_costs(NATURAL, output_range=(2.0, 30.0), samples=81)
+    layers = {x.id: x for x in natural_monopoly_canvas(pricing, analysis).snapshot().layers}
+    fill = layers["micro.regulation.loss"]
+    assert isinstance(fill, FillLayer)
+    q = pricing.marginal_cost.quantity
+    atc = NATURAL.average_total_cost(q)
+    ys = sorted({y for _, y in fill.boundary})
+    xs = sorted({x for x, _ in fill.boundary})
+    assert ys == pytest.approx([pricing.marginal_cost.price, atc])
+    assert xs == pytest.approx([0.0, q])
+    label = layers["micro.regulation.loss.label"]
+    assert isinstance(label, TextLayer)
+    assert 0 < label.position[0] < q and ys[0] < label.position[1] < ys[1]
