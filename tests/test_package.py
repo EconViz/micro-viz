@@ -160,6 +160,7 @@ def test_public_api_is_explicit() -> None:
         "competitive_total",
         "constant_cost_canvas",
         "cost_curves_grid",
+        "cost_curves_panels",
         "cost_minimization_canvas",
         "cost_minimizing_bundle",
         "cost_of",

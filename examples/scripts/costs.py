@@ -11,6 +11,7 @@ from micro_viz import (
     PlotTheme,
     analyze_costs,
     cost_curves_grid,
+    cost_curves_panels,
     total_cost_canvas,
     unit_cost_canvas,
 )
@@ -24,6 +25,7 @@ def cost_examples(
     min_output: float,
     max_output: float,
     samples: int,
+    avc_reach: float = 1.15,
     title: str | None = None,
 ) -> list[Path]:
     """Write the cost-curve examples for ``cost`` into ``output_dir`` and return the paths."""
@@ -36,9 +38,10 @@ def cost_examples(
             cubic=cost.cubic,
             output_symbol=cost.output_symbol,
         ),
-        output_range=(min_output, max_output),
+        output_range=(min_output, max_output * avc_reach),
         samples=samples,
     )
+    total_panel, unit_panel = cost_curves_panels(analysis, theme=theme, titles=(title, None))
     output_dir.mkdir(parents=True, exist_ok=True)
     figures = {
         "total_cost.svg": total_cost_canvas(analysis, theme=theme, title=title),
@@ -46,6 +49,8 @@ def cost_examples(
         "cubic_avc_mc.svg": unit_cost_canvas(
             no_fixed, curves=("mc", "avc"), theme=theme, title=title
         ),
+        "cost_curves_total.svg": total_panel,
+        "cost_curves_unit.svg": unit_panel,
         "cost_curves.svg": cost_curves_grid(analysis, theme=theme, titles=(title, None)),
     }
     paths = []
@@ -66,6 +71,12 @@ def main() -> None:
     args_parser.add_argument("--min-output", type=float, default=1.0)
     args_parser.add_argument("--max-output", type=float, default=11.0)
     args_parser.add_argument("--samples", type=int, default=221)
+    args_parser.add_argument(
+        "--avc-reach",
+        type=float,
+        default=1.15,
+        help="the AVC and MC figure runs to this multiple of --max-output",
+    )
     args_parser.add_argument("--title", default=None)
     args = args_parser.parse_args()
     session = Session(args)
@@ -77,6 +88,7 @@ def main() -> None:
             min_output=args.min_output,
             max_output=args.max_output,
             samples=args.samples,
+            avc_reach=args.avc_reach,
             title=args.title,
         )
     finally:

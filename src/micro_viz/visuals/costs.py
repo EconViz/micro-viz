@@ -35,7 +35,7 @@ UNIT_CURVES = ("mc", "atc", "avc", "afc")
 _UNIT_STYLE = {
     "mc": ("micro.curve.marginal", "cost.mc", 1.0),
     "atc": ("micro.curve.average", "cost.atc", 1.0),
-    "avc": ("micro.curve.average.variable", "cost.avc", 0.8),
+    "avc": ("micro.curve.average.variable", "cost.avc", 1.0),
     "afc": ("micro.curve.average.fixed", "cost.afc", 1.0),
 }
 """Role, text id and the share of the curve at which its name is written, per unit curve."""
@@ -291,6 +291,34 @@ def _output_marks(
     return layers
 
 
+def cost_curves_panels(
+    analysis: CostAnalysis,
+    *,
+    titles: tuple[str | None, str | None] = (None, None),
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    x_max: float | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = PANEL_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> tuple[Canvas, Canvas]:
+    """The two panels of :func:`cost_curves_grid` as separate canvases: total cost, then unit
+    costs, on the same output axis. Each stands alone as a figure."""
+    selected = resolve_theme(theme)
+    horizontal = x_max if x_max is not None else analysis.output_range[1] * (1 + margin)
+    common = {
+        "theme": selected,
+        "labels": labels,
+        "x_max": horizontal,
+        "margin": margin,
+        "size": size,
+        "dpi": dpi,
+    }
+    upper = total_cost_canvas(analysis, title=titles[0], marks=False, **common)  # type: ignore[arg-type]
+    lower = unit_cost_canvas(analysis, title=titles[1], **common)  # type: ignore[arg-type]
+    return upper, lower
+
+
 def cost_curves_grid(
     analysis: CostAnalysis,
     *,
@@ -307,18 +335,16 @@ def cost_curves_grid(
     A dashed link joins the tangency point of the total-cost panel (the lowest ATC) to the
     lowest-ATC point of the unit-cost panel.
     """
-    selected = resolve_theme(theme)
-    horizontal = x_max if x_max is not None else analysis.output_range[1] * (1 + margin)
-    common = {
-        "theme": selected,
-        "labels": labels,
-        "x_max": horizontal,
-        "margin": margin,
-        "size": size,
-        "dpi": dpi,
-    }
-    upper = total_cost_canvas(analysis, title=titles[0], marks=False, **common)  # type: ignore[arg-type]
-    lower = unit_cost_canvas(analysis, title=titles[1], **common)  # type: ignore[arg-type]
+    upper, lower = cost_curves_panels(
+        analysis,
+        titles=titles,
+        theme=theme,
+        labels=labels,
+        x_max=x_max,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
     links: list[GridLink] = []
     extremum = analysis.minimum_average_total_cost
     if extremum is not None:
