@@ -6,6 +6,8 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Advertising decision: `micro_viz.advertising` (`AdvertisingDecision`) with `advertising_effect_canvas` and
+  the example `advertising.py`.
 - Production extensions: learning curve, scale versus learning, product transformation curve,
   technology shift and production frontier in `micro_viz.production.extras` with the example
   `production_extensions.py`.

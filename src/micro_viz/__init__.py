@@ -1,5 +1,10 @@
 """Producer theory and market-structure diagrams for EconViz."""
 
+from micro_viz.advertising import (
+    AdvertisingDecision,
+    AdvertisingError,
+    AdvertisingOutcome,
+)
 from micro_viz.bundling import (
     BundlingError,
     BundlingOutcome,
@@ -157,6 +162,7 @@ from micro_viz.regulation import (
 )
 from micro_viz.theme import PlotTheme, shared_theme
 from micro_viz.visuals import (
+    advertising_effect_canvas,
     average_marginal_product_canvas,
     block_pricing_canvas,
     capital_adjustment_canvas,
@@ -243,6 +249,9 @@ from micro_viz.visuals import (
 __version__ = "0.2.0.dev0"
 
 __all__ = [
+    "AdvertisingDecision",
+    "AdvertisingError",
+    "AdvertisingOutcome",
     "BertrandEquilibrium",
     "Block",
     "BlockPricing",
@@ -334,6 +343,7 @@ __all__ = [
     "UnionWageSetting",
     "ValuationProfile",
     "__version__",
+    "advertising_effect_canvas",
     "analyze_costs",
     "analyze_production",
     "analyze_revenue_cost",
