@@ -142,6 +142,8 @@ SCHEMA = econ_toml.register(
             "stroke.curve": econ_toml.positive("theme.curve_width"),
             "stroke.dashed": econ_toml.positive("theme.dashed_width"),
             "stroke.guide": econ_toml.positive("theme.guide_width"),
+            "stroke.after": econ_toml.positive("theme.after_width"),
+            "stroke.arrow": econ_toml.positive("theme.arrow_width"),
             "marker.diameter": econ_toml.positive("theme.marker_diameter"),
             "brace.gap": econ_toml.number("theme.brace_gap", minimum=0),
             "opacity.region": econ_toml.number(
@@ -167,6 +169,8 @@ SCHEMA = econ_toml.register(
             "stroke.curve": "main curve width in points",
             "stroke.dashed": "dashed curve width in points",
             "stroke.guide": "axis and guide line width in points",
+            "stroke.after": "width in points of a curve after a change (thin, solid)",
+            "stroke.arrow": "width in points of a movement arrow (solid)",
             "marker.diameter": "marked point diameter in points",
             "brace.gap": "gap in points between a shaded region and its brace",
             "opacity.region": "opacity of shaded regions, above 0 and at most 1",

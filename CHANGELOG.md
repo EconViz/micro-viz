@@ -25,6 +25,8 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
+- Curves after a change and movement arrows are thin and solid (1.5 pt and 1.2 pt against 3.5 pt
+  for main curves), set by `[micro.stroke] after` and `arrow`.
 - Variable names are uppercase italic except the price `p` (`Q`, `C`).
 
 ### Changed
