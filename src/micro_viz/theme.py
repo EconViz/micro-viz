@@ -49,6 +49,7 @@ ELEMENT_ROLES: Mapping[str, str] = MappingProxyType(
         "marginal": "accent",
         "variable": "tertiary",
         "fixed": "muted",
+        "price": "intervention",
         "region_light": "fill.light",
         "region_mid": "fill.mid",
         "region_dark": "fill.dark",
@@ -209,6 +210,7 @@ class PlotTheme:
             "micro.curve.marginal": curve("marginal"),
             "micro.curve.variable": curve("variable"),
             "micro.curve.fixed": curve("fixed", DashStyle.DASHED),
+            "micro.curve.price": curve("price"),
             "micro.curve.average.variable": curve("variable"),
             "micro.curve.average.fixed": curve("fixed", DashStyle.DASHED),
             "micro.guide": StyleBundle(

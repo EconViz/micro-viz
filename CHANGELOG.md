@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 
 ## 0.2.0.dev0 - Unreleased
 
+### Added
+
+- Short-run perfect competition: `micro_viz.competition` (firm decision, shutdown and break-even
+  prices, firm and industry supply, producer surplus, unit tax) with figure builders
+  `competitive_firm_canvas`, `firm_supply_canvas`, `producer_surplus_canvas`,
+  `cost_shift_canvas`, `revenue_cost_profit_canvas`, `industry_supply_canvas`,
+  `market_and_firm_canvas` and `examples/scripts/competition.py`.
+
+### Changed
+
+- Variable names are uppercase italic except the price `p` (`Q`, `C`).
+
 ### Changed
 
 - Region braces of the TP and AP/MP figures hang inside the plot exactly under their shaded
