@@ -66,3 +66,11 @@ def test_builders_and_example(tmp_path: Path) -> None:
         capture_output=True,
     )
     assert "Own title" in (tmp_path / "out" / "lac_lmc.svg").read_text(encoding="utf-8")
+
+
+def test_envelope_curves_spread_across_the_axis_and_mark_each_tangency() -> None:
+    canvas = plant_family_canvas(FAMILY, (8.0, 10.0, 12.0), 18.0, smc_for=(0, 1, 2))
+    ids = {layer.id for layer in canvas.snapshot().layers}
+    assert {f"micro.longrun.xmark.{n}" for n in (1, 2, 3)} <= ids
+    bare = plant_family_canvas(FAMILY, (8.0, 10.0, 12.0), 18.0, drops=False)
+    assert "micro.longrun.xmark.1" not in {layer.id for layer in bare.snapshot().layers}
