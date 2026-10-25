@@ -218,3 +218,158 @@ class TwoSectorLabor:
             competitive_employment_1=c1,
             competitive_employment_2=c2,
         )
+
+
+@dataclass(frozen=True, slots=True)
+class DerivedDemand:
+    """Input demand derived from a marginal product ``MP: L -> mp0 - mp1 L`` and an output
+    price. A competitive output market gives ``VMP = P MP``; a monopolist's marginal revenue is
+    the share ``mr_share`` (< 1) of the price, so ``MRP = mr_share P MP`` lies below VMP."""
+
+    marginal_product: LinearValue
+    price: float
+    mr_share: float = 1.0
+
+    def __post_init__(self) -> None:
+        _positive("price", self.price)
+        if not 0 < self.mr_share <= 1:
+            raise FactorError("mr_share must lie in (0, 1].")
+
+    @property
+    def demand(self) -> LinearValue:
+        """MRP as a linear value curve."""
+        factor = self.price * self.mr_share
+        return LinearValue(
+            self.marginal_product.intercept * factor, self.marginal_product.slope * factor
+        )
+
+    @property
+    def value_of_marginal_product(self) -> LinearValue:
+        """VMP: the same marginal product valued at the full price."""
+        return LinearValue(
+            self.marginal_product.intercept * self.price, self.marginal_product.slope * self.price
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class FactorMarket:
+    """Input demand (MRP) against input supply (``LinearSupply``)."""
+
+    demand: LinearValue
+    supply: LinearSupply
+
+    def equilibrium(self) -> tuple[float, float]:
+        """``(L, W)`` where MRP meets supply."""
+        quantity = (self.demand.intercept - self.supply.intercept) / (
+            self.supply.slope + self.demand.slope
+        )
+        if quantity <= 0:
+            raise FactorError("Supply starts above demand: no employment.")
+        return quantity, self.supply.wage(quantity)
+
+    def firm_hiring(self, wage: float) -> float:
+        """Employment of a price-taking firm facing the flat supply ``wage``: ``MRP = wage``."""
+        return max((self.demand.intercept - wage) / self.demand.slope, 0.0)
+
+    def rent(self) -> float:
+        """Economic rent: ``W L`` less the area under supply, up to equilibrium employment."""
+        quantity, wage = self.equilibrium()
+        return wage * quantity - _area_under_supply(self.supply, quantity)
+
+
+@dataclass(frozen=True, slots=True)
+class IndustryFactorDemand:
+    """Industry demand through the anchor ``(quantity, wage)`` of ``firms`` identical firms.
+
+    Holding output price fixed, the industry would hire ``firms`` times the firm's quantity at
+    each wage (``horizontal sum``). A lower wage lowers cost, expands output and lowers the
+    output price, which damps the rise in hiring: industry demand has slope
+    ``slope (1 + price_effect) / firms`` through the same anchor, steeper than the sum."""
+
+    firm: LinearValue
+    firms: int
+    price_effect: float
+
+    def __post_init__(self) -> None:
+        if self.firms < 1:
+            raise FactorError("firms must be at least 1.")
+        if not math.isfinite(self.price_effect) or self.price_effect < 0:
+            raise FactorError("price_effect must be finite and nonnegative.")
+
+    def firm_quantity(self, wage: float) -> float:
+        return max((self.firm.intercept - wage) / self.firm.slope, 0.0)
+
+    def summed_quantity(self, wage: float) -> float:
+        return self.firms * self.firm_quantity(wage)
+
+    def industry_quantity(self, wage: float, anchor_wage: float) -> float:
+        """Industry employment at ``wage`` for the demand anchored at ``anchor_wage``."""
+        anchor = self.summed_quantity(anchor_wage)
+        slope = self.firm.slope * (1 + self.price_effect) / self.firms
+        return max(anchor + (anchor_wage - wage) / slope, 0.0)
+
+
+@dataclass(frozen=True, slots=True)
+class InputAdjustment:
+    """Short- and long-run input demand through one anchor ``(quantity, wage)``: the long run
+    is flatter because the firm can also adjust its other inputs."""
+
+    anchor_quantity: float
+    anchor_wage: float
+    short_slope: float
+    long_slope: float
+
+    def __post_init__(self) -> None:
+        _positive("anchor_quantity", self.anchor_quantity)
+        _positive("anchor_wage", self.anchor_wage)
+        _positive("short_slope", self.short_slope)
+        _positive("long_slope", self.long_slope)
+        if self.long_slope >= self.short_slope:
+            raise FactorError("The long-run curve must be flatter than the short-run curve.")
+
+    def short_wage(self, quantity: float) -> float:
+        return self.anchor_wage - self.short_slope * (quantity - self.anchor_quantity)
+
+    def long_wage(self, quantity: float) -> float:
+        return self.anchor_wage - self.long_slope * (quantity - self.anchor_quantity)
+
+
+@dataclass(frozen=True, slots=True)
+class CapitalAdjustment:
+    """A family of MRP curves, one per capital level: ``intercept`` rises in proportion to the
+    level while the slope stays that of ``base``. ``locus`` joins the hiring points at one wage."""
+
+    base: LinearValue
+    levels: tuple[float, ...]
+
+    def __post_init__(self) -> None:
+        if len(self.levels) < 2 or any(level <= 0 for level in self.levels):
+            raise FactorError("Need at least two positive capital levels.")
+        if list(self.levels) != sorted(self.levels):
+            raise FactorError("Capital levels must be increasing.")
+
+    def curve(self, index: int) -> LinearValue:
+        scale = self.levels[index] / self.levels[0]
+        return LinearValue(self.base.intercept * scale, self.base.slope)
+
+    def hiring(self, index: int, wage: float) -> float:
+        curve = self.curve(index)
+        return max((curve.intercept - wage) / curve.slope, 0.0)
+
+
+@dataclass(frozen=True, slots=True)
+class LandMarket:
+    """Land of fixed ``supply`` (vertical) against ``demand``: rent is the demand height."""
+
+    demand: LinearValue
+    supply: float
+
+    def __post_init__(self) -> None:
+        _positive("supply", self.supply)
+
+    @property
+    def rent(self) -> float:
+        value = self.demand.value(self.supply)
+        if value < 0:
+            raise FactorError("Demand lies below zero at this quantity of land.")
+        return value
