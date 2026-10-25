@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Uncertainty, second part: `StateClaims` (insurance with fair and unfair premiums), stochastic
+  dominance of uniform lotteries and `TwoAssetFrontier` with `state_claims_canvas`,
+  `stochastic_dominance_canvas` and `mean_variance_frontier_canvas`.
 - Information economics: `micro_viz.information` (`LemonsMarket`, `Signaling`, `MoralHazard`,
   `BonusSchedule`, `EfficiencyWage`) with the matching canvases and the example `information.py`.
 - Choice under uncertainty: `micro_viz.uncertainty` (`Gamble`, `IncomeUtility`, `MeanVarianceInvestor`,

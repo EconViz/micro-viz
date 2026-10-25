@@ -105,3 +105,61 @@ def test_example_runs(tmp_path: Path) -> None:
         capture_output=True,
     )
     assert (tmp_path / "out" / "risk_premium.svg").exists()
+
+
+def test_fair_insurance_gives_full_cover_and_unfair_partial() -> None:
+    from micro_viz import StateClaims, state_claims_canvas
+
+    claims = StateClaims(100.0, 40.0, 0.25, 0.5)
+    c1, c2 = claims.choice(0.25)
+    assert c1 == pytest.approx(c2)
+    assert claims.coverage(0.25) == pytest.approx(45.0)
+    u1, u2 = claims.choice(0.3)
+    assert u2 < u1
+    assert 0 < claims.coverage(0.3) < 45.0
+    # the choice lies on the budget line and the indifference curve is tangent there
+    assert claims.budget_c2(u1, 0.3) == pytest.approx(u2)
+    level = claims.utility(u1, u2)
+    assert claims.indifference_c2(u1, level) == pytest.approx(u2)
+    assert state_claims_canvas(claims, (0.25, 0.3), title="T").spec.title == "T"
+    with pytest.raises(UncertaintyError):
+        StateClaims(100.0, 40.0, 0.25, 1.5)
+
+
+def test_stochastic_dominance_checks() -> None:
+    from micro_viz import (
+        UniformLottery,
+        cdf_crossing,
+        first_order_dominates,
+        second_order_dominates,
+        stochastic_dominance_canvas,
+    )
+
+    a, b, c = UniformLottery(30.0, 90.0), UniformLottery(10.0, 70.0), UniformLottery(40.0, 60.0)
+    assert first_order_dominates(a, b) and not first_order_dominates(b, a)
+    assert cdf_crossing(a, b) is None
+    assert not first_order_dominates(c, b) and not first_order_dominates(b, c)
+    assert c.mean == pytest.approx(50.0) and b.mean == pytest.approx(40.0)
+    wide, narrow = UniformLottery(20.0, 80.0), UniformLottery(40.0, 60.0)
+    assert second_order_dominates(narrow, wide) and not second_order_dominates(wide, narrow)
+    assert not first_order_dominates(narrow, wide)
+    assert cdf_crossing(narrow, wide) == pytest.approx(50.0)
+    assert stochastic_dominance_canvas(narrow, wide, "second") is not None
+    assert stochastic_dominance_canvas(a, b, "first") is not None
+    with pytest.raises(UncertaintyError):
+        stochastic_dominance_canvas(a, b, "third")
+
+
+def test_two_asset_frontier() -> None:
+    from micro_viz import TwoAssetFrontier, mean_variance_frontier_canvas
+
+    frontier = TwoAssetFrontier(8.0, 10.0, 14.0, 24.0, 0.2)
+    sd, mean = frontier.minimum_variance()
+    assert sd < min(10.0, 24.0)
+    for step in range(-5, 16):
+        assert frontier.portfolio(step / 10)[0] >= sd - 1e-9
+    assert frontier.portfolio(1.0) == pytest.approx((10.0, 8.0))
+    assert 8.0 < mean < 14.0
+    assert mean_variance_frontier_canvas(frontier) is not None
+    with pytest.raises(UncertaintyError):
+        TwoAssetFrontier(8.0, 10.0, 14.0, 24.0, 1.0)
