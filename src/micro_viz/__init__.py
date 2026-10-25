@@ -165,6 +165,13 @@ from micro_viz.regulation import (
     price_ceiling_outcome,
 )
 from micro_viz.theme import PlotTheme, shared_theme
+from micro_viz.uncertainty import (
+    Gamble,
+    IncomeUtility,
+    MeanVarianceInvestor,
+    RiskReturnLine,
+    UncertaintyError,
+)
 from micro_viz.vertical import (
     ChainOutcome,
     TransferPricingOutcome,
@@ -242,6 +249,9 @@ from micro_viz.visuals import (
     resource_price_path_canvas,
     returns_to_scale_grid,
     revenue_cost_profit_canvas,
+    risk_attitude_canvas,
+    risk_premium_canvas,
+    risk_return_choice_canvas,
     scale_vs_learning_canvas,
     separate_selling_regions_canvas,
     short_long_run_canvas,
@@ -258,6 +268,7 @@ from micro_viz.visuals import (
     two_sector_labor_canvas,
     union_wage_canvas,
     unit_cost_canvas,
+    utility_of_income_canvas,
     valuation_scatter_canvas,
 )
 
@@ -302,6 +313,8 @@ __all__ = [
     "FirmSupply",
     "FirstDegree",
     "FixedProportions",
+    "Gamble",
+    "IncomeUtility",
     "IndustryEntry",
     "IndustryFactorDemand",
     "IndustrySupply",
@@ -320,6 +333,7 @@ __all__ = [
     "MarginalReturns",
     "MarketPoint",
     "MarketSale",
+    "MeanVarianceInvestor",
     "Monopolist",
     "MonopolisticOutcome",
     "MonopolyError",
@@ -349,6 +363,7 @@ __all__ = [
     "ReturnsRegion",
     "RevenueCostAnalysis",
     "RevenueCostPoint",
+    "RiskReturnLine",
     "ShortRunProductionFunction",
     "StackelbergEquilibrium",
     "TariffOutcome",
@@ -358,6 +373,7 @@ __all__ = [
     "TransferPricingOutcome",
     "TwoSectorLabor",
     "TwoSectorOutcome",
+    "UncertaintyError",
     "UnionOutcome",
     "UnionWageSetting",
     "ValuationProfile",
@@ -464,6 +480,9 @@ __all__ = [
     "resource_price_path_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
+    "risk_attitude_canvas",
+    "risk_premium_canvas",
+    "risk_return_choice_canvas",
     "scale_vs_learning_canvas",
     "separate_selling_regions_canvas",
     "shared_theme",
@@ -488,5 +507,6 @@ __all__ = [
     "two_sector_labor_canvas",
     "union_wage_canvas",
     "unit_cost_canvas",
+    "utility_of_income_canvas",
     "valuation_scatter_canvas",
 ]

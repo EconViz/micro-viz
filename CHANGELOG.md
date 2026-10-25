@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Choice under uncertainty: `micro_viz.uncertainty` (`Gamble`, `IncomeUtility`, `MeanVarianceInvestor`,
+  `RiskReturnLine`) with `utility_of_income_canvas`, `risk_premium_canvas`, `risk_attitude_canvas`,
+  `risk_return_choice_canvas` and the example `uncertainty.py`.
 - Exhaustible resource: `micro_viz.capital` (`ExhaustibleResourcePath`) with
   `resource_price_path_canvas` and the example `exhaustible_resource.py`.
 - Vertical chains: `micro_viz.vertical` (`VerticalChain`, `transfer_pricing`) with
