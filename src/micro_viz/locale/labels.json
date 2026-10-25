@@ -185,7 +185,20 @@
     "pricing.curve.total": "Total",
     "pricing.axis.fee": "T",
     "pricing.axis.profit": "π",
-    "pricing.mark.fee_index": "T_{index}"
+    "pricing.mark.fee_index": "T_{index}",
+    "bundling.axis.r1": "$r_1$",
+    "bundling.axis.r2": "$r_2$",
+    "bundling.mark.p1": "$P_1$",
+    "bundling.mark.p2": "$P_2$",
+    "bundling.mark.pb": "$P_B$",
+    "bundling.mark.c1": "$C_1$",
+    "bundling.mark.c2": "$C_2$",
+    "bundling.region.none": "Buy nothing",
+    "bundling.region.good_1": "Good 1 only",
+    "bundling.region.good_2": "Good 2 only",
+    "bundling.region.both": "Both goods",
+    "bundling.region.bundle": "Buy bundle",
+    "bundling.numeral": "{numeral}"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -373,7 +386,20 @@
     "pricing.curve.total": "合計",
     "pricing.axis.fee": "T",
     "pricing.axis.profit": "π",
-    "pricing.mark.fee_index": "T_{index}"
+    "pricing.mark.fee_index": "T_{index}",
+    "bundling.axis.r1": "$r_1$",
+    "bundling.axis.r2": "$r_2$",
+    "bundling.mark.p1": "$P_1$",
+    "bundling.mark.p2": "$P_2$",
+    "bundling.mark.pb": "$P_B$",
+    "bundling.mark.c1": "$C_1$",
+    "bundling.mark.c2": "$C_2$",
+    "bundling.region.none": "不購買",
+    "bundling.region.good_1": "只買商品 1",
+    "bundling.region.good_2": "只買商品 2",
+    "bundling.region.both": "兩者皆買",
+    "bundling.region.bundle": "購買組合",
+    "bundling.numeral": "{numeral}"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -561,6 +587,19 @@
     "pricing.curve.total": "合计",
     "pricing.axis.fee": "T",
     "pricing.axis.profit": "π",
-    "pricing.mark.fee_index": "T_{index}"
+    "pricing.mark.fee_index": "T_{index}",
+    "bundling.axis.r1": "$r_1$",
+    "bundling.axis.r2": "$r_2$",
+    "bundling.mark.p1": "$P_1$",
+    "bundling.mark.p2": "$P_2$",
+    "bundling.mark.pb": "$P_B$",
+    "bundling.mark.c1": "$C_1$",
+    "bundling.mark.c2": "$C_2$",
+    "bundling.region.none": "不购买",
+    "bundling.region.good_1": "只买商品 1",
+    "bundling.region.good_2": "只买商品 2",
+    "bundling.region.both": "两者皆买",
+    "bundling.region.bundle": "购买组合",
+    "bundling.numeral": "{numeral}"
   }
 }

@@ -1,5 +1,11 @@
 """Public mosaickit visual builders."""
 
+from micro_viz.visuals.bundling import (
+    mixed_bundling_canvas,
+    pure_bundling_canvas,
+    separate_selling_regions_canvas,
+    valuation_scatter_canvas,
+)
 from micro_viz.visuals.competition import (
     competitive_firm_canvas,
     cost_shift_canvas,
@@ -93,6 +99,7 @@ __all__ = [
     "lerner_markup_canvas",
     "long_run_firm_canvas",
     "market_and_firm_canvas",
+    "mixed_bundling_canvas",
     "monopolistic_competition_grid",
     "monopolistic_long_run_canvas",
     "monopoly_canvas",
@@ -108,9 +115,11 @@ __all__ = [
     "plant_family_canvas",
     "price_ceiling_canvas",
     "producer_surplus_canvas",
+    "pure_bundling_canvas",
     "rent_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
+    "separate_selling_regions_canvas",
     "single_price_canvas",
     "tariff_profit_canvas",
     "technical_change_canvas",
@@ -119,4 +128,5 @@ __all__ = [
     "total_product_canvas",
     "two_part_tariff_canvas",
     "unit_cost_canvas",
+    "valuation_scatter_canvas",
 ]

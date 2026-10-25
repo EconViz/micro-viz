@@ -6,6 +6,10 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Bundling in valuation space: `micro_viz.bundling` (`ValuationProfile`, `Offer`, `choice_regions`,
+  `best_separate`, `best_pure`, `best_mixed`) with `valuation_scatter_canvas`,
+  `separate_selling_regions_canvas`, `pure_bundling_canvas`, `mixed_bundling_canvas` and the example
+  `bundling.py`.
 - Two-part tariff: `micro_viz.pricing` (`BuyerType`, `TariffOutcome`, `best_tariff`) with
   `two_part_tariff_canvas`, `tariff_profit_canvas` and the example `two_part_tariff.py`.
 - Price discrimination: `micro_viz.discrimination` (first degree, block pricing, third degree) with
