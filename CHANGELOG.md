@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Cost minimization: isocost lines, cost-minimizing bundles, expansion paths and long-run total cost
+  (`cost_minimization_canvas`, `input_price_change_canvas`, `technical_change_canvas`,
+  `expansion_path_canvas`, `fixed_capital_canvas`, example `cost_minimization.py`).
 - Long-run competition: `micro_viz.entry` (`IndustryEntry`: entry, exit, long-run supply) with
   `long_run_firm_canvas`, `entry_canvas`, `rent_canvas`, `constant_cost_canvas`,
   `increasing_cost_canvas` and the example `long_run_competition.py`.
