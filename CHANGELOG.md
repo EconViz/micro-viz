@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Price discrimination: `micro_viz.discrimination` (first degree, block pricing, third degree) with
+  `single_price_canvas`, `first_degree_canvas`, `block_pricing_canvas`, `third_degree_canvas` and the
+  example `price_discrimination.py`.
 - Cost minimization: isocost lines, cost-minimizing bundles, expansion paths and long-run total cost
   (`cost_minimization_canvas`, `input_price_change_canvas`, `technical_change_canvas`,
   `expansion_path_canvas`, `fixed_capital_canvas`, example `cost_minimization.py`).

@@ -15,6 +15,12 @@ from micro_viz.visuals.costs import (
     total_cost_canvas,
     unit_cost_canvas,
 )
+from micro_viz.visuals.discrimination import (
+    block_pricing_canvas,
+    first_degree_canvas,
+    single_price_canvas,
+    third_degree_canvas,
+)
 from micro_viz.visuals.entry import (
     constant_cost_canvas,
     entry_canvas,
@@ -62,6 +68,7 @@ from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_
 
 __all__ = [
     "average_marginal_product_canvas",
+    "block_pricing_canvas",
     "competitive_firm_canvas",
     "constant_cost_canvas",
     "cost_curves_grid",
@@ -72,6 +79,7 @@ __all__ = [
     "expansion_path_canvas",
     "firm_demand_canvas",
     "firm_supply_canvas",
+    "first_degree_canvas",
     "fixed_capital_canvas",
     "increasing_cost_canvas",
     "industry_supply_canvas",
@@ -99,7 +107,9 @@ __all__ = [
     "rent_canvas",
     "returns_to_scale_grid",
     "revenue_cost_profit_canvas",
+    "single_price_canvas",
     "technical_change_canvas",
+    "third_degree_canvas",
     "total_cost_canvas",
     "total_product_canvas",
     "unit_cost_canvas",
