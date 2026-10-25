@@ -78,5 +78,6 @@ def test_visual_builders_default_to_no_title() -> None:
     from micro_viz import visuals
 
     for name in visuals.__all__:
-        parameter = inspect.signature(getattr(visuals, name)).parameters["title"]
-        assert parameter.default is None
+        parameters = inspect.signature(getattr(visuals, name)).parameters
+        title = parameters["title"] if "title" in parameters else parameters["titles"]
+        assert title.default is None or all(item is None for item in title.default)

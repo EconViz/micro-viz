@@ -112,3 +112,58 @@ def test_animation_example_writes_an_animated_svg(tmp_path: Path) -> None:
     )
     svg = (tmp_path / "average_marginal_product_animated.svg").read_text(encoding="utf-8")
     assert "<animate" in svg and "micro.production.mp" in svg
+
+
+def _script(name: str, tmp_path: Path, *arguments: str) -> Path:
+    config = _plain_config(tmp_path / "config")
+    subprocess.run(
+        [
+            sys.executable,
+            str(REPOSITORY_ROOT / "examples" / "scripts" / name),
+            "--output-dir",
+            str(tmp_path / "out"),
+            "--config",
+            str(config),
+            *arguments,
+        ],
+        cwd=REPOSITORY_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return tmp_path / "out"
+
+
+def test_cost_example_writes_the_four_cost_figures_and_follows_parameters(tmp_path: Path) -> None:
+    out = _script("costs.py", tmp_path / "a")
+    names = ("total_cost", "unit_cost", "cubic_avc_mc", "cost_curves")
+    first = {name: (out / f"{name}.svg").read_text(encoding="utf-8") for name in names}
+    assert all("micro.cost" in text for text in first.values())
+    changed = _script("costs.py", tmp_path / "b", "--fixed", "80", "--title", "Own title")
+    assert (changed / "unit_cost.svg").read_text(encoding="utf-8") != first["unit_cost"]
+
+
+def test_piecewise_cost_example_accepts_segments_and_prices(tmp_path: Path) -> None:
+    out = _script("piecewise_costs.py", tmp_path / "a")
+    base = (out / "stepped_cost_prices.svg").read_text(encoding="utf-8")
+    assert "micro.cost.point.output.1" in base
+    assert "micro.cost.mc" in (out / "kinked_marginal_cost.svg").read_text(encoding="utf-8")
+    changed = _script(
+        "piecewise_costs.py",
+        tmp_path / "b",
+        "--stepped",
+        "4:5 8:9",
+        "--prices",
+        "6",
+        "--fixed",
+        "2",
+    )
+    assert (changed / "stepped_cost_prices.svg").read_text(encoding="utf-8") != base
+
+
+def test_cost_animation_example_writes_both_animated_svgs(tmp_path: Path) -> None:
+    pytest.importorskip("kinetickit")
+    out = _script("animate_costs.py", tmp_path, "--steps", "3")
+    for name in ("unit_cost_output", "stepped_cost_price"):
+        svg = (out / f"{name}_animated.svg").read_text(encoding="utf-8")
+        assert "<animate" in svg

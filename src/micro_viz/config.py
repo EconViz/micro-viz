@@ -21,10 +21,14 @@ the fonts and the axis and label colours; micro-viz's own settings live in ``[mi
 
     [micro.stroke]            # widths in points
     curve = 3.5
+    dashed = 2.0
     guide = 1.0
 
     [micro.marker]
     diameter = 6.5            # a marked point's diameter in points
+
+    [micro.brace]
+    gap = 4.0                 # gap in points between a shaded region and its brace
 
     [micro.opacity]
     region = 0.3              # opacity of shaded regions
@@ -136,8 +140,10 @@ SCHEMA = econ_toml.register(
                 for element in COLOR_ELEMENTS
             },
             "stroke.curve": econ_toml.positive("theme.curve_width"),
+            "stroke.dashed": econ_toml.positive("theme.dashed_width"),
             "stroke.guide": econ_toml.positive("theme.guide_width"),
             "marker.diameter": econ_toml.positive("theme.marker_diameter"),
+            "brace.gap": econ_toml.number("theme.brace_gap", minimum=0),
             "opacity.region": econ_toml.number(
                 "theme.region_opacity", minimum=0, maximum=1, exclusive_minimum=True
             ),
@@ -159,8 +165,10 @@ SCHEMA = econ_toml.register(
         docs={
             "language": "language of built-in figure text",
             "stroke.curve": "main curve width in points",
+            "stroke.dashed": "dashed curve width in points",
             "stroke.guide": "axis and guide line width in points",
             "marker.diameter": "marked point diameter in points",
+            "brace.gap": "gap in points between a shaded region and its brace",
             "opacity.region": "opacity of shaded regions, above 0 and at most 1",
             **{f"color.{element}": "unset keeps the theme's colour" for element in COLOR_ELEMENTS},
             **{

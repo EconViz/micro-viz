@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import tempfile
 from collections.abc import Callable, Iterator, Sequence
+from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -72,6 +73,26 @@ def _layers(depictor: Depictor, canvas: Canvas) -> list[Any]:
     return layers
 
 
+def _same_layers(layer_lists: list[list[Any]]) -> list[list[Any]]:
+    """Give every frame the same layers: one a frame lacks is added hidden, so it fades in or out.
+
+    kinetickit animates a node between frames; a node that exists in only some frames would have
+    nothing to move from, so each frame carries every layer, hidden where it is absent.
+    """
+    first: dict[str, Any] = {}
+    for layers in layer_lists:
+        for layer in layers:
+            first.setdefault(layer.id, layer)
+    result = []
+    for layers in layer_lists:
+        present = {layer.id for layer in layers}
+        hidden = [
+            replace(layer, visible=False) for key, layer in first.items() if key not in present
+        ]
+        result.append(sorted([*layers, *hidden], key=lambda item: item.z_index))
+    return result
+
+
 def animation_from_canvases(
     canvases: Sequence[Canvas],
     *,
@@ -86,7 +107,7 @@ def animation_from_canvases(
 
     selected = stage or Stage()
     depictor = Depictor(canvases[0], selected)
-    layer_lists = [_layers(depictor, canvas) for canvas in canvases]
+    layer_lists = _same_layers([_layers(depictor, canvas) for canvas in canvases])
     duration = seconds_per_step if seconds_per_step is not None else selected.seconds_per_step
     if len(layer_lists) == 1:
         layer_lists = [layer_lists[0], layer_lists[0]]

@@ -1,16 +1,18 @@
 from __future__ import annotations
 
+import re
+import warnings
+from dataclasses import replace
 from pathlib import Path
 from typing import cast
 
 import pytest
 from mosaickit import (
-    AxisMarkLayer,
-    BraceLayer,
     Canvas,
     FillLayer,
     MarkerLayer,
     PathLayer,
+    SpanBraceLayer,
     TextLayer,
 )
 
@@ -53,11 +55,11 @@ def test_total_product_canvas_has_curve_regions_guides_and_names(
         brace = layers[f"micro.production.region.{name}.brace"]
         assert isinstance(fill, FillLayer)
         assert fill.role.startswith("micro.region.")
-        assert isinstance(brace, BraceLayer) and brace.label
+        assert isinstance(brace, SpanBraceLayer) and brace.label
     for name in ("inflection", "average_max", "total_max"):
         assert isinstance(layers[f"micro.production.guide.{name}"], PathLayer)
         assert isinstance(layers[f"micro.production.point.{name}"], MarkerLayer)
-        assert isinstance(layers[f"micro.production.mark.{name}"], AxisMarkLayer)
+        assert isinstance(layers[f"micro.production.mark.{name}"], TextLayer)
 
 
 def test_guides_sit_on_the_exact_boundary_inputs(analysis: ProductionAnalysis) -> None:
@@ -111,7 +113,9 @@ def test_axis_names_ranges_and_texts_are_arguments(analysis: ProductionAnalysis)
         dpi=72,
     )
     assert (canvas.spec.x_label, canvas.spec.y_label) == ("K", "Y")
-    assert canvas.spec.x_range == (0.0, 9.0) and canvas.spec.y_range == (0.0, 100.0)
+    assert canvas.spec.x_range == (0.0, 9.0)
+    # the given range is the data range; the canvas adds the strip under the regions
+    assert canvas.spec.y_range[1] == 100.0 and canvas.spec.y_range[0] < 0.0
     assert (canvas.spec.width, canvas.spec.height, canvas.spec.dpi) == (4.0, 3.0, 72)
     assert _layers(canvas)["micro.production.tp.label"].text == "Output"  # type: ignore[attr-defined]
 
@@ -136,7 +140,7 @@ def test_language_changes_every_built_in_text(analysis: ProductionAnalysis) -> N
     theme = Config.from_dict({"base": "manual", "micro": {"language": "zh-TW"}}).theme
     layers = _layers(average_marginal_product_canvas(analysis, theme=theme))
     brace = layers["micro.production.region.increasing.brace"]
-    assert isinstance(brace, BraceLayer) and brace.label == "報酬遞增"
+    assert isinstance(brace, SpanBraceLayer) and brace.label == "報酬遞增"
     assert average_marginal_product_canvas(analysis, theme=theme).spec.y_label == "產量"
 
 
@@ -181,3 +185,38 @@ def test_both_production_canvases_render_to_svg(
         canvas.save(output)
         assert output.stat().st_size > 0
         assert "micro.production" in output.read_text(encoding="utf-8")
+
+
+def _first_numbers(svg: str, element_id: str) -> list[tuple[float, float]]:
+    start = svg.index(f'id="{element_id}"')
+    path = re.search(r' d="([^"]+)"', svg[start:])
+    assert path is not None
+    return [(float(x), float(y)) for x, y in re.findall(r"(-?[\d.]+) (-?[\d.]+)", path.group(1))]
+
+
+@pytest.mark.parametrize("gap", [4.0, 9.0, 0.0])  # type: ignore[untyped-decorator]
+@pytest.mark.parametrize("figure", ["total", "products"])  # type: ignore[untyped-decorator]
+def test_braces_hug_their_regions_by_the_theme_gap(
+    analysis: ProductionAnalysis, tmp_path: Path, gap: float, figure: str
+) -> None:
+    theme = replace(shared_theme("manual"), brace_gap=gap)
+    builder = total_product_canvas if figure == "total" else average_marginal_product_canvas
+    target = tmp_path / "figure.svg"
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")  # no label may be left without a free place
+        builder(analysis, theme=theme).save(target)
+    svg = target.read_text(encoding="utf-8")
+    for kind in ("increasing", "diminishing", "negative"):
+        region = _first_numbers(svg, f"micro.production.region.{kind}")
+        brace = _first_numbers(svg, f"micro.production.region.{kind}.brace")
+        bottom = max(y for _, y in region)
+        assert min(y for _, y in brace) - bottom == pytest.approx(gap, abs=0.01)
+        assert min(x for x, _ in brace) == pytest.approx(min(x for x, _ in region), abs=0.01)
+        assert max(x for x, _ in brace) == pytest.approx(max(x for x, _ in region), abs=0.01)
+
+
+def test_brace_gap_is_a_setting_not_a_literal() -> None:
+    theme = Config.from_dict({"micro": {"brace": {"gap": 7}}}).theme
+    assert theme.brace_gap == 7
+    with pytest.raises(ValueError):
+        Config.from_dict({"micro": {"brace": {"gap": -1}}})
