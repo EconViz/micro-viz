@@ -201,7 +201,7 @@ def test_analysis_samples_every_measure_and_the_minima(cubic: CubicCost) -> None
     assert analysis.minimum_average_variable_cost is not None
     assert analysis.minimum_marginal_cost is not None
     payload = analysis.to_dict()
-    assert payload["cost"]["equation"].startswith("TC(q)")  # type: ignore[index]
+    assert payload["cost"]["equation"].startswith("TC(Q)")  # type: ignore[index]
     assert len(payload["points"]) == 101  # type: ignore[arg-type]
 
 

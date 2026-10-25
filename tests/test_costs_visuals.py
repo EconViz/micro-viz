@@ -175,7 +175,7 @@ def test_titles_texts_and_language_are_arguments(
     assert (canvas.spec.x_label, canvas.spec.y_label) == ("Q", "$")
     theme = Config.from_dict({"base": "manual", "micro": {"language": "zh-TW"}}).theme
     assert theme.language == "zh-TW"
-    assert unit_cost_canvas(cubic, theme=theme).spec.y_label == "c"
+    assert unit_cost_canvas(cubic, theme=theme).spec.y_label == "C"
 
 
 def test_output_symbol_comes_from_the_cost_model() -> None:

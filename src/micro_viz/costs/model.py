@@ -76,6 +76,14 @@ class CostFunction(ABC):
         return value
 
     @abstractmethod
+    def with_unit_tax(self, tax: float) -> CostFunction:
+        """The cost function when each unit carries a per-unit tax ``t``.
+
+        ``VC`` rises by ``t q`` and ``MC`` by ``t``; fixed cost is unchanged. A negative tax is a
+        subsidy.
+        """
+
+    @abstractmethod
     def to_dict(self) -> dict[str, object]:
         """Serialize the parameters with the equation and sign conventions."""
 
@@ -92,7 +100,7 @@ class CubicCost(CostFunction):
     linear: float = 1.0
     quadratic: float = 0.0
     cubic: float = 1.0
-    output_symbol: str = "q"
+    output_symbol: str = "Q"
 
     def __post_init__(self) -> None:
         for name in ("fixed_cost", "linear", "quadratic", "cubic"):
@@ -113,6 +121,16 @@ class CubicCost(CostFunction):
     def marginal_cost(self, output: float) -> float:
         q = self._output(output)
         return self.linear + 2 * self.quadratic * q + 3 * self.cubic * q**2
+
+    def with_unit_tax(self, tax: float) -> CubicCost:
+        """The same cubic with the linear coefficient raised by ``tax``."""
+        return CubicCost(
+            fixed_cost=self.fixed_cost,
+            linear=self.linear + _finite("tax", tax),
+            quadratic=self.quadratic,
+            cubic=self.cubic,
+            output_symbol=self.output_symbol,
+        )
 
     @property
     def minimum_marginal_cost_output(self) -> float:
@@ -206,7 +224,7 @@ class PiecewiseCost(CostFunction):
 
     segments: tuple[CostSegment, ...]
     fixed_cost: float = 0.0
-    output_symbol: str = "q"
+    output_symbol: str = "Q"
 
     def __post_init__(self) -> None:
         segments = tuple(self.segments)
@@ -260,6 +278,20 @@ class PiecewiseCost(CostFunction):
                 return segment.marginal_cost(q - start)
         last = self.segments[-1]
         return last.marginal_cost(last.end - self._starts()[-1])
+
+    def with_unit_tax(self, tax: float) -> PiecewiseCost:
+        """The same segments with every marginal cost raised by ``tax``."""
+        shift = _finite("tax", tax)
+        return PiecewiseCost(
+            tuple(
+                CostSegment(
+                    segment.end, segment.intercept + shift, segment.slope, segment.curvature
+                )
+                for segment in self.segments
+            ),
+            fixed_cost=self.fixed_cost,
+            output_symbol=self.output_symbol,
+        )
 
     def output_at_price(self, price: float) -> float:
         """The output where ``price`` meets MC; it stops at a jump that lies above the price.

@@ -69,13 +69,19 @@ their minima.
 
 ```python
 from micro_viz import (
-    CostSegment, CubicCost, PiecewiseCost, analyze_costs,
-    cost_curves_grid, piecewise_cost_canvas, total_cost_canvas, unit_cost_canvas,
+    CostSegment,
+    CubicCost,
+    PiecewiseCost,
+    analyze_costs,
+    cost_curves_grid,
+    piecewise_cost_canvas,
+    total_cost_canvas,
+    unit_cost_canvas,
 )
 
 cost = CubicCost(fixed_cost=50, linear=36, quadratic=-8, cubic=0.6)
 analysis = analyze_costs(cost, output_range=(1, 11))
-cost_curves_grid(analysis).save("costs.svg")                    # totals above unit costs
+cost_curves_grid(analysis).save("costs.svg")  # totals above unit costs
 unit_cost_canvas(analysis, curves=("mc", "avc")).save("u.svg")  # a subset of the curves
 
 steps = PiecewiseCost((CostSegment(6, 11.4), CostSegment(9, 13.0)))
@@ -154,12 +160,14 @@ draws it. Install the optional extra (`pip install "micro-viz[animation]"`, whic
 ```python
 from micro_viz.animation import save_gif, save_svg
 
-def frame(linear: float):          # the figure's own builder for one parameter value
+
+def frame(linear: float):  # the figure's own builder for one parameter value
     function = ShortRunProductionFunction(linear=linear, quadratic=3, cubic=-0.5)
     result = analyze_production(function, input_range=(0, 6))
     return average_marginal_product_canvas(result, y_range=(-25, 25), x_max=6.6)
 
-save_svg(frame, [4, 6, 8], "products.svg")          # native Animated SVG, curves morph
+
+save_svg(frame, [4, 6, 8], "products.svg")  # native Animated SVG, curves morph
 save_gif(frame, [4, 6, 8], "products.gif", fps=15)  # mosaickit-rendered frames
 ```
 
