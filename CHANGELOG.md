@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Factor markets: derived demand (VMP, MRP), firm hiring, capital adjustment, industry and
+  short-run/long-run input demand, factor-market equilibrium, economic rent and land rent in
+  `micro_viz.factors` and the example `factor_markets.py`.
 - Monopsony and unions: `micro_viz.factors` (`Monopsonist`, `UnionWageSetting`, `TwoSectorLabor`) with
   `competitive_pair_canvas`, `monopsony_canvas`, `monopoly_monopsony_pair_canvas`,
   `supply_elasticity_canvas`, `monopsony_dwl_canvas`, `union_wage_canvas`, `two_sector_labor_canvas` and

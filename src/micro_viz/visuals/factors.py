@@ -7,6 +7,13 @@ from collections.abc import Mapping, Sequence
 from mosaickit import Canvas, CanvasGrid
 
 from micro_viz.factors import (
+    CapitalAdjustment,
+    DerivedDemand,
+    FactorError,
+    FactorMarket,
+    IndustryFactorDemand,
+    InputAdjustment,
+    LandMarket,
     LinearSupply,
     LinearValue,
     Monopsonist,
@@ -20,12 +27,14 @@ from micro_viz.visuals.plane import PANEL, Plane
 
 def segment(intercept: float, slope: float, x_max: float, y_max: float) -> tuple[Point, Point]:
     """The part of ``y = intercept + slope x`` inside ``[0, x_max] x [0, y_max]``."""
-    end = x_max
+    low, high = 0.0, x_max
     if slope > 0:
-        end = min(end, (y_max - intercept) / slope)
+        low = max(low, -intercept / slope)
+        high = min(high, (y_max - intercept) / slope)
     elif slope < 0:
-        end = min(end, -intercept / slope)
-    return (0.0, intercept), (end, intercept + slope * end)
+        low = max(low, (y_max - intercept) / slope)
+        high = min(high, -intercept / slope)
+    return (low, intercept + slope * low), (high, intercept + slope * high)
 
 
 def _plane(
@@ -434,11 +443,488 @@ def two_sector_labor_canvas(
     return CanvasGrid([cells])
 
 
+def _labour(
+    prefix: str,
+    x_max: float,
+    y_max: float,
+    *,
+    theme: PlotTheme | None,
+    labels: Mapping[str, str] | None,
+    title: str | None,
+    margin: float,
+    size: tuple[float, float],
+    dpi: int,
+) -> Plane:
+    return _plane(
+        prefix,
+        "labor",
+        x_max,
+        y_max,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+
+
+def derived_demand_canvas(
+    derived: DerivedDemand,
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """``VMP`` (competitive output market) above ``MRP`` (monopoly output market): both are the
+    marginal product valued at the price, the monopolist's marginal revenue being lower."""
+    vmp = derived.value_of_marginal_product
+    mrp = derived.demand
+    plane = _labour(
+        "factors.derived",
+        vmp.quantity_intercept,
+        vmp.intercept,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    plane.line(
+        segment(vmp.intercept, -vmp.slope, plane.x_max, vmp.intercept),
+        plane.t("factors.labor.curve.vmp"),
+        role="micro.curve.demand",
+        at=0.12,
+    )
+    plane.line(
+        segment(mrp.intercept, -mrp.slope, plane.x_max, vmp.intercept),
+        plane.t("factors.labor.curve.value"),
+        role="micro.curve.marginal_revenue",
+        at=0.12,
+    )
+    return plane.finish()
+
+
+def firm_hiring_canvas(
+    market: FactorMarket,
+    wage: float,
+    lower_wage: float | None = None,
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """A firm facing the flat supply ``W*`` hires where ``MRP = W*``. With ``lower_wage`` the
+    flat supply shifts down (a thin solid line) and hiring moves along the MRP curve."""
+    d = market.demand
+    plane = _labour(
+        "factors.hiring",
+        d.quantity_intercept,
+        d.intercept,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    plane.line(
+        segment(d.intercept, -d.slope, plane.x_max, d.intercept),
+        plane.t("factors.labor.curve.value"),
+        role="micro.curve.demand",
+    )
+    plane.line(((0.0, wage), (plane.x_max, wage)), plane.t("factors.labor.curve.supply"))
+    quantity = market.firm_hiring(wage)
+    plane.point(
+        quantity,
+        wage,
+        xtext=plane.t("factors.labor.mark.q_star"),
+        ytext=plane.t("factors.labor.mark.p_star"),
+    )
+    if lower_wage is not None:
+        plane.thin(
+            ((0.0, lower_wage), (plane.x_max, lower_wage)),
+            plane.t("factors.labor.curve.supply_new"),
+        )
+        plane.point(
+            market.firm_hiring(lower_wage),
+            lower_wage,
+            xtext=plane.t("factors.labor.mark.q_new"),
+            ytext=plane.t("factors.labor.mark.p_new"),
+        )
+        plane.arrow((quantity, wage), (quantity, lower_wage))
+    return plane.finish()
+
+
+def capital_adjustment_canvas(
+    adjustment: CapitalAdjustment,
+    wages: Sequence[float],
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """MRP curves for increasing capital with one hiring point per curve at the matching entry of
+    ``wages`` (a falling wage prompts the firm to add capital), joined by the demand locus."""
+    if len(wages) != len(adjustment.levels):
+        raise FactorError("Need one wage per capital level.")
+    top = adjustment.curve(len(adjustment.levels) - 1)
+    plane = _labour(
+        "factors.capital",
+        top.quantity_intercept,
+        top.intercept,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    points = []
+    for index in range(len(adjustment.levels)):
+        curve = adjustment.curve(index)
+        plane.line(
+            segment(curve.intercept, -curve.slope, plane.x_max, top.intercept),
+            plane.t("factors.labor.curve.mrp_k", index=index + 1),
+            role="micro.curve.demand" if index == 0 else "micro.curve.after",
+        )
+        points.append((adjustment.hiring(index, wages[index]), wages[index]))
+    plane.line(points, plane.t("factors.labor.curve.locus"), role="micro.curve.marginal")
+    for point in points:
+        plane.dot(point)
+    return plane.finish()
+
+
+def industry_factor_demand_canvas(
+    industry: IndustryFactorDemand,
+    anchor_wage: float,
+    *,
+    titles: tuple[str | None, str | None] = (None, None),
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = PANEL,
+    dpi: int = FIGURE_DPI,
+) -> CanvasGrid:
+    """A firm's demand beside the industry's: the dashed-free pair shows the horizontal sum
+    of firm demands (thin) and the steeper industry demand through the same anchor."""
+    firm = industry.firm
+    left = _labour(
+        "factors.industry.firm",
+        firm.quantity_intercept,
+        firm.intercept,
+        theme=theme,
+        labels=labels,
+        title=titles[0],
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    left.line(
+        segment(firm.intercept, -firm.slope, left.x_max, firm.intercept),
+        left.t("factors.labor.curve.firm"),
+        role="micro.curve.demand",
+    )
+    left.point(
+        industry.firm_quantity(anchor_wage),
+        anchor_wage,
+        xtext=left.t("factors.labor.mark.q_firm"),
+        ytext=left.t("factors.labor.mark.p_star"),
+    )
+    reach = industry.summed_quantity(0.0)
+    right = _labour(
+        "factors.industry.market",
+        reach,
+        firm.intercept,
+        theme=theme,
+        labels=labels,
+        title=titles[1],
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    wages = [firm.intercept * i / 40 for i in range(41)]
+    right.thin(
+        [(industry.summed_quantity(w), w) for w in wages],
+        right.t("factors.labor.curve.sum"),
+        at=0.9,
+    )
+    right.line(
+        [(industry.industry_quantity(w, anchor_wage), w) for w in wages],
+        right.t("factors.labor.curve.industry"),
+        role="micro.curve.demand",
+        at=0.15,
+    )
+    right.point(
+        industry.summed_quantity(anchor_wage),
+        anchor_wage,
+        xtext=right.t("factors.labor.mark.q_industry"),
+        ytext=right.t("factors.labor.mark.p_star"),
+    )
+    return CanvasGrid([[left.finish(), right.finish()]])
+
+
+def short_long_run_canvas(
+    adjustment: InputAdjustment,
+    wage_max: float,
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """Short- and long-run input demand through one point, the long run flatter."""
+    plane = _labour(
+        "factors.adjustment",
+        adjustment.anchor_quantity + adjustment.anchor_wage / adjustment.long_slope,
+        wage_max,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    for name, slope in (("short", adjustment.short_slope), ("long", adjustment.long_slope)):
+        intercept = adjustment.anchor_wage + slope * adjustment.anchor_quantity
+        plane.line(
+            segment(intercept, -slope, plane.x_max, wage_max),
+            plane.t(f"factors.labor.curve.{name}"),
+            role="micro.curve.demand" if name == "short" else "micro.curve.marginal",
+        )
+    plane.point(
+        adjustment.anchor_quantity,
+        adjustment.anchor_wage,
+        xtext=plane.t("factors.labor.mark.q_star"),
+        ytext=plane.t("factors.labor.mark.p_star"),
+    )
+    return plane.finish()
+
+
+def market_supply_canvas(
+    market: FactorMarket,
+    *,
+    titles: tuple[str | None, str | None] = (None, None),
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = PANEL,
+    dpi: int = FIGURE_DPI,
+) -> CanvasGrid:
+    """Upward market supply of an input beside the flat supply one firm faces at the market
+    wage."""
+    quantity, wage = market.equilibrium()
+    d, s = market.demand, market.supply
+    cells = []
+    for side, title in zip(("market", "firm"), titles, strict=True):
+        plane = _labour(
+            f"factors.supply.{side}",
+            d.quantity_intercept,
+            d.intercept,
+            theme=theme,
+            labels=labels,
+            title=title,
+            margin=margin,
+            size=size,
+            dpi=dpi,
+        )
+        if side == "market":
+            plane.line(
+                segment(d.intercept, -d.slope, plane.x_max, d.intercept),
+                plane.t("factors.labor.curve.value"),
+                role="micro.curve.demand",
+            )
+            plane.line(
+                segment(s.intercept, s.slope, plane.x_max, d.intercept),
+                plane.t("factors.labor.curve.supply"),
+            )
+            plane.point(
+                quantity,
+                wage,
+                xtext=plane.t("factors.labor.mark.q_star"),
+                ytext=plane.t("factors.labor.mark.p_star"),
+            )
+        else:
+            plane.line(
+                ((0.0, wage), (plane.x_max, wage)), plane.t("factors.labor.curve.supply_firm")
+            )
+            plane.ymark(wage, plane.t("factors.labor.mark.p_star"))
+        cells.append(plane.finish())
+    return CanvasGrid([cells])
+
+
+def factor_equilibrium_canvas(
+    competitive: FactorMarket,
+    monopoly: FactorMarket,
+    *,
+    titles: tuple[str | None, str | None] = (None, None),
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = PANEL,
+    dpi: int = FIGURE_DPI,
+) -> CanvasGrid:
+    """Labour-market equilibrium with a competitive output market (``MRP = VMP``) beside one
+    with a monopoly output market (lower MRP: lower wage and employment)."""
+    top = max(competitive.demand.intercept, monopoly.demand.intercept)
+    reach = max(competitive.demand.quantity_intercept, monopoly.demand.quantity_intercept)
+    cells = []
+    for side, market, title in zip(
+        ("competitive", "monopoly"), (competitive, monopoly), titles, strict=True
+    ):
+        plane = _labour(
+            f"factors.equilibrium.{side}",
+            reach,
+            top,
+            theme=theme,
+            labels=labels,
+            title=title,
+            margin=margin,
+            size=size,
+            dpi=dpi,
+        )
+        d, s = market.demand, market.supply
+        plane.line(
+            segment(d.intercept, -d.slope, plane.x_max, top),
+            plane.t("factors.labor.curve.value"),
+            role="micro.curve.demand",
+        )
+        plane.line(
+            segment(s.intercept, s.slope, plane.x_max, top), plane.t("factors.labor.curve.supply")
+        )
+        quantity, wage = market.equilibrium()
+        plane.point(
+            quantity,
+            wage,
+            xtext=plane.t("factors.labor.mark.q_star"),
+            ytext=plane.t("factors.labor.mark.p_star"),
+        )
+        cells.append(plane.finish())
+    return CanvasGrid([cells])
+
+
+def economic_rent_canvas(
+    market: FactorMarket,
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """Economic rent: the triangle between the market wage and the supply curve up to
+    employment."""
+    d, s = market.demand, market.supply
+    plane = _labour(
+        "factors.rent",
+        d.quantity_intercept,
+        d.intercept,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    quantity, wage = market.equilibrium()
+    plane.area(
+        ((0.0, wage), (quantity, wage), (0.0, s.intercept)),
+        plane.t("factors.region.rent"),
+        shade="mid",
+    )
+    plane.line(
+        segment(d.intercept, -d.slope, plane.x_max, d.intercept),
+        plane.t("factors.labor.curve.value"),
+        role="micro.curve.demand",
+    )
+    plane.line(
+        segment(s.intercept, s.slope, plane.x_max, d.intercept),
+        plane.t("factors.labor.curve.supply"),
+    )
+    plane.point(
+        quantity,
+        wage,
+        xtext=plane.t("factors.labor.mark.q_star"),
+        ytext=plane.t("factors.labor.mark.p_star"),
+    )
+    return plane.finish()
+
+
+def land_rent_canvas(
+    land: LandMarket,
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    margin: float = MARGIN,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """Vertical land supply at ``supply`` with demand setting the rent ``R*``; the whole rectangle
+    under the rent is economic rent."""
+    d = land.demand
+    plane = _plane(
+        "factors.land",
+        "land",
+        d.quantity_intercept,
+        d.intercept,
+        theme=theme,
+        labels=labels,
+        title=title,
+        margin=margin,
+        size=size,
+        dpi=dpi,
+    )
+    rent = land.rent
+    plane.area(
+        ((0.0, rent), (land.supply, rent), (land.supply, 0.0), (0.0, 0.0)),
+        plane.t("factors.region.rent"),
+        shade="mid",
+    )
+    plane.line(
+        segment(d.intercept, -d.slope, plane.x_max, d.intercept),
+        plane.t("factors.land.curve.demand"),
+        role="micro.curve.demand",
+    )
+    plane.line(
+        ((land.supply, 0.0), (land.supply, d.intercept)), plane.t("factors.land.curve.supply")
+    )
+    plane.point(
+        land.supply,
+        rent,
+        xtext=plane.t("factors.land.mark.q_star"),
+        ytext=plane.t("factors.land.mark.p_star"),
+    )
+    return plane.finish()
+
+
 __all__ = [
+    "capital_adjustment_canvas",
     "competitive_pair_canvas",
+    "derived_demand_canvas",
+    "economic_rent_canvas",
+    "factor_equilibrium_canvas",
+    "firm_hiring_canvas",
+    "industry_factor_demand_canvas",
+    "land_rent_canvas",
+    "market_supply_canvas",
     "monopoly_monopsony_pair_canvas",
     "monopsony_canvas",
     "monopsony_dwl_canvas",
+    "short_long_run_canvas",
     "supply_elasticity_canvas",
     "two_sector_labor_canvas",
     "union_wage_canvas",
