@@ -113,6 +113,11 @@ from micro_viz.visuals.production_extras import (
     technology_shift_canvas,
 )
 from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_canvas
+from micro_viz.visuals.vertical import (
+    double_marginalization_canvas,
+    integrated_firm_canvas,
+    transfer_price_outside_market_canvas,
+)
 
 __all__ = [
     "advertising_effect_canvas",
@@ -128,6 +133,7 @@ __all__ = [
     "cost_shift_canvas",
     "derived_demand_canvas",
     "dominant_firm_canvas",
+    "double_marginalization_canvas",
     "economic_rent_canvas",
     "entry_canvas",
     "excess_capacity_grid",
@@ -142,6 +148,7 @@ __all__ = [
     "industry_factor_demand_canvas",
     "industry_supply_canvas",
     "input_price_change_canvas",
+    "integrated_firm_canvas",
     "intertemporal_pricing_canvas",
     "isoquant_map_canvas",
     "kinked_demand_canvas",
@@ -192,6 +199,7 @@ __all__ = [
     "third_degree_canvas",
     "total_cost_canvas",
     "total_product_canvas",
+    "transfer_price_outside_market_canvas",
     "two_part_tariff_canvas",
     "two_sector_labor_canvas",
     "union_wage_canvas",

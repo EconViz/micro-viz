@@ -6,6 +6,9 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Vertical chains: `micro_viz.vertical` (`VerticalChain`, `transfer_pricing`) with
+  `double_marginalization_canvas`, `integrated_firm_canvas`, `transfer_price_outside_market_canvas` and
+  the example `vertical.py`.
 - Advertising decision: `micro_viz.advertising` (`AdvertisingDecision`) with `advertising_effect_canvas` and
   the example `advertising.py`.
 - Production extensions: learning curve, scale versus learning, product transformation curve,
