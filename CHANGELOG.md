@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Cost figures: AVC named at its right end, wider cubic AVC figure (`--avc-reach`), and `cost_curves_panels` so each panel of the cost-curves figure also stands alone.
 - Marginal-return regions: shade is optional (`[micro.region] fill`), can stop at the curve (`extent`), and each region takes its own colour (`region_colors`).
 - Auctions: first- and second-price bid functions, revenue equivalence, and a pooling signal figure (`Auction`, `bid_functions_canvas`, `revenue_equivalence_canvas`, `Signaling.pooling`).
 - Uncertainty, second part: `StateClaims` (insurance with fair and unfair premiums), stochastic

@@ -13,6 +13,7 @@ from micro_viz import (
     PiecewiseCost,
     analyze_costs,
     cost_curves_grid,
+    cost_curves_panels,
     piecewise_cost_canvas,
     shared_theme,
     total_cost_canvas,
@@ -232,3 +233,17 @@ def test_all_cost_figures_render_to_svg(
         figure.save(target)
         assert target.stat().st_size > 0
     assert "micro.cost" in (tmp_path / "total.svg").read_text(encoding="utf-8")
+
+
+def test_panels_stand_alone_with_the_grid_axes(cubic: CostAnalysis) -> None:
+    upper, lower = cost_curves_panels(cubic)
+    grid_upper, grid_lower = (p.canvas for p in cost_curves_grid(cubic).placements)
+    assert upper.spec.x_range == grid_upper.spec.x_range
+    assert lower.spec.y_range == grid_lower.spec.y_range
+    assert "micro.cost.mark.min_atc.output" not in _layers(upper)
+
+
+def test_avc_is_named_at_its_right_end(cubic: CostAnalysis) -> None:
+    layers = _layers(unit_cost_canvas(cubic))
+    label = layers["micro.cost.avc.label"]
+    assert getattr(label, "at", 1.0) == 1.0
