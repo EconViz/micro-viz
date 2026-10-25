@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Natural monopoly: the loss label sits in the free part of the loss rectangle, left of MR, instead of a leader into the curves.
 - Monopolistic competition: the short run is its own figure (`monopolistic_short_run_canvas`, `short_run.svg`) next to `long_run.svg`; the combined `short_and_long_run.svg` is no longer in the example.
 - Monopoly totals name total revenue `TR`; the multiplant dashed level runs unbroken across all panels. `firm_demand_canvas` is removed (it did not show a difference worth a figure).
 - Competition figures: no duplicate `p` in the market panel, dashed guides that lie on a solid line are dropped (their marks stay; `drop_covered_guides`), and industry supply is drawn as the firms' panels beside the industry panel (`industry_supply_panels`).
