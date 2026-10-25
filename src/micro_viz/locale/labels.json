@@ -140,7 +140,19 @@
     "longrun.mc": "MC",
     "longrun.atc": "ATC",
     "longrun.mark.price_lr": "p^*",
-    "longrun.point_names": "ABCDEFGH"
+    "longrun.point_names": "ABCDEFGH",
+    "isocost.axis.cost": "C",
+    "isocost.line": "$C_{{{index}}}$",
+    "isocost.line_after": "$C'_{{{index}}}$",
+    "isocost.mark.labor": "{symbol}^*",
+    "isocost.mark.capital": "{symbol}^*",
+    "isocost.mark.labor_after": "{symbol}'",
+    "isocost.mark.capital_after": "{symbol}'",
+    "isocost.expansion": "Expansion path",
+    "isocost.fixed_capital": "{symbol}_0",
+    "isocost.ltc": "LTC",
+    "isocost.point_names": "ABCDEFGH",
+    "isocost.isoquant_after": "$Q'$"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -283,7 +295,19 @@
     "longrun.mc": "MC",
     "longrun.atc": "ATC",
     "longrun.mark.price_lr": "p^*",
-    "longrun.point_names": "ABCDEFGH"
+    "longrun.point_names": "ABCDEFGH",
+    "isocost.axis.cost": "C",
+    "isocost.line": "$C_{{{index}}}$",
+    "isocost.line_after": "$C'_{{{index}}}$",
+    "isocost.mark.labor": "{symbol}^*",
+    "isocost.mark.capital": "{symbol}^*",
+    "isocost.mark.labor_after": "{symbol}'",
+    "isocost.mark.capital_after": "{symbol}'",
+    "isocost.expansion": "擴張線",
+    "isocost.fixed_capital": "{symbol}_0",
+    "isocost.ltc": "LTC",
+    "isocost.point_names": "ABCDEFGH",
+    "isocost.isoquant_after": "$Q'$"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -426,6 +450,18 @@
     "longrun.mc": "MC",
     "longrun.atc": "ATC",
     "longrun.mark.price_lr": "p^*",
-    "longrun.point_names": "ABCDEFGH"
+    "longrun.point_names": "ABCDEFGH",
+    "isocost.axis.cost": "C",
+    "isocost.line": "$C_{{{index}}}$",
+    "isocost.line_after": "$C'_{{{index}}}$",
+    "isocost.mark.labor": "{symbol}^*",
+    "isocost.mark.capital": "{symbol}^*",
+    "isocost.mark.labor_after": "{symbol}'",
+    "isocost.mark.capital_after": "{symbol}'",
+    "isocost.expansion": "扩张线",
+    "isocost.fixed_capital": "{symbol}_0",
+    "isocost.ltc": "LTC",
+    "isocost.point_names": "ABCDEFGH",
+    "isocost.isoquant_after": "$Q'$"
   }
 }

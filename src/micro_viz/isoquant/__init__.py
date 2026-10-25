@@ -1,5 +1,12 @@
 """Long-run technology: isoquants, MRTS, returns to scale."""
 
+from micro_viz.isoquant.cost import (
+    Bundle,
+    cost_minimizing_bundle,
+    cost_of,
+    expansion_path,
+    isocost_segment,
+)
 from micro_viz.isoquant.model import (
     CobbDouglas,
     FixedProportions,
@@ -11,6 +18,11 @@ from micro_viz.isoquant.model import (
 )
 
 __all__ = [
+    "Bundle",
+    "cost_minimizing_bundle",
+    "cost_of",
+    "expansion_path",
+    "isocost_segment",
     "CobbDouglas",
     "FixedProportions",
     "IsoquantError",
