@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Short-run envelope: SAC curves run across the whole output axis so they cross, SMC can be drawn for several plants (`smc_for` takes indices), tangency outputs are marked (`drops`).
 - Natural monopoly: the loss label sits in the free part of the loss rectangle, left of MR, instead of a leader into the curves.
 - Monopolistic competition: the short run is its own figure (`monopolistic_short_run_canvas`, `short_run.svg`) next to `long_run.svg`; the combined `short_and_long_run.svg` is no longer in the example.
 - Monopoly totals name total revenue `TR`; the multiplant dashed level runs unbroken across all panels. `firm_demand_canvas` is removed (it did not show a difference worth a figure).

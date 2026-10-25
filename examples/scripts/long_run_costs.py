@@ -16,7 +16,7 @@ def long_run_examples(
     family: PlantFamily,
     sizes: tuple[float, ...],
     output_max: float,
-    smc_for: int,
+    smc_for: tuple[int, ...],
     title: str | None = None,
 ) -> list[Path]:
     """Write the long-run cost figures into ``output_dir`` and return their paths."""
@@ -38,13 +38,17 @@ def main() -> None:
     args_parser = parser(__doc__)
     args_parser.add_argument("--efficient-scale", type=float, default=10.0)
     args_parser.add_argument("--minimum-cost", type=float, default=4.0)
-    args_parser.add_argument("--scale-curvature", type=float, default=1.0)
-    args_parser.add_argument("--steepness", type=float, default=0.6)
-    args_parser.add_argument("--sizes", type=float, nargs="+", default=[8.0, 10.0, 12.0])
+    args_parser.add_argument("--scale-curvature", type=float, default=0.15)
+    args_parser.add_argument("--steepness", type=float, default=0.2)
+    args_parser.add_argument("--sizes", type=float, nargs="+", default=[6.0, 10.0, 14.0])
     args_parser.add_argument(
-        "--smc-for", type=int, default=2, help="index of the plant whose SMC is drawn"
+        "--smc-for",
+        type=int,
+        nargs="*",
+        default=[0, 1, 2],
+        help="indices of the plants whose SMC is drawn",
     )
-    args_parser.add_argument("--output-max", type=float, default=18.0)
+    args_parser.add_argument("--output-max", type=float, default=22.0)
     args_parser.add_argument("--title", default=None)
     args = args_parser.parse_args()
     session = Session(args)
@@ -57,7 +61,7 @@ def main() -> None:
             ),
             sizes=tuple(args.sizes),
             output_max=args.output_max,
-            smc_for=args.smc_for,
+            smc_for=tuple(args.smc_for),
             title=args.title,
         )
     finally:

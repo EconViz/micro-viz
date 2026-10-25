@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 
 from mosaickit import Canvas
 
@@ -88,7 +88,9 @@ def plant_family_canvas(
     sizes: Sizes,
     output_max: float,
     *,
-    smc_for: int | None = None,
+    smc_for: int | Sequence[int] | None = None,
+    drops: bool = True,
+    smc_reach: float = 0.3,
     title: str | None = None,
     theme: PlotTheme | None = None,
     labels: Mapping[str, str] | None = None,
@@ -97,9 +99,15 @@ def plant_family_canvas(
     size: tuple[float, float] = FIGURE_SIZE,
     dpi: int = FIGURE_DPI,
 ) -> Canvas:
-    """SAC curves of the plants in ``sizes`` touching LAC, with LAC and LMC; ``smc_for`` (an
-    index into ``sizes``) also draws that plant's SMC, which crosses LMC at the tangency."""
+    """SAC curves of the plants in ``sizes`` touching LAC, with LAC and LMC.
+
+    Each SAC runs across the output axis up to the height of the plot, so neighbouring curves
+    cross. ``smc_for`` (an index, or several, into ``sizes``) also draws those plants' SMC,
+    which cross LMC at the tangency (a piece reaching ``smc_reach`` of the plant size either
+    side of it); ``drops`` marks each tangency output ``Q_i`` on the axis.
+    """
     low = output_max * 0.12
+    chosen = (smc_for,) if isinstance(smc_for, int) else tuple(smc_for or ())
     lac = sample(family.lac, low, output_max, samples)
     lmc = sample(family.lmc, low, output_max, samples)
     ceiling = max(y for _, y in lac)
@@ -119,16 +127,21 @@ def plant_family_canvas(
     for index, plant in enumerate(sizes, start=1):
         points = [
             (q, family.sac(plant, q))
-            for q, _ in sample(lambda x: x, plant * 0.45, min(output_max, plant * 1.65), samples)
+            for q, _ in sample(lambda x: x, low, output_max, samples)
             if family.sac(plant, q) <= ceiling * 1.4
         ]
         plane.thin(points, plane.t("longrun.sac_index", index=index))
         touch = family.tangent_output(plant)
         plane.dot((touch, family.sac(plant, touch)))
-        if smc_for == index - 1:
+        if drops:
+            plane.guide((touch, 0.0), (touch, family.sac(plant, touch)))
+            plane.xmark(touch, plane.t("longrun.mark.output_index", output="Q", index=index))
+        if index - 1 in chosen:
             marginal = [
                 (q, family.smc(plant, q))
-                for q, _ in sample(lambda x: x, plant * 0.6, plant * 1.4, samples)
+                for q, _ in sample(
+                    lambda x: x, touch * (1 - smc_reach), touch * (1 + smc_reach), samples
+                )
                 if family.smc(plant, q) <= ceiling * 1.45
             ]
             plane.thin(marginal, plane.t("longrun.smc_index", index=index), at=0.0)
