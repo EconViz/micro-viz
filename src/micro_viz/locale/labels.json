@@ -88,7 +88,11 @@
     "monopoly.mark.price_after": "p'",
     "monopoly.mark.cost": "C_m",
     "monopoly.mark.marginal": "MC^*",
-    "monopoly.mark.output_after": "{output}'"
+    "monopoly.mark.output_after": "{output}'",
+    "monopolistic.excess_capacity": "Excess capacity",
+    "monopolistic.mark.output_min": "{output}_a",
+    "monopolistic.mark.price_min": "p_a",
+    "monopolistic.demand_long": "D"
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -179,7 +183,11 @@
     "monopoly.mark.price_after": "p'",
     "monopoly.mark.cost": "C_m",
     "monopoly.mark.marginal": "MC^*",
-    "monopoly.mark.output_after": "{output}'"
+    "monopoly.mark.output_after": "{output}'",
+    "monopolistic.excess_capacity": "超額產能",
+    "monopolistic.mark.output_min": "{output}_a",
+    "monopolistic.mark.price_min": "p_a",
+    "monopolistic.demand_long": "D"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -270,6 +278,10 @@
     "monopoly.mark.price_after": "p'",
     "monopoly.mark.cost": "C_m",
     "monopoly.mark.marginal": "MC^*",
-    "monopoly.mark.output_after": "{output}'"
+    "monopoly.mark.output_after": "{output}'",
+    "monopolistic.excess_capacity": "超额产能",
+    "monopolistic.mark.output_min": "{output}_a",
+    "monopolistic.mark.price_min": "p_a",
+    "monopolistic.demand_long": "D"
   }
 }

@@ -252,7 +252,7 @@ def competitive_firm_canvas(
         shade = "mid" if outcome.profit >= 0 else "dark"
         kind = "profit" if outcome.profit >= 0 else "loss"
         low, high = sorted((price, outcome.average_total_cost))
-        if high > low:
+        if high - low > 1e-9 * max(1.0, abs(high)):
             layer_id = f"micro.competition.{kind}"
             start.layers.append(
                 region(_rectangle(0.0, q, low, high), layer_id=layer_id, shade=shade, model=outcome)
@@ -302,7 +302,9 @@ def competitive_firm_canvas(
     if q > 0:
         _output_marks(start, symbol, q, price, mark_id="output")
         _level_mark(start, price, "competition.mark.price", mark_id="price")
-        if outcome.average_total_cost is not None:
+        if outcome.average_total_cost is not None and abs(
+            outcome.average_total_cost - price
+        ) > 1e-9 * max(1.0, price):
             _level_mark(
                 start,
                 outcome.average_total_cost,
