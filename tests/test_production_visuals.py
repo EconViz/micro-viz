@@ -220,3 +220,44 @@ def test_brace_gap_is_a_setting_not_a_literal() -> None:
     assert theme.brace_gap == 7
     with pytest.raises(ValueError):
         Config.from_dict({"micro": {"brace": {"gap": -1}}})
+
+
+def test_region_fill_is_optional_per_theme(analysis: ProductionAnalysis) -> None:
+    base = shared_theme("manual")
+    shaded = _layers(total_product_canvas(analysis, theme=base))
+    bare = _layers(total_product_canvas(analysis, theme=replace(base, region_fill=False)))
+    assert any(".region." in key and not key.endswith("brace") for key in shaded)
+    assert not [key for key, layer in bare.items() if isinstance(layer, FillLayer)]
+    assert [key for key in bare if key.endswith(".brace")]
+
+
+def test_region_shade_can_stop_at_the_curve(analysis: ProductionAnalysis) -> None:
+    base = shared_theme("manual")
+    top = _layers(total_product_canvas(analysis, theme=base))
+    under = _layers(total_product_canvas(analysis, theme=replace(base, region_extent="curve")))
+    key = "micro.production.region.increasing"
+    assert isinstance(top[key], FillLayer) and isinstance(under[key], FillLayer)
+    height = max(y for _, y in top[key].boundary)  # type: ignore[attr-defined]
+    assert max(y for _, y in under[key].boundary) < height  # type: ignore[attr-defined]
+
+
+def test_each_region_takes_its_own_colour(analysis: ProductionAnalysis) -> None:
+    layers = _layers(
+        total_product_canvas(
+            analysis,
+            theme=shared_theme("manual"),
+            region_colors={"increasing": "#336699", "negative": "#993333"},
+        )
+    )
+    fills = {
+        kind: layers[f"micro.production.region.{kind}"].fill  # type: ignore[attr-defined]
+        for kind in ("increasing", "diminishing", "negative")
+    }
+    assert fills["increasing"] is not None and fills["negative"] is not None
+    assert fills["diminishing"] is None
+    assert fills["increasing"] != fills["negative"]
+
+
+def test_region_extent_is_validated() -> None:
+    with pytest.raises(ValueError, match="region_extent"):
+        replace(shared_theme("manual"), region_extent="side")

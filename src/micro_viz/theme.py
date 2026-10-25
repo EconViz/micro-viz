@@ -78,6 +78,8 @@ MARKER_DIAMETER = 6.5
 """Default diameter in points of a marked point (``[micro.marker] diameter``)."""
 REGION_OPACITY = 0.2
 """Default opacity of a shaded region (``[micro.opacity] region``)."""
+REGION_EXTENTS = ("top", "curve")
+"""Where a shaded region ends: the top of the plot or the curve (``[micro.region] extent``)."""
 LABEL_SIZE = 11.0
 """Default size in points of curve, region and point labels."""
 ANNOTATION_SIZE = 10.0
@@ -101,6 +103,10 @@ class PlotTheme:
     marker_diameter: float = MARKER_DIAMETER
     brace_gap: float = BRACE_GAP
     region_opacity: float = REGION_OPACITY
+    # Whether regions are shaded at all, and whether the shade reaches the top of the plot
+    # ("top") or stops at the curve (see REGION_EXTENTS).
+    region_fill: bool = True
+    region_extent: str = "top"
     label_scale: float = 1.0
     # Fonts behave as in every diagram package built on mosaickit: a generic font, files
     # that replace the generic fonts, and a math font.
@@ -114,6 +120,11 @@ class PlotTheme:
 
     def __post_init__(self) -> None:
         validate_language(self.language)
+        if self.region_extent not in REGION_EXTENTS:
+            raise ValueError(
+                f"region_extent must be one of {', '.join(REGION_EXTENTS)}, "
+                f"got {self.region_extent!r}"
+            )
         missing = sorted(set(ELEMENT_ROLES) - set(self.colors))
         if missing:
             raise ValueError(f"colors lacks the elements {', '.join(missing)}")
