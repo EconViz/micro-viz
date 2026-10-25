@@ -6,6 +6,10 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Monopsony and unions: `micro_viz.factors` (`Monopsonist`, `UnionWageSetting`, `TwoSectorLabor`) with
+  `competitive_pair_canvas`, `monopsony_canvas`, `monopoly_monopsony_pair_canvas`,
+  `supply_elasticity_canvas`, `monopsony_dwl_canvas`, `union_wage_canvas`, `two_sector_labor_canvas` and
+  the example `monopsony.py`.
 - Oligopoly: `micro_viz.oligopoly` (`Duopoly`, `cournot`, `stackelberg`, `DifferentiatedDuopoly`,
   `bertrand`) with `residual_demand_canvas`, `reaction_curves_canvas`, `price_reaction_canvas` and the
   example `oligopoly.py`.
