@@ -104,11 +104,11 @@ def main() -> None:
         "--claims",
         type=float,
         nargs=4,
-        default=[100.0, 40.0, 0.25, 0.5],
+        default=[100.0, 40.0, 0.5, 0.3],
         help="good bad p exponent",
     )
     args_parser.add_argument(
-        "--premiums", type=float, nargs=2, default=[0.25, 0.3], help="fair unfair"
+        "--premiums", type=float, nargs=2, default=[0.5, 0.6], help="fair unfair"
     )
     args_parser.add_argument(
         "--lotteries",

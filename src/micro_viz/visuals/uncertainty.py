@@ -311,9 +311,9 @@ def state_claims_canvas(
         points = [p for p in points if 0 <= p[1] <= reach * 1.05]
         name = plane.t("uncertainty.curve.budget", index=index + 1)
         if index == 0:
-            plane.line(points, name, role="micro.curve.marginal", at=0.1)
+            plane.line(points, name, role="micro.curve.marginal", at=0.0)
         else:
-            plane.thin(points, name, at=0.1)
+            plane.thin(points, name, at=0.0)
         c1, c2 = claims.choice(rate)
         level = claims.utility(c1, c2)
         curve = [
@@ -325,7 +325,7 @@ def state_claims_canvas(
             curve,
             plane.t("uncertainty.curve.indifference", index=index + 1),
             role="micro.curve.demand",
-            at=0.9,
+            at=1.0,
         )
         plane.point(c1, c2, name=plane.t("uncertainty.mark.choice", index=index + 1))
     plane.point(

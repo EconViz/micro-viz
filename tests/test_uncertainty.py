@@ -163,3 +163,19 @@ def test_two_asset_frontier() -> None:
     assert mean_variance_frontier_canvas(frontier) is not None
     with pytest.raises(UncertaintyError):
         TwoAssetFrontier(8.0, 10.0, 14.0, 24.0, 1.0)
+
+
+def test_state_claims_labels_find_free_places(tmp_path: Path) -> None:
+    import warnings
+
+    from mosaickit.errors import LayoutWarning
+
+    from micro_viz import StateClaims, shared_theme, state_claims_canvas
+
+    claims = StateClaims(100.0, 40.0, 0.5, 0.3)
+    theme = shared_theme("manual")
+    for rates in ((0.5,), (0.5, 0.6)):
+        canvas = state_claims_canvas(claims, rates, theme=theme)
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", LayoutWarning)
+            canvas.save(tmp_path / f"claims{len(rates)}.svg")
