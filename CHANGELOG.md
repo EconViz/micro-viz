@@ -6,6 +6,11 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- Monopoly: `micro_viz.monopoly` (`Monopolist`, `MultiplantMonopoly`, Lerner index, deadweight
+  loss) with `monopoly_canvas`, `monopoly_dwl_canvas`, `monopoly_tax_canvas`,
+  `monopoly_demand_shift_canvas`, `multiplant_canvas`, `lerner_markup_canvas`,
+  `firm_demand_canvas`, `monopoly_totals_canvas`, `monopoly_totals_grid`, the example
+  `monopoly.py` and the animation `animate_monopoly.py`.
 - Short-run perfect competition: `micro_viz.competition` (firm decision, shutdown and break-even
   prices, firm and industry supply, producer surplus, unit tax) with figure builders
   `competitive_firm_canvas`, `firm_supply_canvas`, `producer_surplus_canvas`,

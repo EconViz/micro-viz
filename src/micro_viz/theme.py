@@ -184,8 +184,11 @@ class PlotTheme:
         diameter = self.marker_diameter
         dot = Marker(color=c["marker"], size=diameter**2, edge_color=c["marker"], edge_width=0)
 
-        def curve(element: str, dash: DashStyle = DashStyle.SOLID) -> StyleBundle:
-            width = self.curve_width if dash == DashStyle.SOLID else self.dashed_width
+        def curve(
+            element: str, dash: DashStyle = DashStyle.SOLID, width: float | None = None
+        ) -> StyleBundle:
+            if width is None:
+                width = self.curve_width if dash == DashStyle.SOLID else self.dashed_width
             return StyleBundle(
                 stroke=Stroke(color=c[element], width=width, dash=dash),
                 text=TextStyle(color=c[element], size=LABEL_SIZE * size),
@@ -211,6 +214,16 @@ class PlotTheme:
             "micro.curve.variable": curve("variable"),
             "micro.curve.fixed": curve("fixed", DashStyle.DASHED),
             "micro.curve.price": curve("price"),
+            "micro.curve.demand": curve("average"),
+            "micro.curve.marginal_revenue": curve("variable"),
+            "micro.curve.after": curve("marginal", width=(self.curve_width + self.guide_width) / 2),
+            "micro.curve.after.demand": curve(
+                "average", width=(self.curve_width + self.guide_width) / 2
+            ),
+            "micro.arrow": StyleBundle(
+                stroke=Stroke(color=c["guide"], width=(self.curve_width + self.guide_width) / 2),
+                text=note,
+            ),
             "micro.curve.average.variable": curve("variable"),
             "micro.curve.average.fixed": curve("fixed", DashStyle.DASHED),
             "micro.guide": StyleBundle(

@@ -15,12 +15,32 @@ from micro_viz.visuals.costs import (
     total_cost_canvas,
     unit_cost_canvas,
 )
+from micro_viz.visuals.monopoly import (
+    firm_demand_canvas,
+    lerner_markup_canvas,
+    monopoly_canvas,
+    monopoly_demand_shift_canvas,
+    monopoly_dwl_canvas,
+    monopoly_tax_canvas,
+    monopoly_totals_canvas,
+    monopoly_totals_grid,
+    multiplant_canvas,
+)
 from micro_viz.visuals.production import (
     average_marginal_product_canvas,
     total_product_canvas,
 )
 
 __all__ = [
+    "firm_demand_canvas",
+    "lerner_markup_canvas",
+    "monopoly_canvas",
+    "monopoly_demand_shift_canvas",
+    "monopoly_dwl_canvas",
+    "monopoly_tax_canvas",
+    "monopoly_totals_canvas",
+    "monopoly_totals_grid",
+    "multiplant_canvas",
     "average_marginal_product_canvas",
     "competitive_firm_canvas",
     "cost_curves_grid",
