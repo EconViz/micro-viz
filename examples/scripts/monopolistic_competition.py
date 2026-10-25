@@ -12,8 +12,8 @@ from micro_viz import (
     PlotTheme,
     analyze_costs,
     excess_capacity_grid,
-    monopolistic_competition_grid,
     monopolistic_long_run_canvas,
+    monopolistic_short_run_canvas,
     solve_monopolistic_competition,
 )
 
@@ -34,7 +34,7 @@ def monopolistic_examples(
     unit = analyze_costs(cost, output_range=(min_output, max_output), samples=samples)
     outcome = solve_monopolistic_competition(demand, cost)
     figures = {
-        "short_and_long_run.svg": monopolistic_competition_grid(outcome, unit, theme=theme),
+        "short_run.svg": monopolistic_short_run_canvas(outcome, unit, theme=theme, title=title),
         "long_run.svg": monopolistic_long_run_canvas(outcome, unit, theme=theme, title=title),
         "excess_capacity.svg": excess_capacity_grid(outcome, unit, theme=theme),
     }

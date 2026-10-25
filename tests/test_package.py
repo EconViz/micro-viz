@@ -210,6 +210,7 @@ def test_public_api_is_explicit() -> None:
         "mixed_bundling_canvas",
         "monopolistic_competition_grid",
         "monopolistic_long_run_canvas",
+        "monopolistic_short_run_canvas",
         "monopoly_canvas",
         "monopoly_demand_shift_canvas",
         "monopoly_dwl_canvas",
