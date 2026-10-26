@@ -1,4 +1,4 @@
-"""Render choice-under-uncertainty figures: utility of income, risk premium and risk-return."""
+"""Render the uncertainty figures: risk, mean-variance choice, state claims, dominance."""
 
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ def uncertainty_examples(
     frontier: TwoAssetFrontier,
     title: str | None = None,
 ) -> list[Path]:
-    """Write the uncertainty figures into ``output_dir`` and return their paths."""
+    """Write the utility, risk, state-claim, dominance and frontier figures into ``output_dir``."""
     output_dir.mkdir(parents=True, exist_ok=True)
     concave, convex, linear = (IncomeUtility(e) for e in exponents)
     steep, shallow = MeanVarianceInvestor(averse), MeanVarianceInvestor(flat)

@@ -23,6 +23,7 @@ from micro_viz.visuals.common import (
     curve,
     curve_name,
     dot,
+    drop_covered_guides,
     drop_line,
     frame_for,
     guide,
@@ -273,7 +274,7 @@ def total_product_canvas(
             function.total_product(result.average_product_max_input),
         )
         layers.append(guide((0.0, 0.0), average_point, layer_id="micro.production.guide.ray"))
-    canvas.extend(nudge_labels(layers, selected.label_nudges))
+    canvas.extend(nudge_labels(drop_covered_guides(layers), selected.label_nudges))
     return canvas
 
 
@@ -395,7 +396,7 @@ def average_marginal_product_canvas(
                 z_index=7,
             )
         )
-    canvas.extend(nudge_labels(layers, selected.label_nudges))
+    canvas.extend(nudge_labels(drop_covered_guides(layers), selected.label_nudges))
     return canvas
 
 

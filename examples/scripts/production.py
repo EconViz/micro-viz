@@ -26,7 +26,10 @@ def production_examples(
     region_colors: dict[str, str] | None = None,
     title: str | None = None,
 ) -> tuple[Path, Path]:
-    """Write the two production examples into ``output_dir`` and return their paths."""
+    """Write the TP and AP/MP figures, shaded to the top and under the curve, into ``output_dir``.
+
+    The two returned paths are the figures shaded to the top.
+    """
     analysis = analyze_production(function, input_range=input_range, samples=samples)
     output_dir.mkdir(parents=True, exist_ok=True)
     total_output = output_dir / "total_product.svg"

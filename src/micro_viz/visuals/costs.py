@@ -20,6 +20,7 @@ from micro_viz.visuals.common import (
     curve,
     curve_name,
     dot,
+    drop_covered_guides,
     drop_line,
     guide,
     new_canvas,
@@ -163,7 +164,7 @@ def total_cost_canvas(
                     layer_id="micro.cost.mark.min_atc.output",
                 )
             )
-    canvas.extend(nudge_labels(layers, selected.label_nudges))
+    canvas.extend(nudge_labels(drop_covered_guides(layers), selected.label_nudges))
     return canvas
 
 
@@ -253,7 +254,7 @@ def unit_cost_canvas(
             )
     if output is not None:
         layers.extend(_output_marks(analysis, chosen, output, texts, symbol))
-    canvas.extend(nudge_labels(layers, selected.label_nudges))
+    canvas.extend(nudge_labels(drop_covered_guides(layers), selected.label_nudges))
     return canvas
 
 
@@ -456,7 +457,7 @@ def piecewise_cost_canvas(
                     layer_id=f"micro.cost.mark.output.{index}",
                 )
             )
-    canvas.extend(nudge_labels(layers, selected.label_nudges))
+    canvas.extend(nudge_labels(drop_covered_guides(layers), selected.label_nudges))
     return canvas
 
 

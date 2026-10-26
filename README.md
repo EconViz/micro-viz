@@ -2,8 +2,10 @@
 
 `micro-viz` is the EconViz package for producer theory, costs, firm behaviour,
 market structure, nonlinear pricing, factor demand, uncertainty, and information
-economics. The first production milestone provides typed short-run TP, AP, and MP
-analysis according to the [roadmap](https://github.com/EconViz/micro-viz/issues/2).
+economics. Version `0.2.0.dev0` is a development release, not on PyPI yet. It covers
+production and costs, competition, monopoly and pricing, oligopoly, inputs and factor
+markets, and uncertainty and information, with 135 example figures. Documentation, with
+every figure and its script, is at <https://econ-viz.org/micro-viz/>.
 
 ## Boundaries
 
@@ -21,12 +23,10 @@ economic results into public MosaicKit layers, and only MosaicKit talks to a bac
 
 ### Dependency boundary
 
-P0 directly depends only on MosaicKit. GlyphKit remains MosaicKit's transitive text layer;
-`micro-viz` does not declare it separately. BezierKit becomes a direct dependency only when an
-isoquant, implicit-path, or TikZ milestone consumes its public geometry API. KineticKit remains
-absent until `micro-viz` exposes animation publicly; that milestone should add the optional
-`kinetickit[raster]` extra following `utility-viz`. This keeps each dependency tied to an actual
-public capability instead of installing the whole lower-level stack in advance.
+`micro-viz` depends only on MosaicKit (`mosaickit>=1.0.0rc9,<2.0.0`); GlyphKit stays
+MosaicKit's transitive text layer. BezierKit becomes a direct dependency only when a figure
+consumes its public geometry API. KineticKit is optional: the `animation` extra adds
+`kinetickit[raster]`, and static figures never import it.
 
 ## Short-run production
 
@@ -96,8 +96,11 @@ gives the output a price band selects.
 
 `micro-viz` requires Python 3.10 or later.
 
+`micro-viz` is not on PyPI yet. Install the development version from GitHub; MosaicKit
+1.0.0rc9 is a pre-release, so allow pre-releases until 1.0 is published.
+
 ```bash
-uv add micro-viz
+uv add --prerelease allow "micro-viz @ git+https://github.com/EconViz/micro-viz"
 ```
 
 For a source checkout:
@@ -149,7 +152,9 @@ region = 0.2              # opacity of shaded regions
 top = "2pt"
 ```
 
-Single labels of single figures are moved with `[figure.<file>.label."<layer id>"]`.
+Single labels of single figures are moved with `[figure.<file>.label."<layer id>"]`. Shaded
+regions are set with `[micro.region]` (`fill`, `extent`). A dashed guide that lies on a solid
+straight curve is dropped by every builder (`drop_covered_guides`); its mark stays.
 
 ## Animation
 
@@ -187,9 +192,11 @@ follows, and scan the source for colour literals, font names and absolute paths.
 
 ## Examples
 
-Bundled examples use the black-and-white `manual` look (`examples/econ-viz.toml`: TeX Gyre
-Pagella text and math, white background). Generated SVG files stay under `examples/output/`
-and are ignored by Git.
+There is one script per topic in `examples/scripts/` (production, costs, competition,
+monopoly, oligopoly, factor markets, uncertainty, information and more). They use the
+black-and-white `manual` look (`examples/econ-viz.toml`: TeX Gyre Pagella text and math, white
+background); `econ-viz.zh-TW.toml` and `econ-viz.zh-CN.toml` draw the Chinese editions. Generated
+SVG files stay under `examples/output/` and are ignored by Git.
 
 ```bash
 uv run python examples/scripts/production.py

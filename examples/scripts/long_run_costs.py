@@ -29,7 +29,7 @@ def long_run_examples(
     envelope_ceiling: float,
     title: str | None = None,
 ) -> list[Path]:
-    """Write the long-run cost figures into ``output_dir`` and return their paths."""
+    """Write the LAC and LMC, envelope and plant-family figures into ``output_dir``."""
     output_dir.mkdir(parents=True, exist_ok=True)
     figures = {
         "lac_lmc.svg": lac_lmc_canvas(family, output_max, theme=theme, title=title),
