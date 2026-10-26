@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- A test fails when any file under `src/` is longer than 450 lines.
 - Cost and production builders drop dashed guides that lie on a solid straight curve, like the plane and competition builders (`drop_covered_guides`); README and three example docstrings brought up to date.
 - Short-run envelope redrawn after the textbook figure: `EnvelopeFigure` (LAC, SAC1 to SAC3, SMC pieces from tangency and lowest-point outputs) and `envelope_figure_canvas`, wide axes, points A and B, dashed levels and drops `Q_0` to `Q_3`; the plant-family version is `plant_family.svg`.
 - State-claims figures: wider-spread defaults (loss probability 0.5, premiums 0.5 and 0.6, exponent 0.3), budget lines named at their upper-left ends and indifference curves at their lower-right ends; a test renders both figures with layout warnings as errors.
@@ -89,6 +90,7 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
+- Source files above 450 lines are split into packages of small modules (`visuals.competition`, `visuals.factors`, `visuals.monopoly`, `visuals.costs`, `animation.depict`); the package root imports through two private modules. Every import path and name is unchanged, and all example figures render identically (#74).
 - Curves after a change and movement arrows are thin and solid (1.5 pt and 1.2 pt against 3.5 pt
   for main curves), set by `[micro.stroke] after` and `arrow`.
 - Variable names are uppercase italic except the price `p` (`Q`, `C`).
