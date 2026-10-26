@@ -52,7 +52,7 @@ def test_direct_form_of_a_curve_is_inverted() -> None:
     assert demand.intercept == pytest.approx(math.sqrt(10))
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore[untyped-decorator]
     "formula",
     ["100 - Q", "X = 100 - Q", "P = 100 - Z", "P = 100 + Q", "P = -5 - Q", "P = 100 - Q + Q^2"],
 )
