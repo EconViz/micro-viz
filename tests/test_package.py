@@ -45,6 +45,8 @@ def test_public_api_is_explicit() -> None:
         "CostSegment",
         "CournotEquilibrium",
         "CubicCost",
+        "Demand",
+        "DemandError",
         "DerivedDemand",
         "DifferentiatedDuopoly",
         "DiscriminationError",

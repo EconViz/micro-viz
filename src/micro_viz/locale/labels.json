@@ -482,7 +482,16 @@
     "cost.error.table_decreasing": "Total cost in a table cannot fall as output rises.",
     "cost.error.mc_not_positive": "Marginal cost is not positive for {symbol} between {low:.4g} and {high:.4g} (MC = {mc:.4g} at {symbol} = {at:.4g}). Choose another output range or other coefficients.",
     "cost.error.unbounded": "At price {price:g} the firm would produce without limit, because marginal cost stays below the price.",
-    "cost.warning.no_fixed": "No fixed cost was given, so FC = 0. Pass fixed= to set it."
+    "cost.warning.no_fixed": "No fixed cost was given, so FC = 0. Pass fixed= to set it.",
+    "demand.error.no_head": "Start the demand formula with P = or Q =, for example P = 100 - Q or Q = 50 - P/2.",
+    "demand.error.bad_head": "A demand formula defines P or Q, not {name}.",
+    "demand.error.variable": "In {head} = ..., use {expected} on the right-hand side, not {names}.",
+    "demand.error.upward": "Demand must slope down: price falls as quantity rises. This formula slopes up or is flat.",
+    "demand.error.intercept": "Price must start above zero: at zero quantity this demand gives a price of {value:g}.",
+    "demand.error.not_downward": "Demand slopes up for quantity between {low:.4g} and {high:.4g}: price must fall as quantity rises. Check the formula.",
+    "demand.error.no_reach": "This demand never reaches a zero price at a finite quantity. Use a formula that does, such as P = 100 - Q^2.",
+    "demand.error.undefined": "The demand formula is not defined at zero quantity or zero price.",
+    "demand.error.needs_linear": "This model needs a straight-line demand, P = a - bQ."
   },
   "zh-TW": {
     "production.tp": "TP",
@@ -967,7 +976,16 @@
     "cost.error.table_decreasing": "表中的總成本不能隨產量增加而下降。",
     "cost.error.mc_not_positive": "{symbol} 在 {low:.4g} 到 {high:.4g} 之間邊際成本不是正的（{symbol} = {at:.4g} 時 MC = {mc:.4g}）。請換一個產量範圍或其他係數。",
     "cost.error.unbounded": "價格為 {price:g} 時，廠商會無限制地生產，因為邊際成本一直低於價格。",
-    "cost.warning.no_fixed": "沒有給固定成本，所以 FC = 0。要設定請傳入 fixed=。"
+    "cost.warning.no_fixed": "沒有給固定成本，所以 FC = 0。要設定請傳入 fixed=。",
+    "demand.error.no_head": "需求公式要以 P = 或 Q = 開頭，例如 P = 100 - Q 或 Q = 50 - P/2。",
+    "demand.error.bad_head": "需求公式只能定義 P 或 Q，不能是 {name}。",
+    "demand.error.variable": "在 {head} = ... 中，右邊要用 {expected}，不能用 {names}。",
+    "demand.error.upward": "需求必須向右下傾斜：數量增加時價格下降。這個公式向右上傾斜或是水平的。",
+    "demand.error.intercept": "價格必須從大於零開始：數量為零時，這條需求的價格是 {value:g}。",
+    "demand.error.not_downward": "數量在 {low:.4g} 到 {high:.4g} 之間時需求向右上傾斜：數量增加時價格必須下降。請檢查公式。",
+    "demand.error.no_reach": "這條需求在有限的數量下不會降到價格為零。請改用會降到零的公式，例如 P = 100 - Q^2。",
+    "demand.error.undefined": "需求公式在數量為零或價格為零時沒有定義。",
+    "demand.error.needs_linear": "這個模型需要直線需求 P = a - bQ。"
   },
   "zh-CN": {
     "production.tp": "TP",
@@ -1452,6 +1470,15 @@
     "cost.error.table_decreasing": "表中的总成本不能随产量增加而下降。",
     "cost.error.mc_not_positive": "{symbol} 在 {low:.4g} 到 {high:.4g} 之间边际成本不是正的（{symbol} = {at:.4g} 时 MC = {mc:.4g}）。请换一个产量范围或其他系数。",
     "cost.error.unbounded": "价格为 {price:g} 时，厂商会无限制地生产，因为边际成本一直低于价格。",
-    "cost.warning.no_fixed": "没有给固定成本，所以 FC = 0。要设置请传入 fixed=。"
+    "cost.warning.no_fixed": "没有给固定成本，所以 FC = 0。要设置请传入 fixed=。",
+    "demand.error.no_head": "需求公式要以 P = 或 Q = 开头，例如 P = 100 - Q 或 Q = 50 - P/2。",
+    "demand.error.bad_head": "需求公式只能定义 P 或 Q，不能是 {name}。",
+    "demand.error.variable": "在 {head} = ... 中，右边要用 {expected}，不能用 {names}。",
+    "demand.error.upward": "需求必须向右下倾斜：数量增加时价格下降。这个公式向右上倾斜或是水平的。",
+    "demand.error.intercept": "价格必须从大于零开始：数量为零时，这条需求的价格是 {value:g}。",
+    "demand.error.not_downward": "数量在 {low:.4g} 到 {high:.4g} 之间时需求向右上倾斜：数量增加时价格必须下降。请检查公式。",
+    "demand.error.no_reach": "这条需求在有限的数量下不会降到价格为零。请改用会降到零的公式，例如 P = 100 - Q^2。",
+    "demand.error.undefined": "需求公式在数量为零或价格为零时没有定义。",
+    "demand.error.needs_linear": "这个模型需要直线需求 P = a - bQ。"
   }
 }

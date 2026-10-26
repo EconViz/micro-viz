@@ -53,6 +53,7 @@ from micro_viz.costs import (
     PiecewiseCost,
     analyze_costs,
 )
+from micro_viz.demand import Demand, DemandError
 from micro_viz.discrimination import (
     Block,
     BlockPricing,
@@ -233,6 +234,8 @@ __all__ = [
     "CostSegment",
     "CournotEquilibrium",
     "CubicCost",
+    "Demand",
+    "DemandError",
     "DerivedDemand",
     "DifferentiatedDuopoly",
     "DiscriminationError",

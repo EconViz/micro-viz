@@ -13,6 +13,7 @@ from dataclasses import dataclass
 
 from micro_viz.competition import CompetitionError, LinearDemand
 from micro_viz.costs import CostFunction
+from micro_viz.demand import linear_demand
 from micro_viz.monopoly import Monopolist, MonopolyOutcome, marginal_revenue
 
 STEPS = 4000
@@ -104,7 +105,7 @@ def natural_monopoly_pricing(firm: Monopolist) -> NaturalMonopolyPricing:
             mc_q = q
             break
     return NaturalMonopolyPricing(
-        demand=demand,
+        demand=linear_demand(demand),
         cost=cost,
         unregulated=PricingPoint(unregulated.quantity, unregulated.price, unregulated.profit),
         marginal_cost=point(mc_q),

@@ -11,7 +11,7 @@ from mosaickit import (
 )
 
 from micro_viz.costs import CostAnalysis
-from micro_viz.monopoly import MonopolyOutcome
+from micro_viz.monopoly import MonopolyOutcome, marginal_revenue
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import (
     FIGURE_DPI,
@@ -99,7 +99,7 @@ def monopoly_canvas(
         first, second = lost_profit
         for name, low, high in (("lower", first, q), ("upper", q, second)):
             mr = [
-                (x, outcome.demand.intercept - 2 * outcome.demand.slope * x)
+                (x, marginal_revenue(outcome.demand, x))
                 for x in (low + (high - low) * i / 20 for i in range(21))
             ]
             layer_id = f"{_PREFIX}.lost_profit.{name}"
