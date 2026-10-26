@@ -42,9 +42,10 @@ def elasticity(demand: DemandLike, quantity: float) -> float:
 
 
 def _bisect(function, low: float, high: float) -> float:  # type: ignore[no-untyped-def]
+    above = function(low) > 0  # the sign at ``low`` only changes when ``low`` moves, and then stays
     for _ in range(80):
         middle = (low + high) / 2
-        if (function(low) > 0) == (function(middle) > 0):
+        if above == (function(middle) > 0):
             low = middle
         else:
             high = middle
@@ -54,11 +55,16 @@ def _bisect(function, low: float, high: float) -> float:  # type: ignore[no-unty
 def _roots(function, high: float) -> list[float]:  # type: ignore[no-untyped-def]
     """Sign changes of ``function`` on ``(0, high)``."""
     grid = [high * index / STEPS for index in range(STEPS + 1)]
-    return [
-        _bisect(function, left, right)
-        for left, right in zip(grid, grid[1:], strict=False)
-        if function(left) > 0 >= function(right)
-    ]
+    roots: list[float] = []
+    value = function(grid[0])
+    for index in range(STEPS):
+        # every grid point closes one cell and opens the next, so it is evaluated once
+        last = index + 1 == STEPS
+        following = value if last and value <= 0 else function(grid[index + 1])
+        if value > 0 >= following:
+            roots.append(_bisect(function, grid[index], grid[index + 1]))
+        value = following
+    return roots
 
 
 @dataclass(frozen=True, slots=True)

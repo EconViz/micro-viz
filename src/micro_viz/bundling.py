@@ -157,6 +157,39 @@ def evaluate_offer(profile: ValuationProfile, offer: Offer) -> BundlingOutcome:
     return BundlingOutcome(offer, picks, revenue, cost)
 
 
+def _profit(profile: ValuationProfile, offer: Offer) -> float:
+    """``evaluate_offer(profile, offer).profit`` without building the outcome.
+
+    The same surpluses, tie rule (none, good 1, good 2, bundle; a later package must beat the
+    best by more than ``1e-12``) and summation order as :func:`choice` and
+    :func:`evaluate_offer`, so the value is identical; the search below calls it tens of
+    thousands of times. The package weights are 0 or 1, so a surplus is ``r1 - P1``,
+    ``r2 - P2`` or ``(r1 + r2) - P_B`` exactly, and a package costs ``c1``, ``c2`` or ``c1 + c2``.
+    """
+    p1, p2, pb = offer.price_1, offer.price_2, offer.price_bundle
+    c1, c2 = profile.cost_1, profile.cost_2
+    cb = 1.0 * c1 + 1.0 * c2
+    revenue: list[float] = []
+    cost: list[float] = []
+    for r1, r2 in profile.points:
+        price, served, surplus = 0.0, 0.0, 0.0
+        if p1 is not None:
+            gain = r1 - p1
+            if gain > surplus + 1e-12:
+                price, served, surplus = p1, c1, gain
+        if p2 is not None:
+            gain = r2 - p2
+            if gain > surplus + 1e-12:
+                price, served, surplus = p2, c2, gain
+        if pb is not None:
+            gain = r1 + r2 - pb
+            if gain > surplus + 1e-12:
+                price, served, surplus = pb, cb, gain
+        revenue.append(price)
+        cost.append(served)
+    return sum(revenue) - sum(cost)
+
+
 def _grid(values: Sequence[float], floor: float) -> list[float]:
     found = sorted({max(v, floor) for v in values})
     if len(found) > CANDIDATES:
@@ -167,27 +200,31 @@ def _grid(values: Sequence[float], floor: float) -> list[float]:
 
 def best_separate(profile: ValuationProfile) -> BundlingOutcome:
     """The profit-maximising ``(P1, P2)``; each good is priced alone, so the search is separable."""
-    best: BundlingOutcome | None = None
+    best: Offer | None = None
+    best_profit = 0.0
     for p1, p2 in product(
         _grid([r[0] for r in profile.points], profile.cost_1),
         _grid([r[1] for r in profile.points], profile.cost_2),
     ):
-        outcome = evaluate_offer(profile, Offer.separate(p1, p2))
-        if best is None or outcome.profit > best.profit:
-            best = outcome
+        offer = Offer.separate(p1, p2)
+        profit = _profit(profile, offer)
+        if best is None or profit > best_profit:
+            best, best_profit = offer, profit
     assert best is not None
-    return best
+    return evaluate_offer(profile, best)
 
 
 def best_pure(profile: ValuationProfile) -> BundlingOutcome:
     """The profit-maximising bundle price."""
-    best: BundlingOutcome | None = None
+    best: Offer | None = None
+    best_profit = 0.0
     for price in _grid([sum(r) for r in profile.points], profile.cost_1 + profile.cost_2):
-        outcome = evaluate_offer(profile, Offer.pure(price))
-        if best is None or outcome.profit > best.profit:
-            best = outcome
+        offer = Offer.pure(price)
+        profit = _profit(profile, offer)
+        if best is None or profit > best_profit:
+            best, best_profit = offer, profit
     assert best is not None
-    return best
+    return evaluate_offer(profile, best)
 
 
 def best_mixed(profile: ValuationProfile) -> BundlingOutcome:
@@ -195,15 +232,18 @@ def best_mixed(profile: ValuationProfile) -> BundlingOutcome:
     bundling nests separate selling (``P_B = P1 + P2``) and pure bundling (``P1, P2`` very high),
     so its profit is never below either."""
     top = max(best_separate(profile), best_pure(profile), key=lambda o: o.profit)
+    top_profit = top.profit
+    best: Offer | None = None
     for p1, p2, pb in product(
         _grid([r[0] for r in profile.points], profile.cost_1),
         _grid([r[1] for r in profile.points], profile.cost_2),
         _grid([sum(r) for r in profile.points], profile.cost_1 + profile.cost_2),
     ):
-        outcome = evaluate_offer(profile, Offer.mixed(p1, p2, pb))
-        if outcome.profit > top.profit:
-            top = outcome
-    return top
+        offer = Offer.mixed(p1, p2, pb)
+        profit = _profit(profile, offer)
+        if profit > top_profit:
+            best, top_profit = offer, profit
+    return top if best is None else evaluate_offer(profile, best)
 
 
 def _clip(polygon: list[Point], a: float, b: float, c: float) -> list[Point]:
