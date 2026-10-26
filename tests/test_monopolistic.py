@@ -73,8 +73,14 @@ def test_builders_return_figures() -> None:
     assert any(layer.id.endswith("brace.excess") for layer in canvas.snapshot().layers)
 
 
-@pytest.mark.parametrize("script", ["monopolistic_competition", "animate_monopolistic"])  # type: ignore[untyped-decorator]
-def test_examples_run(tmp_path: Path, script: str) -> None:
+@pytest.mark.parametrize(  # type: ignore[untyped-decorator]
+    ("topic", "script"),
+    [
+        ("monopolistic_competition", "monopolistic_competition"),
+        ("animation", "animate_monopolistic"),
+    ],
+)
+def test_examples_run(tmp_path: Path, topic: str, script: str) -> None:
     if script.startswith("animate"):
         pytest.importorskip("kinetickit")
     config = tmp_path / "econ-viz.toml"
@@ -82,7 +88,7 @@ def test_examples_run(tmp_path: Path, script: str) -> None:
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / f"{script}.py"),
+            str(ROOT / "examples" / "scripts" / topic / f"{script}.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",
@@ -93,7 +99,7 @@ def test_examples_run(tmp_path: Path, script: str) -> None:
         if script.startswith("animate")
         else [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / f"{script}.py"),
+            str(ROOT / "examples" / "scripts" / topic / f"{script}.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",

@@ -81,7 +81,7 @@ def test_example_runs(tmp_path: Path) -> None:
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / "dominant_firm.py"),
+            str(ROOT / "examples" / "scripts" / "oligopoly" / "dominant_firm.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",

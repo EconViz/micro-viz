@@ -94,7 +94,7 @@ def test_example_writes_figures(tmp_path: Path) -> None:
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / "isoquants.py"),
+            str(ROOT / "examples" / "scripts" / "isoquants" / "isoquants.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",

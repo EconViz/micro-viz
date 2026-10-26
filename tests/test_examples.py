@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 REPOSITORY_ROOT = Path(__file__).parents[1]
-PRODUCTION_SCRIPT = REPOSITORY_ROOT / "examples" / "scripts" / "production.py"
+PRODUCTION_SCRIPT = REPOSITORY_ROOT / "examples" / "scripts" / "production" / "production.py"
 
 
 PLAIN_CONFIG = 'base = "manual"\n'
@@ -89,7 +89,7 @@ def test_bundled_chinese_settings_draw_built_in_text(tmp_path: Path, language: s
 def test_animation_example_writes_an_animated_svg(tmp_path: Path) -> None:
     pytest.importorskip("kinetickit")
     config = _plain_config(tmp_path / "config")
-    script = REPOSITORY_ROOT / "examples" / "scripts" / "animate_production.py"
+    script = REPOSITORY_ROOT / "examples" / "scripts" / "animation" / "animate_production.py"
     subprocess.run(
         [
             sys.executable,
@@ -135,21 +135,21 @@ def _script(name: str, tmp_path: Path, *arguments: str) -> Path:
 
 
 def test_cost_example_writes_the_four_cost_figures_and_follows_parameters(tmp_path: Path) -> None:
-    out = _script("costs.py", tmp_path / "a")
+    out = _script("costs/costs.py", tmp_path / "a")
     names = ("total_cost", "unit_cost", "cubic_avc_mc", "cost_curves")
     first = {name: (out / f"{name}.svg").read_text(encoding="utf-8") for name in names}
     assert all("micro.cost" in text for text in first.values())
-    changed = _script("costs.py", tmp_path / "b", "--fixed", "80", "--title", "Own title")
+    changed = _script("costs/costs.py", tmp_path / "b", "--fixed", "80", "--title", "Own title")
     assert (changed / "unit_cost.svg").read_text(encoding="utf-8") != first["unit_cost"]
 
 
 def test_piecewise_cost_example_accepts_segments_and_prices(tmp_path: Path) -> None:
-    out = _script("piecewise_costs.py", tmp_path / "a")
+    out = _script("costs/piecewise_costs.py", tmp_path / "a")
     base = (out / "stepped_cost_prices.svg").read_text(encoding="utf-8")
     assert "micro.cost.point.output.1" in base
     assert "micro.cost.mc" in (out / "kinked_marginal_cost.svg").read_text(encoding="utf-8")
     changed = _script(
-        "piecewise_costs.py",
+        "costs/piecewise_costs.py",
         tmp_path / "b",
         "--stepped",
         "4:5 8:9",
@@ -163,20 +163,19 @@ def test_piecewise_cost_example_accepts_segments_and_prices(tmp_path: Path) -> N
 
 def test_cost_animation_example_writes_both_animated_svgs(tmp_path: Path) -> None:
     pytest.importorskip("kinetickit")
-    out = _script("animate_costs.py", tmp_path, "--steps", "3")
+    out = _script("animation/animate_costs.py", tmp_path, "--steps", "3")
     for name in ("unit_cost_output", "stepped_cost_price"):
         svg = (out / f"{name}_animated.svg").read_text(encoding="utf-8")
         assert "<animate" in svg
 
 
-def test_every_script_has_a_topic_folder(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.syspath_prepend(str(PRODUCTION_SCRIPT.parent))
+def test_every_script_sits_in_a_topic_folder(monkeypatch: pytest.MonkeyPatch) -> None:
+    scripts = REPOSITORY_ROOT / "examples" / "scripts"
+    monkeypatch.syspath_prepend(str(scripts))
     import common
 
-    scripts = {path.stem for path in PRODUCTION_SCRIPT.parent.glob("*.py")} - {"common"}
-    assert scripts == set(common.TOPIC_OF_SCRIPT)
-    assert common.default_output_dir("pricing_unknown").parent == common.DEFAULT_OUTPUT
-    for script in scripts:
-        folder = common.default_output_dir(script)
-        assert folder.parent == common.DEFAULT_OUTPUT
-        assert folder.name == common.TOPIC_OF_SCRIPT[script]
+    found = sorted(scripts.glob("*/*.py"))
+    assert found
+    assert not sorted(set(scripts.glob("*.py")) - {scripts / "common.py"})
+    for path in found:
+        assert common.default_output_dir(path) == common.DEFAULT_OUTPUT / path.parent.name

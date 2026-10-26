@@ -78,7 +78,7 @@ def test_example_runs(tmp_path: Path) -> None:
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / "vertical.py"),
+            str(ROOT / "examples" / "scripts" / "vertical" / "vertical.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",

@@ -6,13 +6,13 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
-- Examples write to `examples/output/<topic>/` (one folder per topic, table `OUTPUT_TOPICS` in `examples/scripts/common.py`) instead of one flat folder, as in utility-viz; an explicit `--output-dir` is used as given.
+- Example scripts are grouped in `examples/scripts/<topic>/` and write to `examples/output/<topic>/` (the folder of the script names the topic) instead of one flat folder, as in utility-viz; an explicit `--output-dir` is used as given.
 
 ### Added
 
 - Formula input for demand and the monopolist: `Demand("P = 100 - Q")` or `Demand("Q = 50 - P/2")` (straight or nonlinear, exact marginal revenue and elasticity, `DemandError` for upward or ill-defined curves); `Monopolist("P = 100 - Q", "TC = 200 + 20Q")` takes formulas or objects, and the single-price monopoly figures draw a nonlinear demand and its MR. Straight-line formulas become the older `LinearDemand`, so existing figures are unchanged.
 - A test fails when any file under `src/` is longer than 450 lines.
-- Formula input for costs: `Cost("TC = 200 + 120Q - 18Q^2 + Q^3")` (also `VC`, `MC`, `ATC`, `AVC` forms, `Cost.polynomial`, `Cost.from_table`) with exact and numeric minima, `shutdown_price()` and `breakeven_price()`, checks on the fixed cost and on marginal cost over the plotted range, and `cost_curves(cost, output=(1, 16))` for the unit-cost figure in one step; `total_cost_canvas`, `unit_cost_canvas`, `cost_curves_panels` and `cost_curves_grid` accept a `Cost` or a formula with `output_range=`. The formula parser is a self-contained subpackage, `micro_viz.expr` (own parser and exact derivatives and integrals, no `eval`, grammar and error texts supplied through a registry and the locale tables, a contract test keeps it detachable). `examples/scripts/costs.py` and `animate_costs.py` now default to FC=200, b=120, c=-18, d=1 over output 1 to 16.
+- Formula input for costs: `Cost("TC = 200 + 120Q - 18Q^2 + Q^3")` (also `VC`, `MC`, `ATC`, `AVC` forms, `Cost.polynomial`, `Cost.from_table`) with exact and numeric minima, `shutdown_price()` and `breakeven_price()`, checks on the fixed cost and on marginal cost over the plotted range, and `cost_curves(cost, output=(1, 16))` for the unit-cost figure in one step; `total_cost_canvas`, `unit_cost_canvas`, `cost_curves_panels` and `cost_curves_grid` accept a `Cost` or a formula with `output_range=`. The formula parser is a self-contained subpackage, `micro_viz.expr` (own parser and exact derivatives and integrals, no `eval`, grammar and error texts supplied through a registry and the locale tables, a contract test keeps it detachable). `examples/scripts/costs/costs.py` and `animate_costs.py` now default to FC=200, b=120, c=-18, d=1 over output 1 to 16.
 - Cost and production builders drop dashed guides that lie on a solid straight curve, like the plane and competition builders (`drop_covered_guides`); README and three example docstrings brought up to date.
 - Short-run envelope redrawn after the textbook figure: `EnvelopeFigure` (LAC, SAC1 to SAC3, SMC pieces from tangency and lowest-point outputs) and `envelope_figure_canvas`, wide axes, points A and B, dashed levels and drops `Q_0` to `Q_3`; the plant-family version is `plant_family.svg`.
 - State-claims figures: wider-spread defaults (loss probability 0.5, premiums 0.5 and 0.6, exponent 0.3), budget lines named at their upper-left ends and indifference curves at their lower-right ends; a test renders both figures with layout warnings as errors.
@@ -92,7 +92,7 @@ All notable changes to this project are documented in this file.
   prices, firm and industry supply, producer surplus, unit tax) with figure builders
   `competitive_firm_canvas`, `firm_supply_canvas`, `producer_surplus_canvas`,
   `cost_shift_canvas`, `revenue_cost_profit_canvas`, `industry_supply_canvas`,
-  `market_and_firm_canvas` and `examples/scripts/competition.py`.
+  `market_and_firm_canvas` and `examples/scripts/competition/competition.py`.
 
 ### Changed
 
