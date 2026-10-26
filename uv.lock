@@ -1201,7 +1201,7 @@ wheels = [
 
 [[package]]
 name = "micro-viz"
-version = "0.2.0.dev0"
+version = "1.0.0b1"
 source = { editable = "." }
 dependencies = [
     { name = "mosaickit" },

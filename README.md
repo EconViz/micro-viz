@@ -2,7 +2,7 @@
 
 `micro-viz` is the EconViz package for producer theory, costs, firm behaviour,
 market structure, nonlinear pricing, factor demand, uncertainty, and information
-economics. Version `0.2.0.dev0` is a development release, not on PyPI yet. It covers
+economics. Version `1.0.0b1` is the first public beta. It covers
 production and costs, competition, monopoly and pricing, oligopoly, inputs and factor
 markets, and uncertainty and information, with 135 example figures. Documentation, with
 every figure and its script, is at <https://econ-viz.org/micro-viz/>.
@@ -118,11 +118,11 @@ gives the output a price band selects.
 
 `micro-viz` requires Python 3.10 or later.
 
-`micro-viz` is not on PyPI yet. Install the development version from GitHub; MosaicKit
-1.0.0rc16 is a pre-release, so allow pre-releases until 1.0 is published.
+Install the beta from PyPI. MosaicKit 1.0.0rc16 is a pre-release, so allow pre-releases
+until its 1.0 release is published.
 
 ```bash
-uv add --prerelease allow "micro-viz @ git+https://github.com/EconViz/micro-viz"
+uv add --prerelease allow micro-viz==1.0.0b1
 ```
 
 For a source checkout:
