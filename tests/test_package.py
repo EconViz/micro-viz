@@ -4,7 +4,7 @@ import micro_viz
 
 
 def test_version_matches_installed_metadata() -> None:
-    assert micro_viz.__version__ == "0.2.0.dev0"
+    assert micro_viz.__version__ == "1.0.0b1"
     assert version("micro-viz") == micro_viz.__version__
 
 
