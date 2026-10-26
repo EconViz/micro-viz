@@ -4,6 +4,10 @@ All notable changes to this project are documented in this file.
 
 ## 0.2.0.dev0 - Unreleased
 
+### Changed
+
+- Examples write to `examples/output/<topic>/` (one folder per topic, table `OUTPUT_TOPICS` in `examples/scripts/common.py`) instead of one flat folder, as in utility-viz; an explicit `--output-dir` is used as given.
+
 ### Added
 
 - Formula input for demand and the monopolist: `Demand("P = 100 - Q")` or `Demand("Q = 50 - P/2")` (straight or nonlinear, exact marginal revenue and elasticity, `DemandError` for upward or ill-defined curves); `Monopolist("P = 100 - Q", "TC = 200 + 20Q")` takes formulas or objects, and the single-price monopoly figures draw a nonlinear demand and its MR. Straight-line formulas become the older `LinearDemand`, so existing figures are unchanged.

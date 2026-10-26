@@ -167,3 +167,16 @@ def test_cost_animation_example_writes_both_animated_svgs(tmp_path: Path) -> Non
     for name in ("unit_cost_output", "stepped_cost_price"):
         svg = (out / f"{name}_animated.svg").read_text(encoding="utf-8")
         assert "<animate" in svg
+
+
+def test_every_script_has_a_topic_folder(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.syspath_prepend(str(PRODUCTION_SCRIPT.parent))
+    import common
+
+    scripts = {path.stem for path in PRODUCTION_SCRIPT.parent.glob("*.py")} - {"common"}
+    assert scripts == set(common.TOPIC_OF_SCRIPT)
+    assert common.default_output_dir("pricing_unknown").parent == common.DEFAULT_OUTPUT
+    for script in scripts:
+        folder = common.default_output_dir(script)
+        assert folder.parent == common.DEFAULT_OUTPUT
+        assert folder.name == common.TOPIC_OF_SCRIPT[script]

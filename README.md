@@ -218,7 +218,7 @@ There is one script per topic in `examples/scripts/` (production, costs, competi
 monopoly, oligopoly, factor markets, uncertainty, information and more). They use the
 black-and-white `manual` look (`examples/econ-viz.toml`: TeX Gyre Pagella text and math, white
 background); `econ-viz.zh-TW.toml` and `econ-viz.zh-CN.toml` draw the Chinese editions. Generated
-SVG files stay under `examples/output/` and are ignored by Git.
+SVG files go to `examples/output/<topic>/` (one folder per topic, e.g. `pricing/`, `costs/`; the table is `OUTPUT_TOPICS` in `examples/scripts/common.py`) and are ignored by Git.
 
 ```bash
 uv run python examples/scripts/production.py
@@ -227,7 +227,7 @@ uv run python examples/scripts/production.py --config examples/econ-viz.zh-TW.to
     --fonts-dir path/to/NotoSerifTC
 ```
 
-Every example takes `--output-dir`, `--config` (an `econ-viz.toml`), `--fonts-dir` (where the
+Every example takes `--output-dir` (used as given; default is its topic folder), `--config` (an `econ-viz.toml`), `--fonts-dir` (where the
 font files named by the settings live; TeX Gyre fonts are found through `kpsewhich`) and the
 economic parameters of its model. Figures carry no title unless `--title` is given.
 
