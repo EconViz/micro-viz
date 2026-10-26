@@ -7,7 +7,7 @@ from typing import Any
 
 from mosaickit import Canvas, CanvasGrid, GridLink, Layer
 
-from micro_viz.costs import CostAnalysis, CostFunction
+from micro_viz.costs import CostFunction
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.axes import axes_layers
 from micro_viz.visuals.common import (
