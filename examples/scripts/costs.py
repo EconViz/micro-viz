@@ -7,7 +7,7 @@ from pathlib import Path
 from common import Session, parser
 
 from micro_viz import (
-    CubicCost,
+    Cost,
     PlotTheme,
     analyze_costs,
     cost_curves_grid,
@@ -21,7 +21,7 @@ def cost_examples(
     output_dir: Path,
     theme: PlotTheme,
     *,
-    cost: CubicCost,
+    cost: Cost,
     min_output: float,
     max_output: float,
     samples: int,
@@ -31,13 +31,7 @@ def cost_examples(
     """Write the cost-curve examples for ``cost`` into ``output_dir`` and return the paths."""
     analysis = analyze_costs(cost, output_range=(min_output, max_output), samples=samples)
     no_fixed = analyze_costs(
-        CubicCost(
-            fixed_cost=0.0,
-            linear=cost.linear,
-            quadratic=cost.quadratic,
-            cubic=cost.cubic,
-            output_symbol=cost.output_symbol,
-        ),
+        cost.without_fixed_cost(),
         output_range=(min_output, max_output * avc_reach),
         samples=samples,
     )
@@ -62,14 +56,20 @@ def cost_examples(
 
 def main() -> None:
     args_parser = parser(__doc__)
-    args_parser.add_argument("--fixed", type=float, default=50.0, help="fixed cost FC")
+    args_parser.add_argument("--fixed", type=float, default=200.0, help="fixed cost FC")
     args_parser.add_argument(
-        "--linear", type=float, default=36.0, help="b in VC = bq + cq^2 + dq^3"
+        "--linear", type=float, default=120.0, help="b in VC = bq + cq^2 + dq^3"
     )
-    args_parser.add_argument("--quadratic", type=float, default=-8.0, help="c (negative: U-shape)")
-    args_parser.add_argument("--cubic", type=float, default=0.6, help="d, positive")
+    args_parser.add_argument("--quadratic", type=float, default=-18.0, help="c (negative: U-shape)")
+    args_parser.add_argument("--cubic", type=float, default=1.0, help="d, positive")
+    args_parser.add_argument(
+        "--formula",
+        default=None,
+        help='total cost as a formula, such as "TC = 200 + 120Q - 18Q^2 + Q^3"; '
+        "replaces the four coefficients",
+    )
     args_parser.add_argument("--min-output", type=float, default=1.0)
-    args_parser.add_argument("--max-output", type=float, default=11.0)
+    args_parser.add_argument("--max-output", type=float, default=16.0)
     args_parser.add_argument("--samples", type=int, default=221)
     args_parser.add_argument(
         "--avc-reach",
@@ -84,7 +84,11 @@ def main() -> None:
         cost_examples(
             args.output_dir,
             session.theme,
-            cost=CubicCost(args.fixed, args.linear, args.quadratic, args.cubic),
+            cost=(
+                Cost(args.formula)
+                if args.formula
+                else Cost.polynomial(args.fixed, args.linear, args.quadratic, args.cubic)
+            ),
             min_output=args.min_output,
             max_output=args.max_output,
             samples=args.samples,

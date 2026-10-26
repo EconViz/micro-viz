@@ -6,7 +6,7 @@ from collections.abc import Mapping, Sequence
 
 from mosaickit import Canvas, Layer
 
-from micro_viz.costs import CostAnalysis
+from micro_viz.costs import Cost, CostAnalysis, CostFunction, analyze_costs
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import (
     Point,
@@ -19,6 +19,10 @@ from micro_viz.visuals.common import (
     resolve_theme,
 )
 
+CostSource = CostAnalysis | CostFunction | str
+"""What a cost figure accepts: an analysis, a cost function or a formula (``"TC = 50 + 3Q"``)."""
+SAMPLES = 201
+"""Default number of sampled outputs when a figure analyses a cost function itself."""
 PANEL_SIZE = (6.0, 4.5)
 """Default size in inches of each panel of a stacked figure."""
 UNIT_CURVES = ("mc", "atc", "avc", "afc")
@@ -30,6 +34,19 @@ _UNIT_STYLE = {
     "afc": ("micro.curve.average.fixed", "cost.afc", 1.0),
 }
 """Role, text id and the share of the curve at which its name is written, per unit curve."""
+
+
+def resolve_analysis(
+    source: CostSource, output: tuple[float, float] | None, samples: int = SAMPLES
+) -> CostAnalysis:
+    """The analysis a figure draws: ``source`` itself, or the cost function (or formula) in
+    ``source`` analysed over ``output``."""
+    if isinstance(source, CostAnalysis):
+        return source
+    if output is None:
+        raise TypeError("pass output=(low, high), the range of output the figure covers")
+    cost = Cost(source) if isinstance(source, str) else source
+    return analyze_costs(cost, output_range=output, samples=samples)
 
 
 def _unit_points(analysis: CostAnalysis, name: str) -> tuple[Point, ...]:

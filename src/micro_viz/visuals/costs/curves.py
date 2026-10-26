@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from typing import Any
 
 from mosaickit import Canvas, CanvasGrid, GridLink, Layer
 
-from micro_viz.costs import CostAnalysis
+from micro_viz.costs import CostAnalysis, CostFunction
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.axes import axes_layers
 from micro_viz.visuals.common import (
@@ -28,17 +29,22 @@ from micro_viz.visuals.common import (
 from micro_viz.visuals.costs._base import (
     _UNIT_STYLE,
     PANEL_SIZE,
+    SAMPLES,
     UNIT_CURVES,
+    CostSource,
     _curve_selection,
     _output_marks,
     _setup,
     _unit_points,
+    resolve_analysis,
 )
 
 
 def total_cost_canvas(
-    analysis: CostAnalysis,
+    analysis: CostSource,
     *,
+    output_range: tuple[float, float] | None = None,
+    samples: int = SAMPLES,
     title: str | None = None,
     theme: PlotTheme | None = None,
     labels: Mapping[str, str] | None = None,
@@ -58,6 +64,7 @@ def total_cost_canvas(
     slope is the minimum ATC, and TC is tangent to it there (cubic cost functions only);
     ``marks=False`` leaves out its output mark (for a panel stacked above a unit-cost panel).
     """
+    analysis = resolve_analysis(analysis, output_range, samples)
     cost = analysis.cost
     # Totals are defined at zero output, so they start at the axis whatever the unit-cost range.
     count = len(analysis.points)
@@ -114,8 +121,10 @@ def total_cost_canvas(
 
 
 def unit_cost_canvas(
-    analysis: CostAnalysis,
+    analysis: CostSource,
     *,
+    output_range: tuple[float, float] | None = None,
+    samples: int = SAMPLES,
     curves: Sequence[str] = UNIT_CURVES,
     minima: bool = True,
     output: float | None = None,
@@ -133,9 +142,11 @@ def unit_cost_canvas(
     """MC, ATC, AVC and AFC against output (choose a subset with ``curves``).
 
     ``minima`` marks the lowest AVC and ATC (where MC crosses them) with dashed guides to both
-    axes, for cubic cost functions. ``output`` marks the unit costs at one output with dots and
-    a dashed drop line, so the figure can be swept as output grows.
+    axes. ``output`` marks the unit costs at one output with dots and a dashed drop line, so
+    the figure can be swept as output grows. ``analysis`` may be a cost function or a formula
+    instead; then ``output_range`` is the range of output it covers.
     """
+    analysis = resolve_analysis(analysis, output_range, samples)
     chosen = _curve_selection(curves)
     series = {name: _unit_points(analysis, name) for name in chosen}
     top = max(value for points in series.values() for _, value in points)
@@ -196,9 +207,35 @@ def unit_cost_canvas(
     return canvas
 
 
-def cost_curves_panels(
-    analysis: CostAnalysis,
+def cost_curves(
+    cost: CostFunction | str,
     *,
+    output: tuple[float, float],
+    show: Sequence[str] = ("MC", "ATC", "AVC", "AFC"),
+    marks: bool = True,
+    samples: int = SAMPLES,
+    title: str | None = None,
+    **options: Any,
+) -> Canvas:
+    """The per-unit cost curves of ``cost`` over ``output = (low, high)`` in one call.
+
+    ``cost`` is a :class:`~micro_viz.costs.Cost`, any cost function or a formula such as
+    ``"TC = 200 + 120Q - 18Q^2 + Q^3"``. ``show`` picks the curves by their textbook names
+    (``"MC"``, ``"ATC"`` or ``"AC"``, ``"AVC"``, ``"AFC"``; case does not matter). ``marks``
+    draws the two points where MC crosses AVC and ATC, with dashed guides to both axes and the
+    marks ``Q_1``, ``C_1`` and ``Q_2``, ``C_2``. Other options (``theme``,
+    ``labels``, ``x_max``, ...) go to :func:`unit_cost_canvas`.
+    """
+    analysis = resolve_analysis(cost, output, samples)
+    names = tuple("atc" if name.lower() == "ac" else name.lower() for name in show)
+    return unit_cost_canvas(analysis, curves=names, minima=marks, title=title, **options)
+
+
+def cost_curves_panels(
+    analysis: CostSource,
+    *,
+    output_range: tuple[float, float] | None = None,
+    samples: int = SAMPLES,
     titles: tuple[str | None, str | None] = (None, None),
     theme: PlotTheme | None = None,
     labels: Mapping[str, str] | None = None,
@@ -209,6 +246,7 @@ def cost_curves_panels(
 ) -> tuple[Canvas, Canvas]:
     """The two panels of :func:`cost_curves_grid` as separate canvases: total cost, then unit
     costs, on the same output axis. Each stands alone as a figure."""
+    analysis = resolve_analysis(analysis, output_range, samples)
     selected = resolve_theme(theme)
     horizontal = x_max if x_max is not None else analysis.output_range[1] * (1 + margin)
     common = {
@@ -225,8 +263,10 @@ def cost_curves_panels(
 
 
 def cost_curves_grid(
-    analysis: CostAnalysis,
+    analysis: CostSource,
     *,
+    output_range: tuple[float, float] | None = None,
+    samples: int = SAMPLES,
     titles: tuple[str | None, str | None] = (None, None),
     theme: PlotTheme | None = None,
     labels: Mapping[str, str] | None = None,
@@ -240,6 +280,7 @@ def cost_curves_grid(
     A dashed link joins the tangency point of the total-cost panel (the lowest ATC) to the
     lowest-ATC point of the unit-cost panel.
     """
+    analysis = resolve_analysis(analysis, output_range, samples)
     upper, lower = cost_curves_panels(
         analysis,
         titles=titles,

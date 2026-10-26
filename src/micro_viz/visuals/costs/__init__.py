@@ -11,8 +11,10 @@ from micro_viz.visuals.costs._base import (
     _setup as _setup,
     _unit_points as _unit_points,
     _unit_value as _unit_value,
+    resolve_analysis as resolve_analysis,
 )
 from micro_viz.visuals.costs.curves import (
+    cost_curves,
     cost_curves_grid,
     cost_curves_panels as cost_curves_panels,
     total_cost_canvas,
@@ -22,6 +24,7 @@ from micro_viz.visuals.costs.piecewise import piecewise_cost_canvas
 
 __all__ = [
     "UNIT_CURVES",
+    "cost_curves",
     "cost_curves_grid",
     "piecewise_cost_canvas",
     "total_cost_canvas",

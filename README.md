@@ -61,7 +61,30 @@ stable `micro.production.*` IDs and roles.
 
 ## Short-run costs
 
-`CubicCost` is the textbook `TC(q) = FC + bq + cq^2 + dq^3` (`b, d > 0`, `c < 0` for the U-shape).
+Write the cost the way a textbook does and draw it in one step:
+
+```python
+from micro_viz import Cost, cost_curves
+
+cost = Cost("TC = 200 + 120Q - 18Q^2 + Q^3")
+cost_curves(cost, output=(1, 16)).save("unit_cost.svg")  # MC, ATC, AVC, AFC and the two minima
+```
+
+`Cost` also takes `Cost("VC = 120Q - 18Q^2 + Q^3", fixed=200)`, `Cost("MC = 120 - 36Q + 3Q^2",
+fixed=200)`, `Cost("ATC = 200/Q + 120 - 18Q + Q^2")`, `Cost.polynomial(200, 120, -18, 1)`
+(ascending coefficients) and `Cost.from_table(q=[0, 1, 2], tc=[10, 18, 24])`. The formula is read
+by a small parser of our own (numbers, `Q` or `q`, `+ - * / ^`, brackets, `exp`, `ln`, `sqrt`,
+and `36Q` or `2(Q+1)` for products); nothing is evaluated as Python, and a mistake gives a short
+message with a caret, in the figure language. `Cost` knows `.fc`, `.tc(q)`, `.vc(q)`, `.mc(q)`,
+`.atc(q)`, `.avc(q)`, `.afc(q)`, `.min_avc()`, `.min_atc()`, `.shutdown_price()` and
+`.breakeven_price()`; the minima are closed-form where the algebra allows and found to machine
+precision otherwise. It refuses a negative fixed cost and a marginal cost that is not positive on
+the plotted output range, naming the interval. `cost_curves(..., show=("MC", "AVC"), marks=False)`
+chooses the curves and the marks; `total_cost_canvas`, `unit_cost_canvas`, `cost_curves_panels`
+and `cost_curves_grid` accept a `Cost` (or a formula) and `output_range=(low, high)` directly.
+
+The advanced models stay. `CubicCost` is the textbook `TC(q) = FC + bq + cq^2 + dq^3` (`b, d > 0`,
+`c < 0` for the U-shape; a cubic `Cost` uses it internally and gives the same numbers).
 `PiecewiseCost` is defined by its marginal cost, built from `CostSegment`s that may jump where an
 extra shift or processing unit starts, with a capacity. `analyze_costs` samples every measure
 (TFC, TVC, TC, AFC, AVC, ATC, MC) and reports the exact minimum points: MC crosses AVC and ATC at
@@ -75,12 +98,11 @@ from micro_viz import (
     analyze_costs,
     cost_curves_grid,
     piecewise_cost_canvas,
-    total_cost_canvas,
     unit_cost_canvas,
 )
 
-cost = CubicCost(fixed_cost=50, linear=36, quadratic=-8, cubic=0.6)
-analysis = analyze_costs(cost, output_range=(1, 11))
+cost = CubicCost(fixed_cost=200, linear=120, quadratic=-18, cubic=1)
+analysis = analyze_costs(cost, output_range=(1, 16))
 cost_curves_grid(analysis).save("costs.svg")  # totals above unit costs
 unit_cost_canvas(analysis, curves=("mc", "avc")).save("u.svg")  # a subset of the curves
 
