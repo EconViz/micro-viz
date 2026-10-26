@@ -67,7 +67,7 @@ def test_only_mosaickit_is_required_and_kinetickit_is_an_optional_extra() -> Non
     declared = requires("micro-viz") or []
     required = [item for item in declared if "extra ==" not in item]
     optional = [item for item in declared if "extra ==" in item]
-    assert required == ["mosaickit>=1.0.0rc9,<2.0.0"]
+    assert required == ["mosaickit>=1.0.0rc16,<2.0.0"]
     assert len(optional) == 1 and optional[0].startswith("kinetickit[raster]")
     assert "extra == 'animation'" in optional[0]
 

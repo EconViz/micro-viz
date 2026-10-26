@@ -23,7 +23,7 @@ economic results into public MosaicKit layers, and only MosaicKit talks to a bac
 
 ### Dependency boundary
 
-`micro-viz` depends only on MosaicKit (`mosaickit>=1.0.0rc9,<2.0.0`); GlyphKit stays
+`micro-viz` depends only on MosaicKit (`mosaickit>=1.0.0rc16,<2.0.0`); GlyphKit stays
 MosaicKit's transitive text layer. BezierKit becomes a direct dependency only when a figure
 consumes its public geometry API. KineticKit is optional: the `animation` extra adds
 `kinetickit[raster]`, and static figures never import it.
@@ -119,7 +119,7 @@ gives the output a price band selects.
 `micro-viz` requires Python 3.10 or later.
 
 `micro-viz` is not on PyPI yet. Install the development version from GitHub; MosaicKit
-1.0.0rc9 is a pre-release, so allow pre-releases until 1.0 is published.
+1.0.0rc16 is a pre-release, so allow pre-releases until 1.0 is published.
 
 ```bash
 uv add --prerelease allow "micro-viz @ git+https://github.com/EconViz/micro-viz"

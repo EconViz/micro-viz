@@ -17,7 +17,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Visualization",
 ]
 dependencies = [
-    "mosaickit>=1.0.0rc9,<2.0.0",
+    "mosaickit>=1.0.0rc16,<2.0.0",
 ]
 
 [project.entry-points."econviz.config"]
