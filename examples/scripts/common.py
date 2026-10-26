@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import shutil
 import subprocess
+import sys
 import tempfile
 from collections.abc import Sequence
 from dataclasses import replace
@@ -20,10 +21,20 @@ FONT_PATTERNS = ("*.otf", "*.ttf")
 TEXMF_FONT_DIRS = ("fonts/opentype/public/tex-gyre", "fonts/opentype/public/tex-gyre-math")
 
 
+def default_output_dir(script: Path) -> Path:
+    """The folder ``DEFAULT_OUTPUT/<topic>``, the topic being the folder of ``script``."""
+    return DEFAULT_OUTPUT / script.resolve().parent.name
+
+
 def parser(description: str | None) -> argparse.ArgumentParser:
-    """An argument parser with the options every example takes."""
+    """An argument parser with the options every example takes; the output folder is per topic."""
     result = argparse.ArgumentParser(description=description)
-    result.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    result.add_argument(
+        "--output-dir",
+        type=Path,
+        default=default_output_dir(Path(sys.argv[0])),
+        help="where to write the figures (default: examples/output/<topic> of the script)",
+    )
     result.add_argument("--config", type=Path, default=DEFAULT_CONFIG, help="an econ-viz.toml")
     result.add_argument(
         "--fonts-dir",

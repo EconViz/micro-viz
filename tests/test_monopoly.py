@@ -112,7 +112,7 @@ def test_example_writes_figures_and_title(tmp_path: Path) -> None:
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / "monopoly.py"),
+            str(ROOT / "examples" / "scripts" / "monopoly" / "monopoly.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",
@@ -136,7 +136,7 @@ def test_animation_example_saves_animated_svgs(tmp_path: Path) -> None:
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / "animate_monopoly.py"),
+            str(ROOT / "examples" / "scripts" / "animation" / "animate_monopoly.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",

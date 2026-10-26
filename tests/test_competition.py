@@ -91,7 +91,7 @@ def test_example_writes_figures_from_arguments(tmp_path: Path) -> None:
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / "competition.py"),
+            str(ROOT / "examples" / "scripts" / "competition" / "competition.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",

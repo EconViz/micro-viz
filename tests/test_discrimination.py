@@ -69,7 +69,7 @@ def test_builders_and_example(tmp_path: Path) -> None:
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / "price_discrimination.py"),
+            str(ROOT / "examples" / "scripts" / "pricing" / "price_discrimination.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",

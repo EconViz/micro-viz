@@ -111,7 +111,7 @@ piecewise_cost_canvas(analyze_costs(steps, output_range=(0, 9)), prices=(12.2, 1
 ```
 
 `unit_cost_canvas(analysis, output=q)` marks the unit costs at one output, so the figure can be
-swept as output grows (see `examples/scripts/animate_costs.py`); `PiecewiseCost.output_at_price`
+swept as output grows (see `examples/scripts/animation/animate_costs.py`); `PiecewiseCost.output_at_price`
 gives the output a price band selects.
 
 ## Install
@@ -201,7 +201,7 @@ save_gif(frame, [4, 6, 8], "products.gif", fps=15)  # mosaickit-rendered frames
 mosaickit draws every frame; kinetickit moves between frames and matches layers by their stable
 ids. The axes and size must be fixed across values (pass `x_max=`, `y_range=` and `size=`). The
 animated SVG places text from the layers' anchors (no automatic collision avoidance); the GIF
-uses mosaickit's placement exactly. See `examples/scripts/animate_production.py`.
+uses mosaickit's placement exactly. See `examples/scripts/animation/animate_production.py`.
 
 ## Nothing is hard-coded
 
@@ -214,20 +214,20 @@ follows, and scan the source for colour literals, font names and absolute paths.
 
 ## Examples
 
-There is one script per topic in `examples/scripts/` (production, costs, competition,
+The scripts live in `examples/scripts/<topic>/` (production, costs, competition,
 monopoly, oligopoly, factor markets, uncertainty, information and more). They use the
 black-and-white `manual` look (`examples/econ-viz.toml`: TeX Gyre Pagella text and math, white
 background); `econ-viz.zh-TW.toml` and `econ-viz.zh-CN.toml` draw the Chinese editions. Generated
-SVG files stay under `examples/output/` and are ignored by Git.
+SVG files go to `examples/output/<topic>/` (one folder per topic, e.g. `pricing/`, `costs/`, named like the script's folder) and are ignored by Git.
 
 ```bash
-uv run python examples/scripts/production.py
-uv run python examples/scripts/production.py --cubic -0.4 --max-input 8 --title "Own title"
-uv run python examples/scripts/production.py --config examples/econ-viz.zh-TW.toml \
+uv run python examples/scripts/production/production.py
+uv run python examples/scripts/production/production.py --cubic -0.4 --max-input 8 --title "Own title"
+uv run python examples/scripts/production/production.py --config examples/econ-viz.zh-TW.toml \
     --fonts-dir path/to/NotoSerifTC
 ```
 
-Every example takes `--output-dir`, `--config` (an `econ-viz.toml`), `--fonts-dir` (where the
+Every example takes `--output-dir` (used as given; default is its topic folder), `--config` (an `econ-viz.toml`), `--fonts-dir` (where the
 font files named by the settings live; TeX Gyre fonts are found through `kpsewhich`) and the
 economic parameters of its model. Figures carry no title unless `--title` is given.
 

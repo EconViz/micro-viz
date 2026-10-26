@@ -53,7 +53,7 @@ def test_builders_and_example(tmp_path: Path) -> None:
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "examples" / "scripts" / "long_run_costs.py"),
+            str(ROOT / "examples" / "scripts" / "costs" / "long_run_costs.py"),
             "--output-dir",
             str(tmp_path / "out"),
             "--config",
