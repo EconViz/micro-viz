@@ -109,3 +109,18 @@ def test_static_figures_work_without_kinetickit() -> None:
     )
     result = subprocess.run([sys.executable, "-I", "-c", code], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
+
+
+def test_expression_engine_is_detachable() -> None:
+    """``micro_viz.expr`` imports nothing else of micro-viz, and nothing reaches into it."""
+    for path in (PACKAGE_ROOT / "expr").rglob("*.py"):
+        for name in _imports(path):
+            if name == "micro_viz" or name.startswith("micro_viz."):
+                assert name == "micro_viz.expr" or name.startswith("micro_viz.expr."), (
+                    f"{path.name} imports {name}"
+                )
+    for path in PACKAGE_ROOT.rglob("*.py"):
+        if "expr" in path.relative_to(PACKAGE_ROOT).parts[:1]:
+            continue
+        for name in _imports(path):
+            assert not name.startswith("micro_viz.expr."), f"{path.name} reaches into {name}"

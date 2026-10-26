@@ -5,7 +5,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from micro_viz.costs.model import CostError, CostFunction, CubicCost, PiecewiseCost
+from micro_viz.costs.formula import Cost
+from micro_viz.costs.model import CostError, CostFunction, CubicCost, Extremum, PiecewiseCost
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,17 +34,6 @@ class CostPoint:
             "average_variable_cost": self.average_variable_cost,
             "average_total_cost": self.average_total_cost,
         }
-
-
-@dataclass(frozen=True, slots=True)
-class Extremum:
-    """The output where a unit-cost curve is lowest and its value there."""
-
-    output: float
-    value: float
-
-    def to_dict(self) -> dict[str, float]:
-        return {"output": self.output, "value": self.value}
 
 
 @dataclass(frozen=True, slots=True)
@@ -137,7 +127,12 @@ def analyze_costs(
     step = (end - start) / (samples - 1)
     grid = tuple(start + step * index for index in range(samples))
     minimum_average_variable = minimum_average_total = minimum_marginal = None
-    if isinstance(cost, CubicCost):
+    if isinstance(cost, Cost):
+        cost.validate((start, end))
+        minimum_average_variable = cost.min_avc()
+        minimum_average_total = cost.min_atc()
+        minimum_marginal = cost.min_mc()
+    elif isinstance(cost, CubicCost):
         q = cost.minimum_average_variable_cost_output
         minimum_average_variable = Extremum(q, cost.variable_cost(q) / q) if q > 0 else None
         q = cost.minimum_average_total_cost_output

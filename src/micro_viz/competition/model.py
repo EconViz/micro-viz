@@ -12,7 +12,7 @@ import math
 from dataclasses import dataclass
 from enum import Enum
 
-from micro_viz.costs import CostFunction, CubicCost, PiecewiseCost
+from micro_viz.costs import Cost, CostFunction, CubicCost, PiecewiseCost
 
 
 class CompetitionError(ValueError):
@@ -37,6 +37,8 @@ def _price(value: float) -> float:
 
 def shutdown_price(cost: CostFunction) -> float:
     """The lowest average variable cost: below this price the firm produces nothing."""
+    if isinstance(cost, Cost):
+        return cost.shutdown_price()
     if isinstance(cost, CubicCost):
         q = cost.minimum_average_variable_cost_output
         return cost.variable_cost(q) / q if q > 0 else cost.linear
@@ -49,6 +51,8 @@ def shutdown_price(cost: CostFunction) -> float:
 
 def break_even_price(cost: CostFunction) -> float | None:
     """The lowest average total cost, or ``None`` when it is not known in closed form."""
+    if isinstance(cost, Cost):
+        return cost.breakeven_price()
     if isinstance(cost, CubicCost):
         q = cost.minimum_average_total_cost_output
         return cost.total_cost(q) / q
@@ -61,6 +65,8 @@ def profit_maximizing_output(cost: CostFunction, price: float) -> float:
     Zero when price lies below marginal cost everywhere.
     """
     value = _price(price)
+    if isinstance(cost, Cost):
+        return cost.output_at_price(value)
     if isinstance(cost, CubicCost):
         b, c, d = cost.linear, cost.quadratic, cost.cubic
         discriminant = 4 * c * c - 12 * d * (b - value)
@@ -126,7 +132,7 @@ def solve_competitive_firm(
     quantity = profit_maximizing_output(cost, value)
     average_variable = cost.average_variable_cost(quantity) if quantity > 0 else None
     shut = quantity <= 0 or (average_variable is not None and value < average_variable - tolerance)
-    if isinstance(cost, CubicCost | PiecewiseCost) and value < low - tolerance:
+    if isinstance(cost, Cost | CubicCost | PiecewiseCost) and value < low - tolerance:
         shut = True
     if shut:
         return CompetitiveOutcome(

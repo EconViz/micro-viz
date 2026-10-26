@@ -42,6 +42,7 @@ from micro_viz.competition import (
 )
 from micro_viz.config import Config, default_theme
 from micro_viz.costs import (
+    Cost,
     CostAnalysis,
     CostError,
     CostFunction,
@@ -84,6 +85,7 @@ from micro_viz.factors import (
     UnionOutcome,
     UnionWageSetting,
 )
+from micro_viz.formulas import FormulaError
 from micro_viz.information import (
     BonusSchedule,
     EfficiencyWage,
@@ -223,6 +225,7 @@ __all__ = [
     "CompetitionError",
     "CompetitiveOutcome",
     "Config",
+    "Cost",
     "CostAnalysis",
     "CostError",
     "CostFunction",
@@ -246,6 +249,7 @@ __all__ = [
     "FirmSupply",
     "FirstDegree",
     "FixedProportions",
+    "FormulaError",
     "Gamble",
     "IncomeUtility",
     "IndustryEntry",

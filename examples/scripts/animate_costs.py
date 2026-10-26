@@ -12,8 +12,9 @@ from pathlib import Path
 from common import Session, parser
 
 from micro_viz import (
+    Cost,
+    CostFunction,
     CostSegment,
-    CubicCost,
     PiecewiseCost,
     PlotTheme,
     analyze_costs,
@@ -32,7 +33,7 @@ def cost_animations(
     output_dir: Path,
     theme: PlotTheme,
     *,
-    cost: CubicCost,
+    cost: CostFunction,
     stepped: PiecewiseCost,
     outputs: list[float],
     prices: list[float],
@@ -77,13 +78,13 @@ def cost_animations(
 
 def main() -> None:
     args_parser = parser(__doc__)
-    args_parser.add_argument("--fixed", type=float, default=50.0)
-    args_parser.add_argument("--linear", type=float, default=36.0)
-    args_parser.add_argument("--quadratic", type=float, default=-8.0)
-    args_parser.add_argument("--cubic", type=float, default=0.6)
+    args_parser.add_argument("--fixed", type=float, default=200.0)
+    args_parser.add_argument("--linear", type=float, default=120.0)
+    args_parser.add_argument("--quadratic", type=float, default=-18.0)
+    args_parser.add_argument("--cubic", type=float, default=1.0)
     args_parser.add_argument("--min-output", type=float, default=1.0)
-    args_parser.add_argument("--max-output", type=float, default=11.0)
-    args_parser.add_argument("--y-max", type=float, default=95.0)
+    args_parser.add_argument("--max-output", type=float, default=16.0)
+    args_parser.add_argument("--y-max", type=float, default=330.0)
     args_parser.add_argument("--steps", type=int, default=6)
     args_parser.add_argument("--segments", default="6:11.4 9:13.0", help="end:intercept per step")
     args_parser.add_argument("--price-from", type=float, default=10.0)
@@ -99,7 +100,7 @@ def main() -> None:
         cost_animations(
             args.output_dir,
             session.theme,
-            cost=CubicCost(args.fixed, args.linear, args.quadratic, args.cubic),
+            cost=Cost.polynomial(args.fixed, args.linear, args.quadratic, args.cubic),
             stepped=PiecewiseCost(segments),
             outputs=linspace(args.min_output, args.max_output, args.steps),
             prices=linspace(args.price_from, args.price_to, args.steps),

@@ -27,6 +27,7 @@ from micro_viz.visuals.competition import (
     revenue_cost_profit_canvas,
 )
 from micro_viz.visuals.costs import (
+    cost_curves,
     cost_curves_grid,
     cost_curves_panels,
     piecewise_cost_canvas,
@@ -156,6 +157,7 @@ __all__ = [
     "competitive_firm_canvas",
     "competitive_pair_canvas",
     "constant_cost_canvas",
+    "cost_curves",
     "cost_curves_grid",
     "cost_curves_panels",
     "cost_minimization_canvas",

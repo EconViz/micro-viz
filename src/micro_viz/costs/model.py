@@ -89,6 +89,17 @@ class CostFunction(ABC):
 
 
 @dataclass(frozen=True, slots=True)
+class Extremum:
+    """The output where a unit-cost curve is lowest and its value there."""
+
+    output: float
+    value: float
+
+    def to_dict(self) -> dict[str, float]:
+        return {"output": self.output, "value": self.value}
+
+
+@dataclass(frozen=True, slots=True)
 class CubicCost(CostFunction):
     """``TC(q) = FC + bq + cq^2 + dq^3`` with ``b > 0``, ``d > 0`` and ``MC >= 0``.
 
@@ -342,4 +353,4 @@ def _solve_rising(segment: CostSegment, price: float, length: float) -> float:
     return (low + high) / 2
 
 
-__all__ = ["CostError", "CostFunction", "CostSegment", "CubicCost", "PiecewiseCost"]
+__all__ = ["CostError", "CostFunction", "CostSegment", "CubicCost", "Extremum", "PiecewiseCost"]
