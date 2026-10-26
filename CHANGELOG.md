@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
+- Faster, with identical results: `best_separate`, `best_pure` and `best_mixed` score each trial offer with a profit-only function and build a `BundlingOutcome` only for the winner (the bundling example runs about 0.5 s faster), and the monopoly root search evaluates each grid point and each bisection bound once. `tests/test_performance_guards.py` counts outcome constructions; `benchmarks/bench_examples.py` times the examples by hand and is not run by CI (#80).
 - Example scripts are grouped in `examples/scripts/<topic>/` and write to `examples/output/<topic>/` (the folder of the script names the topic) instead of one flat folder, as in utility-viz; an explicit `--output-dir` is used as given.
 
 ### Added
