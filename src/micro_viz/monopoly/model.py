@@ -14,7 +14,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 from micro_viz.competition import CompetitionError, LinearDemand, profit_maximizing_output
-from micro_viz.costs import CostFunction
+from micro_viz.costs import Cost, CostFunction
+from micro_viz.demand import Demand, DemandLike, as_demand
 
 STEPS = 4000
 """Grid points of the numeric searches and integrals."""
@@ -24,13 +25,17 @@ class MonopolyError(CompetitionError):
     """Raised when a monopoly model or input is invalid."""
 
 
-def marginal_revenue(demand: LinearDemand, quantity: float) -> float:
-    """``MR(Q) = a - 2 b Q``."""
+def marginal_revenue(demand: DemandLike, quantity: float) -> float:
+    """``MR(Q) = a - 2 b Q`` for a straight line, ``P(Q) + Q P'(Q)`` for any other demand."""
+    if isinstance(demand, Demand):
+        return demand.marginal_revenue(quantity)
     return demand.intercept - 2 * demand.slope * quantity
 
 
-def elasticity(demand: LinearDemand, quantity: float) -> float:
+def elasticity(demand: DemandLike, quantity: float) -> float:
     """Price elasticity of demand ``e = -(1 / b) P / Q`` (negative; ``-inf`` at ``Q = 0``)."""
+    if isinstance(demand, Demand):
+        return demand.elasticity(quantity)
     if quantity <= 0:
         return -math.inf
     return -demand.price(quantity) / (demand.slope * quantity)
@@ -60,7 +65,7 @@ def _roots(function, high: float) -> list[float]:  # type: ignore[no-untyped-def
 class MonopolyOutcome:
     """The profit-maximising choice of a monopolist and its welfare comparison."""
 
-    demand: LinearDemand
+    demand: DemandLike
     cost: CostFunction
     quantity: float
     price: float
@@ -89,22 +94,32 @@ class MonopolyOutcome:
         }
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, init=False)
 class Monopolist:
-    """A monopolist with demand ``P = a - b Q`` and a cost function."""
+    """A monopolist with a demand curve and a cost function.
 
-    demand: LinearDemand
+    Pass the objects (:class:`~micro_viz.competition.LinearDemand` or
+    :class:`~micro_viz.Demand`, and any cost function) or formulas for either:
+    ``Monopolist("P = 100 - Q", "TC = 200 + 20Q")``. A straight-line ``Demand`` is held as a
+    ``LinearDemand``.
+    """
+
+    demand: DemandLike
     cost: CostFunction
+
+    def __init__(self, demand: DemandLike | str, cost: CostFunction | str) -> None:
+        object.__setattr__(self, "demand", as_demand(demand))
+        object.__setattr__(self, "cost", Cost(cost) if isinstance(cost, str) else cost)
 
     def profit(self, quantity: float) -> float:
         """``P(Q) Q - TC(Q)``."""
         return self.demand.price(quantity) * quantity - self.cost.total_cost(quantity)
 
-    def with_demand(self, demand: LinearDemand) -> Monopolist:
+    def with_demand(self, demand: DemandLike | str) -> Monopolist:
         """The same firm facing another demand curve."""
         return Monopolist(demand, self.cost)
 
-    def with_cost(self, cost: CostFunction) -> Monopolist:
+    def with_cost(self, cost: CostFunction | str) -> Monopolist:
         """The same demand with another cost function (a tax, say)."""
         return Monopolist(self.demand, cost)
 
@@ -115,7 +130,8 @@ class Monopolist:
         def slack(q: float) -> float:
             return marginal_revenue(self.demand, q) - self.cost.marginal_cost(q)
 
-        candidates = [0.0, *_roots(slack, top / 2)]
+        reach = top / 2 if isinstance(self.demand, LinearDemand) else top
+        candidates = [0.0, *_roots(slack, reach)]
         quantity = max(candidates, key=self.profit)
         price = self.demand.price(quantity)
         competitive = self._competitive_quantity()

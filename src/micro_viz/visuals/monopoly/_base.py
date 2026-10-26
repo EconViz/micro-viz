@@ -8,8 +8,8 @@ from mosaickit import (
     RegionLabelLayer,
 )
 
-from micro_viz.competition import LinearDemand
 from micro_viz.costs import CostAnalysis
+from micro_viz.demand import Demand, DemandLike
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import (
     Point,
@@ -31,16 +31,29 @@ from micro_viz.visuals.costs import _unit_points
 _PREFIX = "micro.monopoly"
 
 
-def _demand_points(demand: LinearDemand) -> tuple[Point, ...]:
+CURVE_SAMPLES = 81
+"""Points drawn along a demand curve that is not a straight line."""
+
+
+def _spread(reach: float) -> list[float]:
+    return [reach * i / (CURVE_SAMPLES - 1) for i in range(CURVE_SAMPLES)]
+
+
+def _demand_points(demand: DemandLike) -> tuple[Point, ...]:
+    if isinstance(demand, Demand):
+        return tuple((q, max(0.0, demand.price(q))) for q in _spread(demand.quantity_intercept))
     return ((0.0, demand.intercept), (demand.quantity_intercept, 0.0))
 
 
-def _mr_points(demand: LinearDemand) -> tuple[Point, ...]:
+def _mr_points(demand: DemandLike) -> tuple[Point, ...]:
+    if isinstance(demand, Demand):
+        points = [(q, demand.marginal_revenue(q)) for q in _spread(demand.quantity_intercept)]
+        return tuple(point for point in points if point[1] >= 0) or tuple(points[:2])
     return ((0.0, demand.intercept), (demand.quantity_intercept / 2, 0.0))
 
 
 def _begin(
-    demand: LinearDemand,
+    demand: DemandLike,
     analysis: CostAnalysis | None,
     *,
     theme: PlotTheme | None,
@@ -76,7 +89,7 @@ def _begin(
 
 def _demand_curves(
     start: _Start,
-    demand: LinearDemand,
+    demand: DemandLike,
     *,
     key: str = "monopoly.demand",
     mr_key: str = "monopoly.mr",
