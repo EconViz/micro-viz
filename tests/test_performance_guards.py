@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-import micro_viz.bundling as bundling
+import micro_viz.bundling.model as bundling
 from micro_viz import Offer, ValuationProfile, best_mixed, evaluate_offer
 
 PROFILES = (

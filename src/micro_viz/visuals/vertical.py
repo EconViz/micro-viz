@@ -1,4 +1,4 @@
-"""mosaickit visual builders for vertical chains."""
+"""mosaickit figure builders for vertical chains."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from collections.abc import Mapping
 from mosaickit import Canvas
 
 from micro_viz.theme import PlotTheme
-from micro_viz.vertical import VerticalChain, transfer_pricing
+from micro_viz.vertical.model import VerticalChain, transfer_pricing
 from micro_viz.visuals.common import FIGURE_DPI, FIGURE_SIZE, MARGIN
 from micro_viz.visuals.plane import Plane
 

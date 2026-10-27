@@ -1,4 +1,4 @@
-"""mosaickit visual builders for long-run competition: firm and industry side by side."""
+"""mosaickit figure builders for long-run competition."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from mosaickit import Canvas, CanvasGrid
 
 from micro_viz.competition import LinearDemand, solve_competitive_firm
 from micro_viz.costs import CostAnalysis, CubicCost, analyze_costs
-from micro_viz.entry import IndustryEntry
+from micro_viz.entry.model import IndustryEntry
 from micro_viz.longrun import LongRunError, PlantFamily
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import FIGURE_DPI, FIGURE_SIZE, MARGIN

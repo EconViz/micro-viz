@@ -1,4 +1,4 @@
-"""mosaickit visual builders for duopoly models."""
+"""mosaickit figure builders for oligopoly models."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from collections.abc import Mapping, Sequence
 
 from mosaickit import Canvas, CanvasGrid
 
-from micro_viz.oligopoly import (
+from micro_viz.oligopoly.model import (
     DifferentiatedDuopoly,
     DominantFirm,
     Duopoly,

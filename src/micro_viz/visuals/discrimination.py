@@ -1,4 +1,4 @@
-"""mosaickit visual builders for price discrimination."""
+"""mosaickit figure builders for price discrimination."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from mosaickit import Canvas, CanvasGrid
 
 from micro_viz.competition import LinearDemand
 from micro_viz.costs import CostFunction
-from micro_viz.discrimination import BlockPricing, FirstDegree, ThirdDegree
+from micro_viz.discrimination.model import BlockPricing, FirstDegree, ThirdDegree
 from micro_viz.monopoly import Monopolist
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import FIGURE_DPI, FIGURE_SIZE, MARGIN, Point

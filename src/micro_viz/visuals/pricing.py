@@ -1,4 +1,4 @@
-"""mosaickit visual builders for two-part tariffs."""
+"""mosaickit figure builders for pricing models."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from collections.abc import Mapping, Sequence
 
 from mosaickit import Canvas
 
-from micro_viz.pricing import (
+from micro_viz.pricing.model import (
     BuyerType,
     IntertemporalPricing,
     PeakLoadPricing,

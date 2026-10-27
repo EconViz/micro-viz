@@ -1,4 +1,4 @@
-"""mosaickit visual builder for the advertising decision."""
+"""mosaickit figure builder for the advertising decision."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from collections.abc import Mapping
 
 from mosaickit import Canvas
 
-from micro_viz.advertising import AdvertisingDecision
+from micro_viz.advertising.model import AdvertisingDecision
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import FIGURE_DPI, FIGURE_SIZE, MARGIN
 from micro_viz.visuals.plane import Plane

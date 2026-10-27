@@ -1,4 +1,4 @@
-"""mosaickit visual builder for the exhaustible-resource price path."""
+"""mosaickit figure builder for the exhaustible-resource price path."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from collections.abc import Mapping
 
 from mosaickit import CanvasGrid
 
-from micro_viz.capital import ExhaustibleResourcePath
+from micro_viz.capital.model import ExhaustibleResourcePath
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import FIGURE_DPI, MARGIN, Texts, resolve_theme
 from micro_viz.visuals.plane import PANEL, Plane

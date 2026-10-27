@@ -1,4 +1,4 @@
-"""mosaickit visual builders for the regulation of a monopoly."""
+"""mosaickit figure builders for monopoly regulation."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from collections.abc import Mapping
 from mosaickit import Canvas, TextLayer
 
 from micro_viz.costs import CostAnalysis
-from micro_viz.regulation import CeilingOutcome, NaturalMonopolyPricing
+from micro_viz.regulation.model import CeilingOutcome, NaturalMonopolyPricing
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import (
     FIGURE_DPI,

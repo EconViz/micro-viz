@@ -8,8 +8,9 @@ from dataclasses import replace
 from mosaickit import Canvas, Layer, PointLabelLayer, TextLayer
 from mosaickit.styles import Fill
 
+from micro_viz.core.theme import LABEL_SIZE
 from micro_viz.production import MarginalReturns, ProductionAnalysis
-from micro_viz.theme import LABEL_SIZE, PlotTheme
+from micro_viz.theme import PlotTheme
 from micro_viz.visuals.axes import axes_layers
 from micro_viz.visuals.common import (
     FIGURE_DPI,

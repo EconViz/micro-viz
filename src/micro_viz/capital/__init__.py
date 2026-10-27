@@ -1,0 +1,5 @@
+"""Capital domain models."""
+
+from micro_viz.capital.model import CapitalError, ExhaustibleResourcePath
+
+__all__ = ["CapitalError", "ExhaustibleResourcePath"]

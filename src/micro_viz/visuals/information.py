@@ -1,4 +1,4 @@
-"""mosaickit visual builders for asymmetric information."""
+"""mosaickit figure builders for asymmetric information."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from collections.abc import Mapping, Sequence
 
 from mosaickit import Canvas, CanvasGrid
 
-from micro_viz.information import (
+from micro_viz.information.model import (
     BonusSchedule,
     EfficiencyWage,
     LemonsMarket,

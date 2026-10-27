@@ -1,4 +1,4 @@
-"""mosaickit visual builders for auctions."""
+"""mosaickit figure builders for auctions."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from collections.abc import Mapping, Sequence
 
 from mosaickit import Canvas
 
-from micro_viz.auctions import Auction
+from micro_viz.auctions.model import Auction
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import FIGURE_DPI, FIGURE_SIZE, MARGIN, Texts, resolve_theme
 from micro_viz.visuals.plane import Plane

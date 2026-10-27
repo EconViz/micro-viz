@@ -1,4 +1,4 @@
-"""mosaickit visual builders for bundling in valuation space."""
+"""mosaickit figure builders for bundling in valuation space."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from collections.abc import Mapping, Sequence
 
 from mosaickit import Canvas
 
-from micro_viz.bundling import (
+from micro_viz.bundling.model import (
     BUNDLE,
     GOOD_1,
     GOOD_2,

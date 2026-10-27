@@ -1,4 +1,4 @@
-"""mosaickit visual builders for monopolistic competition."""
+"""mosaickit figure builders for monopolistic competition."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from mosaickit import Canvas, CanvasGrid
 
 from micro_viz.competition import solve_competitive_firm
 from micro_viz.costs import CostAnalysis
-from micro_viz.monopolistic import MonopolisticOutcome
+from micro_viz.monopolistic.model import MonopolisticOutcome
 from micro_viz.theme import PlotTheme
 from micro_viz.visuals.common import (
     FIGURE_DPI,
