@@ -8,13 +8,13 @@ from mosaickit import Canvas, TextLayer
 
 from micro_viz.core.theme import PlotTheme
 from micro_viz.firm.costs import CostAnalysis
-from micro_viz.firm.visuals.competition import _finish, _rectangle
-from micro_viz.firm.visuals.monopoly import (
+from micro_viz.firm.monopoly.visuals import (
     _begin,
     _cost_curves,
     _demand_curves,
     _point_marks,
 )
+from micro_viz.firm.perfect_competition.visuals import _finish, _rectangle
 from micro_viz.markets.regulation.model import CeilingOutcome, NaturalMonopolyPricing
 from micro_viz.visuals.common import (
     FIGURE_DPI,

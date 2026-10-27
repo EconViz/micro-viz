@@ -11,9 +11,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from micro_viz.firm.competition import CompetitionError, LinearDemand
 from micro_viz.firm.costs import CostFunction
 from micro_viz.firm.monopoly import Monopolist, MonopolyOutcome, marginal_revenue
+from micro_viz.firm.perfect_competition import CompetitionError, LinearDemand
 from micro_viz.markets.demand import linear_demand
 
 STEPS = 4000

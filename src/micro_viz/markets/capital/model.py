@@ -11,7 +11,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from micro_viz.firm.competition import CompetitionError
+from micro_viz.firm.perfect_competition import CompetitionError
 
 BISECTIONS = 100
 """Bisection steps of the numeric solution for the initial price."""

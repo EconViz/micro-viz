@@ -1,6 +1,73 @@
 """Public mosaickit visual builders."""
 
-from micro_viz.firm.visuals.competition import (
+from micro_viz.firm.costs.visuals import (
+    cost_curves,
+    cost_curves_grid,
+    cost_curves_panels,
+    piecewise_cost_canvas,
+    product_cost_derivation_grid,
+    total_cost_canvas,
+    unit_cost_canvas,
+    variable_cost_derivation_grid,
+)
+from micro_viz.firm.costs.visuals.long_run import (
+    envelope_figure_canvas,
+    external_scale_effect_canvas,
+    lac_lmc_canvas,
+    plant_family_canvas,
+    scale_cost_canvas,
+)
+from micro_viz.firm.monopolistic_competition.visuals import (
+    excess_capacity_grid,
+    monopolistic_competition_grid,
+    monopolistic_long_run_canvas,
+    monopolistic_short_run_canvas,
+)
+from micro_viz.firm.monopolistic_competition.visuals.advertising import (
+    advertising_effect_canvas,
+)
+from micro_viz.firm.monopoly.visuals import (
+    lerner_markup_canvas,
+    monopoly_canvas,
+    monopoly_demand_shift_canvas,
+    monopoly_dwl_canvas,
+    monopoly_tax_canvas,
+    monopoly_totals_canvas,
+    monopoly_totals_grid,
+    multiplant_canvas,
+)
+from micro_viz.firm.monopoly.visuals.bundling import (
+    mixed_bundling_canvas,
+    pure_bundling_canvas,
+    separate_selling_regions_canvas,
+    valuation_scatter_canvas,
+)
+from micro_viz.firm.monopoly.visuals.discrimination import (
+    block_pricing_canvas,
+    first_degree_canvas,
+    single_price_canvas,
+    third_degree_canvas,
+)
+from micro_viz.firm.monopoly.visuals.pricing import (
+    intertemporal_pricing_canvas,
+    peak_load_canvas,
+    tariff_profit_canvas,
+    two_part_tariff_canvas,
+)
+from micro_viz.firm.monopoly.visuals.vertical import (
+    double_marginalization_canvas,
+    integrated_firm_canvas,
+    transfer_price_outside_market_canvas,
+)
+from micro_viz.firm.oligopoly.visuals import (
+    cartel_elasticity_canvas,
+    dominant_firm_canvas,
+    kinked_demand_canvas,
+    price_reaction_canvas,
+    reaction_curves_canvas,
+    residual_demand_canvas,
+)
+from micro_viz.firm.perfect_competition.visuals import (
     competitive_demand_increase_grid,
     competitive_firm_canvas,
     competitive_firm_supply_grid,
@@ -15,67 +82,23 @@ from micro_viz.firm.visuals.competition import (
     producer_surplus_canvas,
     revenue_cost_profit_canvas,
 )
-from micro_viz.firm.visuals.costs import (
-    cost_curves,
-    cost_curves_grid,
-    cost_curves_panels,
-    piecewise_cost_canvas,
-    product_cost_derivation_grid,
-    total_cost_canvas,
-    unit_cost_canvas,
-    variable_cost_derivation_grid,
-)
-from micro_viz.firm.visuals.entry import (
+from micro_viz.firm.perfect_competition.visuals.entry import (
     constant_cost_canvas,
     entry_canvas,
     increasing_cost_canvas,
     long_run_firm_canvas,
     rent_canvas,
 )
-from micro_viz.firm.visuals.isocost import (
-    cost_minimization_canvas,
-    expansion_path_canvas,
-    fixed_capital_canvas,
-    input_price_change_canvas,
-    technical_change_canvas,
+from micro_viz.firm.perfect_competition.visuals.profit import (
+    competitive_profit_grid,
+    monopoly_profit_grid,
 )
-from micro_viz.firm.visuals.isoquant import (
-    isoquant_map_canvas,
-    mrts_steps_canvas,
-    returns_to_scale_grid,
+from micro_viz.firm.perfect_competition.visuals.revenue import (
+    competitive_revenue_grid,
+    competitive_revenue_shift_grid,
+    monopoly_revenue_grid,
 )
-from micro_viz.firm.visuals.longrun import (
-    envelope_figure_canvas,
-    external_scale_effect_canvas,
-    lac_lmc_canvas,
-    plant_family_canvas,
-    scale_cost_canvas,
-)
-from micro_viz.firm.visuals.monopolistic import (
-    excess_capacity_grid,
-    monopolistic_competition_grid,
-    monopolistic_long_run_canvas,
-    monopolistic_short_run_canvas,
-)
-from micro_viz.firm.visuals.monopoly import (
-    lerner_markup_canvas,
-    monopoly_canvas,
-    monopoly_demand_shift_canvas,
-    monopoly_dwl_canvas,
-    monopoly_tax_canvas,
-    monopoly_totals_canvas,
-    monopoly_totals_grid,
-    multiplant_canvas,
-)
-from micro_viz.firm.visuals.oligopoly import (
-    cartel_elasticity_canvas,
-    dominant_firm_canvas,
-    kinked_demand_canvas,
-    price_reaction_canvas,
-    reaction_curves_canvas,
-    residual_demand_canvas,
-)
-from micro_viz.firm.visuals.production import (
+from micro_viz.firm.production.visuals import (
     average_marginal_product_canvas,
     capacity_production_grid,
     production_grid,
@@ -83,44 +106,24 @@ from micro_viz.firm.visuals.production import (
     rational_production_region_grid,
     total_product_canvas,
 )
-from micro_viz.firm.visuals.production_extras import (
+from micro_viz.firm.production.visuals.extras import (
     learning_curve_canvas,
     product_transformation_canvas,
     production_frontier_canvas,
     scale_vs_learning_canvas,
     technology_shift_canvas,
 )
-from micro_viz.firm.visuals.profit import competitive_profit_grid, monopoly_profit_grid
-from micro_viz.firm.visuals.revenue import (
-    competitive_revenue_grid,
-    competitive_revenue_shift_grid,
-    monopoly_revenue_grid,
+from micro_viz.firm.production.visuals.isocost import (
+    cost_minimization_canvas,
+    expansion_path_canvas,
+    fixed_capital_canvas,
+    input_price_change_canvas,
+    technical_change_canvas,
 )
-from micro_viz.firm.visuals.strategy.advertising import (
-    advertising_effect_canvas,
-)
-from micro_viz.firm.visuals.strategy.bundling import (
-    mixed_bundling_canvas,
-    pure_bundling_canvas,
-    separate_selling_regions_canvas,
-    valuation_scatter_canvas,
-)
-from micro_viz.firm.visuals.strategy.discrimination import (
-    block_pricing_canvas,
-    first_degree_canvas,
-    single_price_canvas,
-    third_degree_canvas,
-)
-from micro_viz.firm.visuals.strategy.pricing import (
-    intertemporal_pricing_canvas,
-    peak_load_canvas,
-    tariff_profit_canvas,
-    two_part_tariff_canvas,
-)
-from micro_viz.firm.visuals.strategy.vertical import (
-    double_marginalization_canvas,
-    integrated_firm_canvas,
-    transfer_price_outside_market_canvas,
+from micro_viz.firm.production.visuals.isoquant import (
+    isoquant_map_canvas,
+    mrts_steps_canvas,
+    returns_to_scale_grid,
 )
 from micro_viz.markets.visuals.auctions import (
     bid_functions_canvas,
