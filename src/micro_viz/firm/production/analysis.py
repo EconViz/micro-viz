@@ -13,8 +13,11 @@ from micro_viz.firm.production.model import ProductionError, ShortRunProductionF
 class ProductionModel(Protocol):
     """One-input production behavior consumed by the analysis layer."""
 
-    input_symbol: str
-    output_symbol: str
+    @property
+    def input_symbol(self) -> str: ...
+
+    @property
+    def output_symbol(self) -> str: ...
 
     def total_product(self, variable_input: float) -> float: ...
 

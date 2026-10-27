@@ -73,7 +73,9 @@ def test_firm_can_be_associated_with_a_market_without_mutation() -> None:
     assert associated.cost is firm.cost
 
 
-@pytest.mark.parametrize(("name", "value"), [("output", -1.0), ("price", float("inf"))])
+@pytest.mark.parametrize(  # type: ignore[untyped-decorator]
+    ("name", "value"), [("output", -1.0), ("price", float("inf"))]
+)
 def test_revenue_rejects_invalid_inputs(name: str, value: float) -> None:
     firm = Firm(Cost("TC = 10 + Q^2"))
     output, price = (value, 1.0) if name == "output" else (1.0, value)
