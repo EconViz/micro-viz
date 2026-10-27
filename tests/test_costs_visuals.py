@@ -11,13 +11,16 @@ from micro_viz import (
     CostSegment,
     CubicCost,
     PiecewiseCost,
+    ShortRunProductionFunction,
     analyze_costs,
     cost_curves_grid,
     cost_curves_panels,
     piecewise_cost_canvas,
+    product_cost_derivation_grid,
     shared_theme,
     total_cost_canvas,
     unit_cost_canvas,
+    variable_cost_derivation_grid,
 )
 
 
@@ -124,6 +127,40 @@ def test_grid_stacks_totals_over_unit_costs_with_a_link(cubic: CostAnalysis) -> 
     assert link.start == pytest.approx((extremum.output, cubic.cost.total_cost(extremum.output)))
     assert link.end == pytest.approx((extremum.output, extremum.value))
     assert "micro.cost.mark.min_atc.output" not in _layers(upper)
+
+
+def test_variable_cost_derivation_uses_four_linked_panels() -> None:
+    production = ShortRunProductionFunction(1.0, 2.0, -0.12)
+    grid = variable_cost_derivation_grid(production, 4.0, (3.0, 5.0))
+    assert (grid.rows, grid.cols, len(grid.placements)) == (2, 2, 4)
+    assert len(grid.links) == 8
+    ids = {
+        layer.id for placement in grid.placements for layer in placement.canvas.snapshot().layers
+    }
+    assert {
+        "micro.cost.derivation.labor_cost",
+        "micro.cost.derivation.production",
+        "micro.cost.derivation.output_cost",
+        "micro.cost.derivation.diagonal",
+    } <= ids
+
+
+def test_product_cost_derivation_uses_four_linked_panels() -> None:
+    production = ShortRunProductionFunction(1.0, 3.0, -0.3)
+    grid = product_cost_derivation_grid(production, 4.0)
+    assert (grid.rows, grid.cols, len(grid.placements)) == (2, 2, 4)
+    assert len(grid.links) == 7
+    ids = {
+        layer.id for placement in grid.placements for layer in placement.canvas.snapshot().layers
+    }
+    assert {
+        "micro.cost.product.mp",
+        "micro.cost.product.ap",
+        "micro.cost.product.tp",
+        "micro.cost.product.smc",
+        "micro.cost.product.avc",
+        "micro.cost.product.diagonal",
+    } <= ids
 
 
 def test_piecewise_canvas_shows_steps_capacity_and_price_bands(stepped: CostAnalysis) -> None:

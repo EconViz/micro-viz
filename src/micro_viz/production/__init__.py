@@ -7,13 +7,19 @@ from micro_viz.production.analysis import (
     ReturnsRegion,
     analyze_production,
 )
+from micro_viz.production.forms import (
+    CapacityConstrainedProductionFunction,
+    QuadraticProductionFunction,
+)
 from micro_viz.production.model import ProductionError, ShortRunProductionFunction
 
 __all__ = [
+    "CapacityConstrainedProductionFunction",
     "MarginalReturns",
     "ProductionAnalysis",
     "ProductionError",
     "ProductionPoint",
+    "QuadraticProductionFunction",
     "ReturnsRegion",
     "ShortRunProductionFunction",
     "analyze_production",

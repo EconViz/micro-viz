@@ -11,11 +11,14 @@ from common import Session, parser
 from micro_viz import (
     Cost,
     PlotTheme,
+    ShortRunProductionFunction,
     analyze_costs,
     cost_curves_grid,
     cost_curves_panels,
+    product_cost_derivation_grid,
     total_cost_canvas,
     unit_cost_canvas,
+    variable_cost_derivation_grid,
 )
 
 
@@ -48,6 +51,19 @@ def cost_examples(
         "cost_curves_total.svg": total_panel,
         "cost_curves_unit.svg": unit_panel,
         "cost_curves.svg": cost_curves_grid(analysis, theme=theme, titles=(title, None)),
+        "variable_cost_derivation.svg": variable_cost_derivation_grid(
+            ShortRunProductionFunction(1.0, 3.0, -0.3),
+            4.0,
+            (2.3, 3.8),
+            theme=theme,
+            title=title,
+        ),
+        "product_cost_derivation.svg": product_cost_derivation_grid(
+            ShortRunProductionFunction(1.0, 3.0, -0.3),
+            4.0,
+            theme=theme,
+            title=title,
+        ),
     }
     paths = []
     for name, figure in figures.items():

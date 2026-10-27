@@ -16,11 +16,14 @@ from micro_viz import (
     analyze_costs,
     analyze_revenue_cost,
     competitive_firm_canvas,
+    competitive_revenue_grid,
+    competitive_revenue_shift_grid,
     cost_shift_canvas,
     firm_supply_canvas,
     industry_supply_canvas,
     industry_supply_panels,
     market_and_firm_canvas,
+    monopoly_revenue_grid,
     producer_surplus_canvas,
     revenue_cost_profit_canvas,
     solve_competitive_firm,
@@ -65,6 +68,24 @@ def competition_examples(
     taxed_cost = cost.with_unit_tax(tax)
     taxed = analyze_costs(taxed_cost, output_range=(min_output, max_output), samples=samples)
     figures = {
+        "competitive_revenue.svg": competitive_revenue_grid(
+            market_price,
+            output_max=max_output,
+            theme=theme,
+            title=title,
+        ),
+        "competitive_revenue_shift.svg": competitive_revenue_shift_grid(
+            market_price,
+            market_price * 1.35,
+            output_max=max_output,
+            theme=theme,
+            title=title,
+        ),
+        "monopoly_revenue.svg": monopoly_revenue_grid(
+            demand,
+            theme=theme,
+            title=title,
+        ),
         "revenue_cost_profit.svg": revenue_cost_profit_canvas(
             analyze_revenue_cost(
                 cost, profit_price, output_range=(0.0, max_output), samples=samples

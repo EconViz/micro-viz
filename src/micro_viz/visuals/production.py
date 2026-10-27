@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping
 from dataclasses import replace
 
-from mosaickit import Canvas, Layer, PointLabelLayer, TextLayer
+from mosaickit import Canvas, CanvasGrid, GridLink, GridSpacing, Layer, PointLabelLayer, TextLayer
 from mosaickit.styles import Fill
 
 from micro_viz.production import MarginalReturns, ProductionAnalysis
@@ -209,6 +209,7 @@ def total_product_canvas(
     regions: bool = True,
     region_colors: Mapping[str, str] | None = None,
     guides: bool = True,
+    marks: bool = True,
     size: tuple[float, float] = FIGURE_SIZE,
     dpi: int = FIGURE_DPI,
 ) -> Canvas:
@@ -217,7 +218,8 @@ def total_product_canvas(
     ``regions`` shades and names the increasing, diminishing and negative marginal-return
     regions with braces under them, ``theme.brace_gap`` points below the shaded area;
     ``guides`` marks the inflection (MP maximum), the AP maximum (the ray from the origin is
-    tangent to TP there) and the TP maximum with dashed drop lines and marks under the axis.
+    tangent to TP there) and the TP maximum with dashed drop lines. ``marks`` writes their
+    input names under the axis; it can be switched off when this canvas is an upper panel.
     ``region_colors`` maps a region kind (``increasing``, ``diminishing``, ``negative``) to its
     own colour; whether regions are shaded and whether the shade stops at the curve are the
     theme's ``region_fill`` and ``region_extent`` (``[micro.region]``).
@@ -230,7 +232,14 @@ def total_product_canvas(
         (point.variable_input, point.total_product) for point in result.points
     )
     natural: Range = y_range or pad_range(0.0, max(value for _, value in points), margin)
-    frame = _layout(selected, natural, size, marks=guides or regions, braces=regions, texts=texts)
+    frame = _layout(
+        selected,
+        natural,
+        size,
+        marks=(guides and marks) or regions,
+        braces=regions,
+        texts=texts,
+    )
     x_axis: Range = (0.0, x_max if x_max is not None else result.input_range[1] * (1 + margin))
     canvas, layers = _setup(
         result,
@@ -266,9 +275,14 @@ def total_product_canvas(
             level = function.total_product(value)
             layers.append(drop_line(value, level, layer_id=f"micro.production.guide.{name}"))
             layers.append(dot((value, level), layer_id=f"micro.production.point.{name}"))
-            layers.append(
-                _mark(value, texts(key, input=symbol), layer_id=f"micro.production.mark.{name}")
-            )
+            if marks:
+                layers.append(
+                    _mark(
+                        value,
+                        texts(key, input=symbol),
+                        layer_id=f"micro.production.mark.{name}",
+                    )
+                )
         average_point = (
             result.average_product_max_input,
             function.total_product(result.average_product_max_input),
@@ -332,7 +346,9 @@ def average_marginal_product_canvas(
     )
 
     def upper(x: float) -> float:
-        return max(function.average_product(x) or 0.0, function.marginal_product(x))
+        average_product = function.average_product(x)
+        average_value = average_product if average_product is not None else 0.0
+        return float(max(average_value, function.marginal_product(x)))
 
     if regions:
         layers.extend(
@@ -400,4 +416,88 @@ def average_marginal_product_canvas(
     return canvas
 
 
-__all__ = ["average_marginal_product_canvas", "total_product_canvas"]
+def production_grid(
+    result: ProductionAnalysis,
+    *,
+    titles: tuple[str | None, str | None] = (None, None),
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    x_label: str | None = None,
+    x_max: float | None = None,
+    margin: float = MARGIN,
+    regions: bool = False,
+    region_colors: Mapping[str, str] | None = None,
+    guides: bool = True,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> CanvasGrid:
+    """TP above AP/MP, sharing one input scale and vertically aligned key inputs.
+
+    The three dashed links pair the TP inflection, AP-maximum tangency and TP maximum
+    with, respectively, the MP maximum, AP = MP point and MP = 0 point below. Because
+    both panels use the same horizontal range, the links remain vertical when the model,
+    range or physical figure size changes.
+    """
+    selected = resolve_theme(theme)
+    horizontal = x_max if x_max is not None else result.input_range[1] * (1 + margin)
+    upper = total_product_canvas(
+        result,
+        title=titles[0],
+        marks=False,
+        theme=selected,
+        labels=labels,
+        x_label=x_label,
+        x_max=horizontal,
+        margin=margin,
+        regions=regions,
+        region_colors=region_colors,
+        guides=guides,
+        size=size,
+        dpi=dpi,
+    )
+    lower = average_marginal_product_canvas(
+        result,
+        title=titles[1],
+        theme=selected,
+        labels=labels,
+        x_label=x_label,
+        x_max=horizontal,
+        margin=margin,
+        regions=regions,
+        region_colors=region_colors,
+        guides=guides,
+        size=size,
+        dpi=dpi,
+    )
+    links: list[GridLink] = []
+    if guides:
+        function = result.production_function
+        corresponding = (
+            (
+                result.inflection_input,
+                function.total_product(result.inflection_input),
+                function.marginal_product(result.inflection_input),
+            ),
+            (
+                result.average_product_max_input,
+                function.total_product(result.average_product_max_input),
+                function.marginal_product(result.average_product_max_input),
+            ),
+            (
+                result.total_product_max_input,
+                function.total_product(result.total_product_max_input),
+                0.0,
+            ),
+        )
+        links.extend(
+            GridLink(0, (variable_input, total), 1, (variable_input, product), role="micro.guide")
+            for variable_input, total, product in corresponding
+        )
+    return CanvasGrid(
+        [[upper], [lower]],
+        links=links,
+        spacing=GridSpacing(row_gap=0.18, outer=0.04),
+    )
+
+
+__all__ = ["average_marginal_product_canvas", "production_grid", "total_product_canvas"]

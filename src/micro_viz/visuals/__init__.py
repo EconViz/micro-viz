@@ -17,7 +17,12 @@ from micro_viz.visuals.capital import (
     resource_price_path_canvas,
 )
 from micro_viz.visuals.competition import (
+    competitive_demand_increase_grid,
     competitive_firm_canvas,
+    competitive_firm_supply_grid,
+    competitive_industry_supply_grid,
+    competitive_market_supply_equilibrium_grid,
+    competitive_short_run_grid,
     cost_shift_canvas,
     firm_supply_canvas,
     industry_supply_canvas,
@@ -31,8 +36,10 @@ from micro_viz.visuals.costs import (
     cost_curves_grid,
     cost_curves_panels,
     piecewise_cost_canvas,
+    product_cost_derivation_grid,
     total_cost_canvas,
     unit_cost_canvas,
+    variable_cost_derivation_grid,
 )
 from micro_viz.visuals.discrimination import (
     block_pricing_canvas,
@@ -86,8 +93,10 @@ from micro_viz.visuals.isoquant import (
 )
 from micro_viz.visuals.longrun import (
     envelope_figure_canvas,
+    external_scale_effect_canvas,
     lac_lmc_canvas,
     plant_family_canvas,
+    scale_cost_canvas,
 )
 from micro_viz.visuals.monopolistic import (
     excess_capacity_grid,
@@ -121,6 +130,7 @@ from micro_viz.visuals.pricing import (
 )
 from micro_viz.visuals.production import (
     average_marginal_product_canvas,
+    production_grid,
     total_product_canvas,
 )
 from micro_viz.visuals.production_extras import (
@@ -130,7 +140,18 @@ from micro_viz.visuals.production_extras import (
     scale_vs_learning_canvas,
     technology_shift_canvas,
 )
+from micro_viz.visuals.production_forms import (
+    capacity_production_grid,
+    quadratic_production_grid,
+    rational_production_region_grid,
+)
+from micro_viz.visuals.profit import competitive_profit_grid, monopoly_profit_grid
 from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_canvas
+from micro_viz.visuals.revenue import (
+    competitive_revenue_grid,
+    competitive_revenue_shift_grid,
+    monopoly_revenue_grid,
+)
 from micro_viz.visuals.uncertainty import (
     mean_variance_frontier_canvas,
     risk_attitude_canvas,
@@ -153,9 +174,18 @@ __all__ = [
     "block_pricing_canvas",
     "bonus_schedule_canvas",
     "capital_adjustment_canvas",
+    "capacity_production_grid",
     "cartel_elasticity_canvas",
     "competitive_firm_canvas",
+    "competitive_firm_supply_grid",
+    "competitive_industry_supply_grid",
+    "competitive_market_supply_equilibrium_grid",
+    "competitive_demand_increase_grid",
+    "competitive_short_run_grid",
     "competitive_pair_canvas",
+    "competitive_profit_grid",
+    "competitive_revenue_grid",
+    "competitive_revenue_shift_grid",
     "constant_cost_canvas",
     "cost_curves",
     "cost_curves_grid",
@@ -169,6 +199,7 @@ __all__ = [
     "efficiency_wage_canvas",
     "entry_canvas",
     "envelope_figure_canvas",
+    "external_scale_effect_canvas",
     "excess_capacity_grid",
     "expansion_path_canvas",
     "factor_equilibrium_canvas",
@@ -191,6 +222,7 @@ __all__ = [
     "lemons_market_canvas",
     "lerner_markup_canvas",
     "long_run_firm_canvas",
+    "scale_cost_canvas",
     "market_and_firm_canvas",
     "market_supply_canvas",
     "mean_variance_frontier_canvas",
@@ -202,6 +234,8 @@ __all__ = [
     "monopoly_demand_shift_canvas",
     "monopoly_dwl_canvas",
     "monopoly_monopsony_pair_canvas",
+    "monopoly_profit_grid",
+    "monopoly_revenue_grid",
     "monopoly_tax_canvas",
     "monopoly_totals_canvas",
     "monopoly_totals_grid",
@@ -213,13 +247,17 @@ __all__ = [
     "natural_monopoly_canvas",
     "peak_load_canvas",
     "piecewise_cost_canvas",
+    "product_cost_derivation_grid",
     "plant_family_canvas",
     "price_ceiling_canvas",
     "price_reaction_canvas",
     "producer_surplus_canvas",
+    "production_grid",
     "product_transformation_canvas",
     "production_frontier_canvas",
     "pure_bundling_canvas",
+    "quadratic_production_grid",
+    "rational_production_region_grid",
     "reaction_curves_canvas",
     "rent_canvas",
     "residual_demand_canvas",
@@ -249,6 +287,7 @@ __all__ = [
     "two_sector_labor_canvas",
     "union_wage_canvas",
     "unit_cost_canvas",
+    "variable_cost_derivation_grid",
     "utility_of_income_canvas",
     "valuation_scatter_canvas",
 ]

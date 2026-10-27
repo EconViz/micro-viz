@@ -10,10 +10,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common import Session, parser
 
 from micro_viz import (
+    CapacityConstrainedProductionFunction,
     PlotTheme,
+    QuadraticProductionFunction,
     ShortRunProductionFunction,
     analyze_production,
     average_marginal_product_canvas,
+    capacity_production_grid,
+    production_grid,
+    quadratic_production_grid,
+    rational_production_region_grid,
     total_product_canvas,
 )
 
@@ -27,21 +33,44 @@ def production_examples(
     samples: int,
     region_colors: dict[str, str] | None = None,
     title: str | None = None,
-) -> tuple[Path, Path]:
+) -> tuple[Path, Path, Path, Path, Path, Path]:
     """Write the TP and AP/MP figures, shaded to the top and under the curve, into ``output_dir``.
 
-    The two returned paths are the figures shaded to the top.
+    The three returned paths are the two standalone figures and their aligned panel grid.
     """
     analysis = analyze_production(function, input_range=input_range, samples=samples)
     output_dir.mkdir(parents=True, exist_ok=True)
     total_output = output_dir / "total_product.svg"
     products_output = output_dir / "average_marginal_product.svg"
+    panels_output = output_dir / "production_panels.svg"
+    quadratic_output = output_dir / "quadratic_production_panels.svg"
+    capacity_output = output_dir / "capacity_production_panels.svg"
+    rational_output = output_dir / "rational_production_region.svg"
     total_product_canvas(analysis, theme=theme, title=title, region_colors=region_colors).save(
         total_output
     )
     average_marginal_product_canvas(
         analysis, theme=theme, title=title, region_colors=region_colors
     ).save(products_output)
+    production_grid(
+        analysis,
+        theme=theme,
+        titles=(title, title),
+        region_colors=region_colors,
+    ).save(panels_output)
+    quadratic_production_grid(
+        QuadraticProductionFunction(productivity=12.0, curvature=1.0),
+        theme=theme,
+    ).save(quadratic_output)
+    capacity_production_grid(
+        CapacityConstrainedProductionFunction(productivity=4.0, capacity=16.0),
+        theme=theme,
+    ).save(capacity_output)
+    rational_production_region_grid(
+        ShortRunProductionFunction(linear=0.0, quadratic=3.0, cubic=-0.4),
+        ShortRunProductionFunction(linear=0.0, quadratic=3.0, cubic=-0.4),
+        theme=theme,
+    ).save(rational_output)
     # The same figures with the shade stopping at the curve instead of reaching the top.
     under = replace(theme, region_extent="curve")
     total_product_canvas(analysis, theme=under, title=title, region_colors=region_colors).save(
@@ -50,7 +79,14 @@ def production_examples(
     average_marginal_product_canvas(
         analysis, theme=under, title=title, region_colors=region_colors
     ).save(output_dir / "average_marginal_product_under_curve.svg")
-    return total_output, products_output
+    return (
+        total_output,
+        products_output,
+        panels_output,
+        quadratic_output,
+        capacity_output,
+        rational_output,
+    )
 
 
 def main() -> None:

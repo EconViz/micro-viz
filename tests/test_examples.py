@@ -21,7 +21,7 @@ def _plain_config(directory: Path) -> Path:
     return path
 
 
-def _run(output: Path, *arguments: str) -> tuple[str, str]:
+def _run(output: Path, *arguments: str) -> tuple[str, str, str, str, str, str]:
     config = _plain_config(output.parent / f"{output.name}-config")
     subprocess.run(
         [
@@ -41,17 +41,26 @@ def _run(output: Path, *arguments: str) -> tuple[str, str]:
     return (
         (output / "total_product.svg").read_text(encoding="utf-8"),
         (output / "average_marginal_product.svg").read_text(encoding="utf-8"),
+        (output / "production_panels.svg").read_text(encoding="utf-8"),
+        (output / "quadratic_production_panels.svg").read_text(encoding="utf-8"),
+        (output / "capacity_production_panels.svg").read_text(encoding="utf-8"),
+        (output / "rational_production_region.svg").read_text(encoding="utf-8"),
     )
 
 
-def test_production_example_renders_both_manual_theme_figures(tmp_path: Path) -> None:
-    total, products = _run(tmp_path)
-    combined = f"{total}\n{products}".lower()
+def test_production_example_renders_all_manual_theme_figures(tmp_path: Path) -> None:
+    total, products, panels, quadratic, capacity, rational = _run(tmp_path)
+    combined = f"{total}\n{products}\n{panels}\n{quadratic}\n{capacity}\n{rational}".lower()
     assert "#8c8c8c" in combined
     assert "#1a1a1a" in combined
     assert "#377eb8" not in combined
     assert "micro.production.tp" in total
     assert "micro.production.mp" in products
+    assert "micro.production.tp" in panels and "micro.production.mp" in panels
+    assert "micro.production.quadratic" in quadratic
+    assert "micro.production.capacity" in capacity
+    assert "micro.production.rational.labor" in rational
+    assert "micro.production.rational.capital" in rational
 
 
 def test_example_parameters_and_title_reach_the_figures(tmp_path: Path) -> None:
