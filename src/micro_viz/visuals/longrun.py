@@ -2,16 +2,270 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
+from typing import Literal
 
-from mosaickit import Canvas
+from mosaickit import ArrowLayer, Canvas, PathLayer, PointLabelLayer, Stroke, TextLayer
 
 from micro_viz.longrun import EnvelopeFigure, PlantFamily
 from micro_viz.theme import PlotTheme
-from micro_viz.visuals.common import FIGURE_DPI, FIGURE_SIZE, MARGIN, Texts, resolve_theme
+from micro_viz.visuals.axes import axes_layers
+from micro_viz.visuals.common import (
+    FIGURE_DPI,
+    FIGURE_SIZE,
+    MARGIN,
+    Texts,
+    axis_mark,
+    dot,
+    drop_line,
+    guide,
+    new_canvas,
+    nudge_labels,
+    resolve_theme,
+)
 from micro_viz.visuals.plane import Plane, sample
 
 Sizes = tuple[float, ...]
+ScaleCostRegime = Literal["economies", "constant", "diseconomies"]
+ExternalScaleEffect = Literal["economy", "diseconomy"]
+
+
+def external_scale_effect_canvas(
+    effect: ExternalScaleEffect,
+    *,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    samples: int = 121,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """Parallel shift of the whole LAC curve from an external economy or diseconomy."""
+    del labels
+    if effect not in ("economy", "diseconomy"):
+        raise ValueError("effect must be economy or diseconomy")
+    selected = resolve_theme(theme)
+    canvas = new_canvas(
+        selected,
+        x_range=(0.0, 10.0),
+        y_range=(0.0, 8.0),
+        x_label="$Q$",
+        y_label="$P$",
+        title=title,
+        size=size,
+        dpi=dpi,
+    )
+    xs = tuple(1.0 + 7.4 * index / (samples - 1) for index in range(samples))
+    lower = tuple((x, 1.45 + 0.12 * (x - 4.7) ** 2) for x in xs)
+    upper = tuple((x, y + 1.35) for x, y in lower)
+    before, after = (upper, lower) if effect == "economy" else (lower, upper)
+    start_y = 1.45 + (1.35 if effect == "economy" else 0.0)
+    end_y = 1.45 + (0.0 if effect == "economy" else 1.35)
+    layers = [
+        *axes_layers((0.0, 10.0), (0.0, 8.0), x_label="$Q$", y_label="$P$"),
+        PathLayer(
+            before,
+            Stroke(color=selected.colors["average"], width=selected.curve_width),
+            id=f"micro.longrun.external.{effect}.before",
+            role="micro.curve.average",
+            z_index=2,
+        ),
+        PathLayer(
+            after,
+            Stroke(color=selected.colors["average"], width=selected.curve_width),
+            id=f"micro.longrun.external.{effect}.after",
+            role="micro.curve.average",
+            z_index=2,
+        ),
+        TextLayer(
+            before[-1],
+            "$LAC$",
+            id=f"micro.longrun.external.{effect}.before.label",
+            role="micro.curve.average",
+            offset=(8.0, 0.0),
+            anchor="left",
+            math=True,
+        ),
+        TextLayer(
+            after[-1],
+            "$LAC_1$",
+            id=f"micro.longrun.external.{effect}.after.label",
+            role="micro.curve.average",
+            offset=(8.0, 0.0),
+            anchor="left",
+            math=True,
+        ),
+        ArrowLayer(
+            (4.7, start_y),
+            (4.7, end_y),
+            id=f"micro.longrun.external.{effect}.arrow",
+            role="micro.arrow",
+            z_index=5,
+        ),
+    ]
+    canvas.extend(nudge_labels(layers, selected.label_nudges))
+    return canvas
+
+
+def scale_cost_canvas(
+    regime: ScaleCostRegime,
+    *,
+    output_max: float = 10.0,
+    cost_max: float = 10.0,
+    title: str | None = None,
+    theme: PlotTheme | None = None,
+    labels: Mapping[str, str] | None = None,
+    samples: int = 121,
+    size: tuple[float, float] = FIGURE_SIZE,
+    dpi: int = FIGURE_DPI,
+) -> Canvas:
+    """LAC enveloping two SAC curves under economies, constant returns or diseconomies."""
+    del labels
+    if regime not in ("economies", "constant", "diseconomies"):
+        raise ValueError("regime must be economies, constant or diseconomies")
+    if output_max <= 0 or cost_max <= 0 or samples < 2:
+        raise ValueError("axis maxima must be positive and samples must be at least 2")
+    q1, q2 = {
+        "economies": (2.8, 5.2),
+        "constant": (3.2, 6.5),
+        "diseconomies": (4.3, 6.8),
+    }[regime]
+
+    def lac(output: float) -> float:
+        if regime == "economies":
+            return 1.15 + 5.2 / (1.0 + 0.62 * output)
+        if regime == "constant":
+            return 2.8
+        return 0.72 + 0.065 * output**2
+
+    def path(
+        function: Callable[[float], float], low: float, high: float
+    ) -> tuple[tuple[float, float], ...]:
+        return tuple(
+            (
+                x := low + (high - low) * index / (samples - 1),
+                function(x),
+            )
+            for index in range(samples)
+        )
+
+    lac_points = path(lac, 1.0, 8.4)
+    sac1 = path(lambda q: lac(q) + 0.48 * (q - q1) ** 2, max(0.7, q1 - 2.0), q1 + 2.0)
+    sac2 = path(lambda q: lac(q) + 0.48 * (q - q2) ** 2, q2 - 2.0, min(9.0, q2 + 2.0))
+    y1, y2 = lac(q1), lac(q2)
+    selected = resolve_theme(theme)
+    canvas = new_canvas(
+        selected,
+        x_range=(0.0, output_max),
+        y_range=(0.0, cost_max),
+        x_label="$Q$",
+        y_label="$P$",
+        title=title,
+        size=size,
+        dpi=dpi,
+    )
+    names = ("A", "B") if regime != "diseconomies" else ("B", "A")
+    upper_mark = "$LAC_{12}$" if regime == "diseconomies" else "$LAC_1$"
+    lower_mark = "$LAC_2$" if regime == "economies" else "$LAC_1$"
+    layers = [
+        *axes_layers((0.0, output_max), (0.0, cost_max), x_label="$Q$", y_label="$P$"),
+        PathLayer(
+            sac1,
+            Stroke(color=selected.colors["marginal"], width=selected.after_width),
+            id=f"micro.longrun.scale.{regime}.sac.1",
+            role="micro.curve.after",
+            z_index=2,
+        ),
+        PathLayer(
+            sac2,
+            Stroke(color=selected.colors["marginal"], width=selected.after_width),
+            id=f"micro.longrun.scale.{regime}.sac.2",
+            role="micro.curve.after",
+            z_index=2,
+        ),
+        PathLayer(
+            lac_points,
+            Stroke(color=selected.colors["average"], width=selected.curve_width),
+            id=f"micro.longrun.scale.{regime}.lac",
+            role="micro.curve.average",
+            z_index=3,
+        ),
+        TextLayer(
+            sac1[8],
+            "$SAC(K_1)$",
+            id=f"micro.longrun.scale.{regime}.sac.1.label",
+            role="micro.curve.after",
+            offset=(0.0, 8.0),
+            anchor="bottom-left",
+            math=True,
+        ),
+        TextLayer(
+            sac2[-10],
+            "$SAC(K_2)$",
+            id=f"micro.longrun.scale.{regime}.sac.2.label",
+            role="micro.curve.after",
+            offset=(0.0, 8.0),
+            anchor="bottom-right",
+            math=True,
+        ),
+        TextLayer(
+            lac_points[-1],
+            "$LAC$",
+            id=f"micro.longrun.scale.{regime}.lac.label",
+            role="micro.curve.average",
+            offset=(8.0, 0.0),
+            anchor="left",
+            math=True,
+            z_index=7,
+        ),
+        dot((q1, y1), layer_id=f"micro.longrun.scale.{regime}.point.1"),
+        dot((q2, y2), layer_id=f"micro.longrun.scale.{regime}.point.2"),
+        PointLabelLayer(
+            (q1, y1),
+            names[0],
+            id=f"micro.longrun.scale.{regime}.point.1.label",
+            role="micro.point",
+            z_index=7,
+        ),
+        PointLabelLayer(
+            (q2, y2),
+            names[1],
+            id=f"micro.longrun.scale.{regime}.point.2.label",
+            role="micro.point",
+            z_index=7,
+        ),
+        drop_line(q1, y1, layer_id=f"micro.longrun.scale.{regime}.guide.q1"),
+        drop_line(q2, y2, layer_id=f"micro.longrun.scale.{regime}.guide.q2"),
+        axis_mark("x", q1, "$Q_1$", layer_id=f"micro.longrun.scale.{regime}.mark.q1"),
+        axis_mark("x", q2, "$Q_2$", layer_id=f"micro.longrun.scale.{regime}.mark.q2"),
+    ]
+    if regime == "constant":
+        layers.append(
+            axis_mark("y", y1, lower_mark, layer_id=f"micro.longrun.scale.{regime}.mark.cost")
+        )
+    else:
+        high_q, high_y = (q1, y1) if y1 > y2 else (q2, y2)
+        low_q, low_y = (q2, y2) if y1 > y2 else (q1, y1)
+        layers.extend(
+            (
+                guide(
+                    (0.0, high_y),
+                    (high_q, high_y),
+                    layer_id=f"micro.longrun.scale.{regime}.guide.high",
+                ),
+                guide(
+                    (0.0, low_y), (low_q, low_y), layer_id=f"micro.longrun.scale.{regime}.guide.low"
+                ),
+                axis_mark(
+                    "y", high_y, upper_mark, layer_id=f"micro.longrun.scale.{regime}.mark.high"
+                ),
+                axis_mark(
+                    "y", low_y, lower_mark, layer_id=f"micro.longrun.scale.{regime}.mark.low"
+                ),
+            )
+        )
+    canvas.extend(nudge_labels(layers, selected.label_nudges))
+    return canvas
 
 
 def _plane(
@@ -248,4 +502,10 @@ def envelope_figure_canvas(
     return plane.finish()
 
 
-__all__ = ["envelope_figure_canvas", "lac_lmc_canvas", "plant_family_canvas"]
+__all__ = [
+    "envelope_figure_canvas",
+    "external_scale_effect_canvas",
+    "lac_lmc_canvas",
+    "scale_cost_canvas",
+    "plant_family_canvas",
+]

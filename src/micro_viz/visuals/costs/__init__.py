@@ -20,6 +20,10 @@ from micro_viz.visuals.costs.curves import (
     total_cost_canvas,
     unit_cost_canvas,
 )
+from micro_viz.visuals.costs.derivation import (
+    product_cost_derivation_grid,
+    variable_cost_derivation_grid,
+)
 from micro_viz.visuals.costs.piecewise import piecewise_cost_canvas
 
 __all__ = [
@@ -27,6 +31,8 @@ __all__ = [
     "cost_curves",
     "cost_curves_grid",
     "piecewise_cost_canvas",
+    "product_cost_derivation_grid",
     "total_cost_canvas",
     "unit_cost_canvas",
+    "variable_cost_derivation_grid",
 ]

@@ -9,12 +9,38 @@ import pytest
 from micro_viz import (
     LongRunError,
     PlantFamily,
+    external_scale_effect_canvas,
     lac_lmc_canvas,
     plant_family_canvas,
+    scale_cost_canvas,
 )
 
 ROOT = Path(__file__).parents[1]
 FAMILY = PlantFamily(10.0, 4.0, 1.0, 0.6)
+
+
+def test_scale_cost_figures_have_two_sac_curves_tangent_to_lac() -> None:
+    for regime in ("economies", "constant", "diseconomies"):
+        canvas = scale_cost_canvas(regime)  # type: ignore[arg-type]
+        ids = {layer.id for layer in canvas.snapshot().layers}
+        assert {
+            f"micro.longrun.scale.{regime}.lac",
+            f"micro.longrun.scale.{regime}.sac.1",
+            f"micro.longrun.scale.{regime}.sac.2",
+            f"micro.longrun.scale.{regime}.point.1",
+            f"micro.longrun.scale.{regime}.point.2",
+        } <= ids
+
+
+def test_external_scale_effects_shift_the_whole_lac_curve() -> None:
+    for effect in ("economy", "diseconomy"):
+        canvas = external_scale_effect_canvas(effect)  # type: ignore[arg-type]
+        ids = {layer.id for layer in canvas.snapshot().layers}
+        assert {
+            f"micro.longrun.external.{effect}.before",
+            f"micro.longrun.external.{effect}.after",
+            f"micro.longrun.external.{effect}.arrow",
+        } <= ids
 
 
 def test_lac_is_lowest_at_the_efficient_scale_and_lmc_cuts_it_there() -> None:

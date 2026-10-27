@@ -160,10 +160,12 @@ from micro_viz.pricing import (
     profit_by_entry_fee,
 )
 from micro_viz.production import (
+    CapacityConstrainedProductionFunction,
     MarginalReturns,
     ProductionAnalysis,
     ProductionError,
     ProductionPoint,
+    QuadraticProductionFunction,
     ReturnsRegion,
     ShortRunProductionFunction,
     analyze_production,
@@ -220,6 +222,7 @@ __all__ = [
     "BuyerType",
     "CapitalAdjustment",
     "CapitalError",
+    "CapacityConstrainedProductionFunction",
     "CeilingOutcome",
     "ChainOutcome",
     "CobbDouglas",
@@ -302,6 +305,7 @@ __all__ = [
     "ProductionError",
     "ProductionFrontier",
     "ProductionPoint",
+    "QuadraticProductionFunction",
     "Regime",
     "Returns",
     "ReturnsRegion",

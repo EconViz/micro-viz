@@ -13,8 +13,10 @@ from micro_viz import (
     PlantFamily,
     PlotTheme,
     envelope_figure_canvas,
+    external_scale_effect_canvas,
     lac_lmc_canvas,
     plant_family_canvas,
+    scale_cost_canvas,
 )
 
 
@@ -40,6 +42,15 @@ def long_run_examples(
         ),
         "plant_family.svg": plant_family_canvas(
             family, sizes, output_max, smc_for=smc_for, theme=theme, title=title
+        ),
+        "economies_of_scale.svg": scale_cost_canvas("economies", theme=theme, title=title),
+        "constant_returns_to_scale.svg": scale_cost_canvas("constant", theme=theme, title=title),
+        "diseconomies_of_scale.svg": scale_cost_canvas("diseconomies", theme=theme, title=title),
+        "external_economy_of_scale.svg": external_scale_effect_canvas(
+            "economy", theme=theme, title=title
+        ),
+        "external_diseconomy_of_scale.svg": external_scale_effect_canvas(
+            "diseconomy", theme=theme, title=title
         ),
     }
     paths = []

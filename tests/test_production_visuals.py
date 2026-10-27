@@ -22,6 +22,7 @@ from micro_viz import (
     ShortRunProductionFunction,
     analyze_production,
     average_marginal_product_canvas,
+    production_grid,
     shared_theme,
     total_product_canvas,
 )
@@ -185,6 +186,38 @@ def test_both_production_canvases_render_to_svg(
         canvas.save(output)
         assert output.stat().st_size > 0
         assert "micro.production" in output.read_text(encoding="utf-8")
+
+
+def test_production_grid_aligns_the_three_corresponding_inputs(
+    analysis: ProductionAnalysis, tmp_path: Path
+) -> None:
+    grid = production_grid(analysis, theme=shared_theme("manual"))
+
+    assert (grid.rows, grid.cols) == (2, 1)
+    assert len(grid.links) == 3
+    upper_layers = _layers(grid.placements[0].canvas)
+    lower_layers = _layers(grid.placements[1].canvas)
+    assert not [layer_id for layer_id in upper_layers if ".mark." in layer_id]
+    assert all(
+        f"micro.production.mark.{name}" in lower_layers
+        for name in ("inflection", "average_max", "total_max")
+    )
+    expected = (
+        analysis.inflection_input,
+        analysis.average_product_max_input,
+        analysis.total_product_max_input,
+    )
+    for link, variable_input in zip(grid.links, expected, strict=True):
+        assert link.start_cell == 0 and link.end_cell == 1
+        assert link.start[0] == pytest.approx(variable_input)
+        assert link.end[0] == pytest.approx(variable_input)
+
+    output = tmp_path / "production-panels.svg"
+    grid.save(output)
+    svg = output.read_text(encoding="utf-8")
+    assert "micro.production.tp" in svg
+    assert "micro.production.ap" in svg
+    assert "micro.production.mp" in svg
 
 
 def _first_numbers(svg: str, element_id: str) -> list[tuple[float, float]]:

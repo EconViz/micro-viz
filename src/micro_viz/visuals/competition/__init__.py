@@ -35,10 +35,24 @@ from micro_viz.visuals.competition.surplus import (
     producer_surplus_canvas,
     revenue_cost_profit_canvas,
 )
+from micro_viz.visuals.competition.supply_cases import (
+    competitive_firm_supply_grid,
+    competitive_industry_supply_grid,
+    competitive_market_supply_equilibrium_grid,
+)
+from micro_viz.visuals.competition.types import (
+    competitive_demand_increase_grid,
+    competitive_short_run_grid,
+)
 
 __all__ = [
     "PANEL_SIZE",
     "competitive_firm_canvas",
+    "competitive_firm_supply_grid",
+    "competitive_industry_supply_grid",
+    "competitive_market_supply_equilibrium_grid",
+    "competitive_demand_increase_grid",
+    "competitive_short_run_grid",
     "cost_shift_canvas",
     "firm_supply_canvas",
     "industry_supply_canvas",
