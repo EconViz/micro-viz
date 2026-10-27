@@ -130,7 +130,10 @@ from micro_viz.visuals.pricing import (
 )
 from micro_viz.visuals.production import (
     average_marginal_product_canvas,
+    capacity_production_grid,
     production_grid,
+    quadratic_production_grid,
+    rational_production_region_grid,
     total_product_canvas,
 )
 from micro_viz.visuals.production_extras import (
@@ -139,11 +142,6 @@ from micro_viz.visuals.production_extras import (
     production_frontier_canvas,
     scale_vs_learning_canvas,
     technology_shift_canvas,
-)
-from micro_viz.visuals.production_forms import (
-    capacity_production_grid,
-    quadratic_production_grid,
-    rational_production_region_grid,
 )
 from micro_viz.visuals.profit import competitive_profit_grid, monopoly_profit_grid
 from micro_viz.visuals.regulation import natural_monopoly_canvas, price_ceiling_canvas

@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping
 from dataclasses import replace
 
-from mosaickit import Canvas, CanvasGrid, GridLink, GridSpacing, Layer, PointLabelLayer, TextLayer
+from mosaickit import Canvas, Layer, PointLabelLayer, TextLayer
 from mosaickit.styles import Fill
 
 from micro_viz.production import MarginalReturns, ProductionAnalysis
@@ -416,88 +416,4 @@ def average_marginal_product_canvas(
     return canvas
 
 
-def production_grid(
-    result: ProductionAnalysis,
-    *,
-    titles: tuple[str | None, str | None] = (None, None),
-    theme: PlotTheme | None = None,
-    labels: Mapping[str, str] | None = None,
-    x_label: str | None = None,
-    x_max: float | None = None,
-    margin: float = MARGIN,
-    regions: bool = False,
-    region_colors: Mapping[str, str] | None = None,
-    guides: bool = True,
-    size: tuple[float, float] = FIGURE_SIZE,
-    dpi: int = FIGURE_DPI,
-) -> CanvasGrid:
-    """TP above AP/MP, sharing one input scale and vertically aligned key inputs.
-
-    The three dashed links pair the TP inflection, AP-maximum tangency and TP maximum
-    with, respectively, the MP maximum, AP = MP point and MP = 0 point below. Because
-    both panels use the same horizontal range, the links remain vertical when the model,
-    range or physical figure size changes.
-    """
-    selected = resolve_theme(theme)
-    horizontal = x_max if x_max is not None else result.input_range[1] * (1 + margin)
-    upper = total_product_canvas(
-        result,
-        title=titles[0],
-        marks=False,
-        theme=selected,
-        labels=labels,
-        x_label=x_label,
-        x_max=horizontal,
-        margin=margin,
-        regions=regions,
-        region_colors=region_colors,
-        guides=guides,
-        size=size,
-        dpi=dpi,
-    )
-    lower = average_marginal_product_canvas(
-        result,
-        title=titles[1],
-        theme=selected,
-        labels=labels,
-        x_label=x_label,
-        x_max=horizontal,
-        margin=margin,
-        regions=regions,
-        region_colors=region_colors,
-        guides=guides,
-        size=size,
-        dpi=dpi,
-    )
-    links: list[GridLink] = []
-    if guides:
-        function = result.production_function
-        corresponding = (
-            (
-                result.inflection_input,
-                function.total_product(result.inflection_input),
-                function.marginal_product(result.inflection_input),
-            ),
-            (
-                result.average_product_max_input,
-                function.total_product(result.average_product_max_input),
-                function.marginal_product(result.average_product_max_input),
-            ),
-            (
-                result.total_product_max_input,
-                function.total_product(result.total_product_max_input),
-                0.0,
-            ),
-        )
-        links.extend(
-            GridLink(0, (variable_input, total), 1, (variable_input, product), role="micro.guide")
-            for variable_input, total, product in corresponding
-        )
-    return CanvasGrid(
-        [[upper], [lower]],
-        links=links,
-        spacing=GridSpacing(row_gap=0.18, outer=0.04),
-    )
-
-
-__all__ = ["average_marginal_product_canvas", "production_grid", "total_product_canvas"]
+__all__ = ["average_marginal_product_canvas", "total_product_canvas"]
