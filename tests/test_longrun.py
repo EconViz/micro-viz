@@ -3,6 +3,7 @@ from __future__ import annotations
 import subprocess
 import sys
 from pathlib import Path
+from typing import Literal
 
 import pytest
 
@@ -20,8 +21,13 @@ FAMILY = PlantFamily(10.0, 4.0, 1.0, 0.6)
 
 
 def test_scale_cost_figures_have_two_sac_curves_tangent_to_lac() -> None:
-    for regime in ("economies", "constant", "diseconomies"):
-        canvas = scale_cost_canvas(regime)  # type: ignore[arg-type]
+    regimes: tuple[Literal["economies", "constant", "diseconomies"], ...] = (
+        "economies",
+        "constant",
+        "diseconomies",
+    )
+    for regime in regimes:
+        canvas = scale_cost_canvas(regime)
         ids = {layer.id for layer in canvas.snapshot().layers}
         assert {
             f"micro.longrun.scale.{regime}.lac",
@@ -33,8 +39,12 @@ def test_scale_cost_figures_have_two_sac_curves_tangent_to_lac() -> None:
 
 
 def test_external_scale_effects_shift_the_whole_lac_curve() -> None:
-    for effect in ("economy", "diseconomy"):
-        canvas = external_scale_effect_canvas(effect)  # type: ignore[arg-type]
+    effects: tuple[Literal["economy", "diseconomy"], ...] = (
+        "economy",
+        "diseconomy",
+    )
+    for effect in effects:
+        canvas = external_scale_effect_canvas(effect)
         ids = {layer.id for layer in canvas.snapshot().layers}
         assert {
             f"micro.longrun.external.{effect}.before",
