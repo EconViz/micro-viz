@@ -5,8 +5,24 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from enum import Enum
+from typing import Protocol, cast
 
 from micro_viz.firm.production.model import ProductionError, ShortRunProductionFunction
+
+
+class ProductionModel(Protocol):
+    """One-input production behavior consumed by the analysis layer."""
+
+    input_symbol: str
+    output_symbol: str
+
+    def total_product(self, variable_input: float) -> float: ...
+
+    def average_product(self, variable_input: float) -> float | None: ...
+
+    def marginal_product(self, variable_input: float) -> float: ...
+
+    def to_dict(self) -> dict[str, object]: ...
 
 
 class MarginalReturns(str, Enum):
@@ -55,9 +71,9 @@ class ReturnsRegion:
 
 @dataclass(frozen=True, slots=True)
 class ProductionAnalysis:
-    """Sampled products and exact regime boundaries for one production function."""
+    """Sampled products and exact or sample-estimated boundaries for a production function."""
 
-    production_function: ShortRunProductionFunction
+    production_function: ProductionModel
     input_range: tuple[float, float]
     points: tuple[ProductionPoint, ...]
     regions: tuple[ReturnsRegion, ...]
@@ -79,7 +95,7 @@ class ProductionAnalysis:
 
 
 def analyze_production(
-    production_function: ShortRunProductionFunction,
+    production_function: ProductionModel,
     *,
     input_range: tuple[float, float],
     samples: int = 201,
@@ -106,8 +122,17 @@ def analyze_production(
         )
         for value in inputs
     )
-    inflection = production_function.inflection_input
-    maximum = production_function.total_product_max_input
+    if isinstance(production_function, ShortRunProductionFunction):
+        inflection = production_function.inflection_input
+        average_maximum = production_function.average_product_max_input
+        maximum = production_function.total_product_max_input
+    else:
+        inflection = max(points, key=lambda point: point.marginal_product).variable_input
+        average_maximum = max(
+            (point for point in points if point.average_product is not None),
+            key=lambda point: cast(float, point.average_product),
+        ).variable_input
+        maximum = max(points, key=lambda point: point.total_product).variable_input
     candidate_regions = (
         (MarginalReturns.INCREASING, 0.0, inflection),
         (MarginalReturns.DIMINISHING, inflection, maximum),
@@ -124,7 +149,7 @@ def analyze_production(
         points=points,
         regions=regions,
         inflection_input=inflection,
-        average_product_max_input=production_function.average_product_max_input,
+        average_product_max_input=average_maximum,
         total_product_max_input=maximum,
     )
 
@@ -132,6 +157,7 @@ def analyze_production(
 __all__ = [
     "MarginalReturns",
     "ProductionAnalysis",
+    "ProductionModel",
     "ProductionPoint",
     "ReturnsRegion",
     "analyze_production",

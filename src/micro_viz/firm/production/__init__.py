@@ -11,6 +11,7 @@ from micro_viz.firm.production.forms import (
     CapacityConstrainedProductionFunction,
     QuadraticProductionFunction,
 )
+from micro_viz.firm.production.function import ProductionFunction
 from micro_viz.firm.production.isocost import (
     Bundle,
     cost_minimizing_bundle,
@@ -28,8 +29,6 @@ from micro_viz.firm.production.isoquant import (
     ray_points,
 )
 from micro_viz.firm.production.model import ProductionError, ShortRunProductionFunction
-
-ProductionFunction = ShortRunProductionFunction
 
 __all__ = [
     "CapacityConstrainedProductionFunction",

@@ -39,6 +39,10 @@ firm.marginal_cost(2)  # 4
 firm.profit(2, price=8)  # 2
 ```
 
+`ProductionFunction.from_callable(lambda labor: ...)` accepts a continuous Python function.
+`ProductionFunction.from_table(labor=[...], output=[...])` accepts a production schedule and
+uses straight segments between observations, so TP, AP, and interval MP can be drawn together.
+
 The `firm` domain contains only `production`, `costs`, `perfect_competition`, `monopoly`,
 `monopolistic_competition`, and `oligopoly`. Long-run cost belongs to `costs`; isoquants and
 isocost analysis belong to `production`; entry and pricing strategies live with the market
