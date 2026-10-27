@@ -4,7 +4,7 @@ mosaickit's shared themes (``mosaickit.themes``) give every EconViz package the 
 looks: each assigns a colour to a small set of roles plus line, marker and label scales.
 :data:`ELEMENT_ROLES` is the only place that says which role each micro-viz element takes.
 Sizes below are documented defaults; ``econ-viz.toml`` overrides them (see
-``micro_viz.config``), and a figure never contains a colour or a font name of its own.
+``micro_viz.core.config``), and a figure never contains a colour or a font name of its own.
 """
 
 from __future__ import annotations
@@ -115,7 +115,7 @@ class PlotTheme:
     math_font: MathFont | str | os.PathLike[str] | None = None
     # The language of the built-in figure text: "en", "zh-TW" or "zh-CN".
     language: str = "en"
-    # A default move for whole groups of labels (see micro_viz.label_groups).
+    # A default move for whole groups of labels (see micro_viz.core.label_groups).
     label_nudges: Mapping[str, Nudge] = field(default_factory=dict, hash=False)
 
     def __post_init__(self) -> None:

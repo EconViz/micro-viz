@@ -20,9 +20,9 @@ from mosaickit import (
 )
 from mosaickit.styles.nudge import Nudge
 
-from micro_viz.config import default_theme
-from micro_viz.label_groups import label_group
-from micro_viz.theme import PlotTheme
+from micro_viz.core.config import default_theme
+from micro_viz.core.label_groups import label_group
+from micro_viz.core.theme import PlotTheme
 
 Point = tuple[float, float]
 Range = tuple[float, float]

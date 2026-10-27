@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from micro_viz import shared_theme
-from micro_viz.i18n import LANGUAGES, labels, text, validate_language
+from micro_viz.core.i18n import LANGUAGES, labels, text, validate_language
 
 
 def test_every_language_has_the_same_text_ids() -> None:

@@ -6,7 +6,7 @@ import ast
 import re
 from pathlib import Path
 
-from micro_viz.i18n import labels
+from micro_viz.core.i18n import labels
 
 SOURCE = Path(__file__).parents[1] / "src" / "micro_viz"
 EXAMPLES = Path(__file__).parents[1] / "examples" / "scripts"

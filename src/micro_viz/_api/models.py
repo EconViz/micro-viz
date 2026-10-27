@@ -1,31 +1,9 @@
 """Models, solvers and settings exposed by the package root."""
 
-from micro_viz.advertising import (
-    AdvertisingDecision,
-    AdvertisingError,
-    AdvertisingOutcome,
-)
-from micro_viz.auctions import (
-    Auction,
-    AuctionError,
-)
-from micro_viz.bundling import (
-    BundlingError,
-    BundlingOutcome,
-    Offer,
-    ValuationProfile,
-    best_mixed,
-    best_pure,
-    best_separate,
-    choice,
-    choice_regions,
-    evaluate_offer,
-)
-from micro_viz.capital import (
-    CapitalError,
-    ExhaustibleResourcePath,
-)
-from micro_viz.competition import (
+from micro_viz.core.config import Config, default_theme
+from micro_viz.core.formulas import FormulaError
+from micro_viz.core.theme import PlotTheme, shared_theme
+from micro_viz.firm.competition import (
     CompetitionError,
     CompetitiveOutcome,
     FirmSupply,
@@ -40,8 +18,7 @@ from micro_viz.competition import (
     shutdown_price,
     solve_competitive_firm,
 )
-from micro_viz.config import Config, default_theme
-from micro_viz.costs import (
+from micro_viz.firm.costs import (
     Cost,
     CostAnalysis,
     CostError,
@@ -53,51 +30,11 @@ from micro_viz.costs import (
     PiecewiseCost,
     analyze_costs,
 )
-from micro_viz.demand import Demand, DemandError
-from micro_viz.discrimination import (
-    Block,
-    BlockPricing,
-    DiscriminationError,
-    FirstDegree,
-    MarketSale,
-    ThirdDegree,
-    block_pricing,
-    first_degree,
-    third_degree,
-)
-from micro_viz.entry import (
+from micro_viz.firm.entry import (
     IndustryEntry,
     MarketPoint,
 )
-from micro_viz.factors import (
-    CapitalAdjustment,
-    DerivedDemand,
-    FactorError,
-    FactorMarket,
-    IndustryFactorDemand,
-    InputAdjustment,
-    LandMarket,
-    LinearSupply,
-    LinearValue,
-    Monopsonist,
-    MonopsonyOutcome,
-    TwoSectorLabor,
-    TwoSectorOutcome,
-    UnionOutcome,
-    UnionWageSetting,
-)
-from micro_viz.formulas import FormulaError
-from micro_viz.information import (
-    BonusSchedule,
-    EfficiencyWage,
-    EfficiencyWageOutcome,
-    InformationError,
-    LemonsMarket,
-    MoralHazard,
-    MoralHazardOutcome,
-    Signaling,
-)
-from micro_viz.isoquant import (
+from micro_viz.firm.isoquant import (
     Bundle,
     CobbDouglas,
     FixedProportions,
@@ -111,17 +48,17 @@ from micro_viz.isoquant import (
     isocost_segment,
     ray_points,
 )
-from micro_viz.longrun import (
+from micro_viz.firm.longrun import (
     EnvelopeFigure,
     LongRunError,
     PlantFamily,
 )
-from micro_viz.monopolistic import (
+from micro_viz.firm.monopolistic import (
     MonopolisticOutcome,
     long_run_demand,
     solve_monopolistic_competition,
 )
-from micro_viz.monopoly import (
+from micro_viz.firm.monopoly import (
     Monopolist,
     MonopolyError,
     MonopolyOutcome,
@@ -130,7 +67,7 @@ from micro_viz.monopoly import (
     elasticity,
     marginal_revenue,
 )
-from micro_viz.oligopoly import (
+from micro_viz.firm.oligopoly import (
     BertrandEquilibrium,
     CournotEquilibrium,
     DifferentiatedDuopoly,
@@ -147,7 +84,53 @@ from micro_viz.oligopoly import (
     split,
     stackelberg,
 )
-from micro_viz.pricing import (
+from micro_viz.firm.production import (
+    CapacityConstrainedProductionFunction,
+    MarginalReturns,
+    ProductionAnalysis,
+    ProductionError,
+    ProductionPoint,
+    QuadraticProductionFunction,
+    ReturnsRegion,
+    ShortRunProductionFunction,
+    analyze_production,
+)
+from micro_viz.firm.production.extras import (
+    LearningAverageCost,
+    LearningCurve,
+    ProductionFrontier,
+    ProductTransformation,
+    TechnologyShift,
+)
+from micro_viz.firm.strategy.advertising import (
+    AdvertisingDecision,
+    AdvertisingError,
+    AdvertisingOutcome,
+)
+from micro_viz.firm.strategy.bundling import (
+    BundlingError,
+    BundlingOutcome,
+    Offer,
+    ValuationProfile,
+    best_mixed,
+    best_pure,
+    best_separate,
+    choice,
+    choice_regions,
+    evaluate_offer,
+)
+from micro_viz.firm.strategy.discrimination import (
+    Block,
+    BlockPricing,
+    DiscriminationError,
+    FirstDegree,
+    MarketSale,
+    ThirdDegree,
+    block_pricing,
+    first_degree,
+    third_degree,
+)
+from micro_viz.firm.strategy.pricing import (
     BuyerType,
     IntertemporalOutcome,
     IntertemporalPricing,
@@ -159,33 +142,57 @@ from micro_viz.pricing import (
     evaluate_tariff,
     profit_by_entry_fee,
 )
-from micro_viz.production import (
-    CapacityConstrainedProductionFunction,
-    MarginalReturns,
-    ProductionAnalysis,
-    ProductionError,
-    ProductionPoint,
-    QuadraticProductionFunction,
-    ReturnsRegion,
-    ShortRunProductionFunction,
-    analyze_production,
+from micro_viz.firm.strategy.vertical import (
+    ChainOutcome,
+    TransferPricingOutcome,
+    VerticalChain,
+    VerticalError,
+    transfer_pricing,
 )
-from micro_viz.production.extras import (
-    LearningAverageCost,
-    LearningCurve,
-    ProductionFrontier,
-    ProductTransformation,
-    TechnologyShift,
+from micro_viz.markets.auctions import (
+    Auction,
+    AuctionError,
 )
-from micro_viz.regulation import (
+from micro_viz.markets.capital import (
+    CapitalError,
+    ExhaustibleResourcePath,
+)
+from micro_viz.markets.demand import Demand, DemandError
+from micro_viz.markets.factors import (
+    CapitalAdjustment,
+    DerivedDemand,
+    FactorError,
+    FactorMarket,
+    IndustryFactorDemand,
+    InputAdjustment,
+    LandMarket,
+    LinearSupply,
+    LinearValue,
+    Monopsonist,
+    MonopsonyOutcome,
+    TwoSectorLabor,
+    TwoSectorOutcome,
+    UnionOutcome,
+    UnionWageSetting,
+)
+from micro_viz.markets.information import (
+    BonusSchedule,
+    EfficiencyWage,
+    EfficiencyWageOutcome,
+    InformationError,
+    LemonsMarket,
+    MoralHazard,
+    MoralHazardOutcome,
+    Signaling,
+)
+from micro_viz.markets.regulation import (
     CeilingOutcome,
     NaturalMonopolyPricing,
     PricingPoint,
     natural_monopoly_pricing,
     price_ceiling_outcome,
 )
-from micro_viz.theme import PlotTheme, shared_theme
-from micro_viz.uncertainty import (
+from micro_viz.risk.uncertainty import (
     Gamble,
     IncomeUtility,
     MeanVarianceInvestor,
@@ -197,13 +204,6 @@ from micro_viz.uncertainty import (
     cdf_crossing,
     first_order_dominates,
     second_order_dominates,
-)
-from micro_viz.vertical import (
-    ChainOutcome,
-    TransferPricingOutcome,
-    VerticalChain,
-    VerticalError,
-    transfer_pricing,
 )
 
 __all__ = [

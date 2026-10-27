@@ -27,7 +27,7 @@ from micro_viz import (
     total_cost_canvas,
     unit_cost_canvas,
 )
-from micro_viz.competition import CompetitionError
+from micro_viz.firm.competition import CompetitionError
 
 OLD = (50.0, 36.0, -8.0, 0.6)
 NEW = (200.0, 120.0, -18.0, 1.0)

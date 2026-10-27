@@ -26,7 +26,7 @@ def validate_language(language: str) -> str:
 
 @cache
 def _table() -> Mapping[str, Mapping[str, str]]:
-    source = resources.files("micro_viz.locale").joinpath("labels.json").read_text("utf-8")
+    source = resources.files("micro_viz.core.locale").joinpath("labels.json").read_text("utf-8")
     table: dict[str, dict[str, str]] = json.loads(source)
     return table
 

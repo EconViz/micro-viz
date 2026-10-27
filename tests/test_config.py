@@ -8,7 +8,7 @@ from mosaickit import ConfigurationError
 from mosaickit.econ_toml import figure_overrides
 
 from micro_viz import Config, default_theme, shared_theme
-from micro_viz.config import SCHEMA
+from micro_viz.core.config import SCHEMA
 
 
 @pytest.fixture(autouse=True)  # type: ignore[untyped-decorator]

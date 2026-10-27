@@ -12,7 +12,7 @@ from dataclasses import replace
 from pathlib import Path
 
 from micro_viz import Config, PlotTheme
-from micro_viz.i18n import LANGUAGES
+from micro_viz.core.i18n import LANGUAGES
 
 EXAMPLES = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = EXAMPLES / "econ-viz.toml"

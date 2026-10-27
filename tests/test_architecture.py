@@ -9,16 +9,39 @@ from pathlib import Path
 
 PACKAGE_ROOT = Path(__file__).parents[1] / "src" / "micro_viz"
 DOMAIN_MODULES = {
-    "competition",
-    "costs",
-    "factors",
-    "information",
-    "monopoly",
-    "oligopoly",
-    "pricing",
-    "production",
-    "uncertainty",
+    "firm/competition",
+    "firm/costs",
+    "firm/monopoly",
+    "firm/oligopoly",
+    "firm/production",
+    "firm/strategy/pricing",
+    "markets/factors",
+    "markets/information",
+    "risk/uncertainty",
 }
+
+TOP_LEVEL_PACKAGES = {"_api", "animation", "core", "firm", "markets", "risk", "visuals"}
+
+
+def test_package_root_contains_only_broad_domains_and_required_files() -> None:
+    directories = {
+        path.name for path in PACKAGE_ROOT.iterdir() if path.is_dir() and path.name != "__pycache__"
+    }
+    files = {path.name for path in PACKAGE_ROOT.iterdir() if path.is_file()}
+
+    assert directories == TOP_LEVEL_PACKAGES
+    assert files == {"__init__.py", "py.typed"}
+
+
+def test_shared_visuals_root_contains_only_rendering_infrastructure() -> None:
+    root = PACKAGE_ROOT / "visuals"
+    directories = {
+        path.name for path in root.iterdir() if path.is_dir() and path.name != "__pycache__"
+    }
+    files = {path.name for path in root.iterdir() if path.is_file()}
+
+    assert directories == set()
+    assert files == {"__init__.py", "axes.py", "common.py", "movement.py", "plane.py"}
 
 
 def _imports(path: Path) -> set[str]:
@@ -112,15 +135,15 @@ def test_static_figures_work_without_kinetickit() -> None:
 
 
 def test_expression_engine_is_detachable() -> None:
-    """``micro_viz.expr`` imports nothing else of micro-viz, and nothing reaches into it."""
-    for path in (PACKAGE_ROOT / "expr").rglob("*.py"):
+    """``micro_viz.core.expr`` imports nothing else of micro-viz, and nothing reaches into it."""
+    for path in (PACKAGE_ROOT / "core" / "expr").rglob("*.py"):
         for name in _imports(path):
             if name == "micro_viz" or name.startswith("micro_viz."):
-                assert name == "micro_viz.expr" or name.startswith("micro_viz.expr."), (
+                assert name == "micro_viz.core.expr" or name.startswith("micro_viz.core.expr."), (
                     f"{path.name} imports {name}"
                 )
     for path in PACKAGE_ROOT.rglob("*.py"):
-        if "expr" in path.relative_to(PACKAGE_ROOT).parts[:1]:
+        if path.relative_to(PACKAGE_ROOT).parts[:2] == ("core", "expr"):
             continue
         for name in _imports(path):
-            assert not name.startswith("micro_viz.expr."), f"{path.name} reaches into {name}"
+            assert not name.startswith("micro_viz.core.expr."), f"{path.name} reaches into {name}"

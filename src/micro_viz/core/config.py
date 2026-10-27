@@ -16,7 +16,7 @@ the fonts and the axis and label colours; micro-viz's own settings live in ``[mi
     [micro]
     language = "zh-TW"        # language of built-in figure text
 
-    [micro.color]             # any element of micro_viz.theme.ELEMENT_ROLES
+    [micro.color]             # any element of micro_viz.core.theme.ELEMENT_ROLES
     marginal = "#1a1a1a"
 
     [micro.stroke]            # widths in points
@@ -37,7 +37,7 @@ the fonts and the axis and label colours; micro-viz's own settings live in ``[mi
     [micro.opacity]
     region = 0.3              # opacity of shaded regions
 
-    [micro.label.curve]       # move whole groups of labels (see micro_viz.label_groups)
+    [micro.label.curve]       # move whole groups of labels (see micro_viz.core.label_groups)
     top = "2pt"               # also bottom, left, right; pt, mm, cm or in, no em
 
 The label groups are ``point``, ``curve``, ``region``, ``mark`` and ``annotation``. Single

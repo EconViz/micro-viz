@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.entry-points."econviz.config"]
-micro = "micro_viz.config:Config"
+micro = "micro_viz.core.config:Config"
 
 [project.urls]
 Homepage = "https://econ-viz.org"
