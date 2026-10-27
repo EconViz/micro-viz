@@ -160,7 +160,7 @@ being silently ignored.
 [micro]
 language = "zh-TW"        # built-in figure text: en, zh-TW or zh-CN
 
-[micro.color]             # any element of micro_viz.theme.ELEMENT_ROLES
+[micro.color]             # any element of micro_viz.core.theme.ELEMENT_ROLES
 marginal = "#1a1a1a"
 
 [micro.stroke]            # widths in points

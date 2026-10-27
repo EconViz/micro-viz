@@ -20,7 +20,7 @@ from micro_viz import (
     marginal_revenue,
     monopoly_canvas,
 )
-from micro_viz.demand import as_demand
+from micro_viz.markets.demand import as_demand
 
 LINEAR = "P = 100 - Q"
 CURVED = "P = 100 - Q^2"

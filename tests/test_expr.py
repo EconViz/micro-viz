@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from micro_viz.expr import ExprError, Expression, Limits, Registry, functions, parse
+from micro_viz.core.expr import ExprError, Expression, Limits, Registry, functions, parse
 
 ROOT = Path(__file__).parents[1] / "src" / "micro_viz" / "expr"
 STDLIB = set(sys.stdlib_module_names)
@@ -409,8 +409,8 @@ def test_engine_imports_only_the_standard_library_and_itself() -> None:
             for name in names:
                 top = name.split(".")[0]
                 if top == "micro_viz":
-                    assert name == "micro_viz.expr" or name.startswith("micro_viz.expr."), (
-                        f"{path.name} imports {name}"
-                    )
+                    assert name == "micro_viz.core.expr" or name.startswith(
+                        "micro_viz.core.expr."
+                    ), f"{path.name} imports {name}"
                 else:
                     assert top in STDLIB or top == "__future__", f"{path.name} imports {name}"

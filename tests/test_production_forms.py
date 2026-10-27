@@ -16,6 +16,16 @@ from micro_viz import (
     rational_production_region_grid,
     shared_theme,
 )
+from micro_viz.firm.visuals import production, production_forms
+
+
+def test_chapter_package_preserves_legacy_production_form_imports() -> None:
+    assert production.quadratic_production_grid is production_forms.quadratic_production_grid
+    assert production.capacity_production_grid is production_forms.capacity_production_grid
+    assert (
+        production.rational_production_region_grid
+        is production_forms.rational_production_region_grid
+    )
 
 
 def test_quadratic_products_and_boundary_inputs() -> None:

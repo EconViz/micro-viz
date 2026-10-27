@@ -10,7 +10,8 @@ from collections.abc import Mapping, Sequence
 
 from mosaickit import Canvas, CanvasGrid, PointLabelLayer
 
-from micro_viz.theme import PlotTheme
+from micro_viz.core.theme import PlotTheme
+from micro_viz.firm.visuals.competition import _finish, _start
 from micro_viz.visuals.common import (
     FIGURE_DPI,
     FIGURE_SIZE,
@@ -26,7 +27,6 @@ from micro_viz.visuals.common import (
     region,
     region_name,
 )
-from micro_viz.visuals.competition import _finish, _start
 from micro_viz.visuals.movement import parallel_arrow, rotation_arrow
 
 PANEL = (6.0, 4.5)
