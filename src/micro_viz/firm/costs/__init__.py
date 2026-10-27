@@ -2,6 +2,7 @@
 
 from micro_viz.firm.costs.analysis import CostAnalysis, CostPoint, Extremum, analyze_costs
 from micro_viz.firm.costs.formula import Cost
+from micro_viz.firm.costs.long_run import EnvelopeFigure, LongRunError, PlantFamily
 from micro_viz.firm.costs.model import (
     CostError,
     CostFunction,
@@ -19,6 +20,9 @@ __all__ = [
     "CostSegment",
     "CubicCost",
     "Extremum",
+    "EnvelopeFigure",
+    "LongRunError",
     "PiecewiseCost",
+    "PlantFamily",
     "analyze_costs",
 ]

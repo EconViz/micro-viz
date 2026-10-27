@@ -11,7 +11,7 @@ from collections.abc import Mapping, Sequence
 from mosaickit import Canvas, CanvasGrid, PointLabelLayer
 
 from micro_viz.core.theme import PlotTheme
-from micro_viz.firm.visuals.competition import _finish, _start
+from micro_viz.firm.perfect_competition.visuals import _finish, _start
 from micro_viz.visuals.common import (
     FIGURE_DPI,
     FIGURE_SIZE,

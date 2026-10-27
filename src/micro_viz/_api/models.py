@@ -3,21 +3,7 @@
 from micro_viz.core.config import Config, default_theme
 from micro_viz.core.formulas import FormulaError
 from micro_viz.core.theme import PlotTheme, shared_theme
-from micro_viz.firm.competition import (
-    CompetitionError,
-    CompetitiveOutcome,
-    FirmSupply,
-    IndustrySupply,
-    LinearDemand,
-    Regime,
-    RevenueCostAnalysis,
-    RevenueCostPoint,
-    analyze_revenue_cost,
-    break_even_price,
-    profit_maximizing_output,
-    shutdown_price,
-    solve_competitive_firm,
-)
+from micro_viz.firm import Firm
 from micro_viz.firm.costs import (
     Cost,
     CostAnalysis,
@@ -30,33 +16,20 @@ from micro_viz.firm.costs import (
     PiecewiseCost,
     analyze_costs,
 )
-from micro_viz.firm.entry import (
-    IndustryEntry,
-    MarketPoint,
-)
-from micro_viz.firm.isoquant import (
-    Bundle,
-    CobbDouglas,
-    FixedProportions,
-    IsoquantError,
-    PerfectSubstitutes,
-    Returns,
-    Technology,
-    cost_minimizing_bundle,
-    cost_of,
-    expansion_path,
-    isocost_segment,
-    ray_points,
-)
-from micro_viz.firm.longrun import (
+from micro_viz.firm.costs.long_run import (
     EnvelopeFigure,
     LongRunError,
     PlantFamily,
 )
-from micro_viz.firm.monopolistic import (
+from micro_viz.firm.monopolistic_competition import (
     MonopolisticOutcome,
     long_run_demand,
     solve_monopolistic_competition,
+)
+from micro_viz.firm.monopolistic_competition.advertising import (
+    AdvertisingDecision,
+    AdvertisingError,
+    AdvertisingOutcome,
 )
 from micro_viz.firm.monopoly import (
     Monopolist,
@@ -66,6 +39,48 @@ from micro_viz.firm.monopoly import (
     MultiplantOutcome,
     elasticity,
     marginal_revenue,
+)
+from micro_viz.firm.monopoly.bundling import (
+    BundlingError,
+    BundlingOutcome,
+    Offer,
+    ValuationProfile,
+    best_mixed,
+    best_pure,
+    best_separate,
+    choice,
+    choice_regions,
+    evaluate_offer,
+)
+from micro_viz.firm.monopoly.discrimination import (
+    Block,
+    BlockPricing,
+    DiscriminationError,
+    FirstDegree,
+    MarketSale,
+    ThirdDegree,
+    block_pricing,
+    first_degree,
+    third_degree,
+)
+from micro_viz.firm.monopoly.pricing import (
+    BuyerType,
+    IntertemporalOutcome,
+    IntertemporalPricing,
+    PeakLoadOutcome,
+    PeakLoadPricing,
+    PricingError,
+    TariffOutcome,
+    best_tariff,
+    evaluate_tariff,
+    profit_by_entry_fee,
+)
+from micro_viz.firm.monopoly.vertical import (
+    ChainOutcome,
+    TransferPricingOutcome,
+    VerticalChain,
+    VerticalError,
+    transfer_pricing,
 )
 from micro_viz.firm.oligopoly import (
     BertrandEquilibrium,
@@ -84,16 +99,46 @@ from micro_viz.firm.oligopoly import (
     split,
     stackelberg,
 )
+from micro_viz.firm.perfect_competition import (
+    CompetitionError,
+    CompetitiveOutcome,
+    FirmSupply,
+    IndustryEntry,
+    IndustrySupply,
+    LinearDemand,
+    MarketPoint,
+    Regime,
+    RevenueCostAnalysis,
+    RevenueCostPoint,
+    analyze_revenue_cost,
+    break_even_price,
+    profit_maximizing_output,
+    shutdown_price,
+    solve_competitive_firm,
+)
 from micro_viz.firm.production import (
+    Bundle,
     CapacityConstrainedProductionFunction,
+    CobbDouglas,
+    FixedProportions,
+    IsoquantError,
     MarginalReturns,
+    PerfectSubstitutes,
     ProductionAnalysis,
     ProductionError,
+    ProductionFunction,
     ProductionPoint,
     QuadraticProductionFunction,
+    Returns,
     ReturnsRegion,
     ShortRunProductionFunction,
+    Technology,
     analyze_production,
+    cost_minimizing_bundle,
+    cost_of,
+    expansion_path,
+    isocost_segment,
+    ray_points,
 )
 from micro_viz.firm.production.extras import (
     LearningAverageCost,
@@ -101,53 +146,6 @@ from micro_viz.firm.production.extras import (
     ProductionFrontier,
     ProductTransformation,
     TechnologyShift,
-)
-from micro_viz.firm.strategy.advertising import (
-    AdvertisingDecision,
-    AdvertisingError,
-    AdvertisingOutcome,
-)
-from micro_viz.firm.strategy.bundling import (
-    BundlingError,
-    BundlingOutcome,
-    Offer,
-    ValuationProfile,
-    best_mixed,
-    best_pure,
-    best_separate,
-    choice,
-    choice_regions,
-    evaluate_offer,
-)
-from micro_viz.firm.strategy.discrimination import (
-    Block,
-    BlockPricing,
-    DiscriminationError,
-    FirstDegree,
-    MarketSale,
-    ThirdDegree,
-    block_pricing,
-    first_degree,
-    third_degree,
-)
-from micro_viz.firm.strategy.pricing import (
-    BuyerType,
-    IntertemporalOutcome,
-    IntertemporalPricing,
-    PeakLoadOutcome,
-    PeakLoadPricing,
-    PricingError,
-    TariffOutcome,
-    best_tariff,
-    evaluate_tariff,
-    profit_by_entry_fee,
-)
-from micro_viz.firm.strategy.vertical import (
-    ChainOutcome,
-    TransferPricingOutcome,
-    VerticalChain,
-    VerticalError,
-    transfer_pricing,
 )
 from micro_viz.markets.auctions import (
     Auction,
@@ -252,6 +250,7 @@ __all__ = [
     "Extremum",
     "FactorError",
     "FactorMarket",
+    "Firm",
     "FirmSupply",
     "FirstDegree",
     "FixedProportions",
@@ -303,6 +302,7 @@ __all__ = [
     "ProductTransformation",
     "ProductionAnalysis",
     "ProductionError",
+    "ProductionFunction",
     "ProductionFrontier",
     "ProductionPoint",
     "QuadraticProductionFunction",

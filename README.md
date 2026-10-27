@@ -21,6 +21,33 @@ every figure and its script, is at <https://econ-viz.org/micro-viz/>.
 Domain models and solvers must remain renderer-neutral. Visual builders compile typed
 economic results into public MosaicKit layers, and only MosaicKit talks to a backend.
 
+## Object-oriented API
+
+Use `Firm` when several firm-side models belong together. Topic packages use plural chapter
+names such as `costs`, while model classes use singular names such as `Cost`.
+
+```python
+from micro_viz import Firm
+from micro_viz.firm import Cost, ProductionFunction
+
+cost = Cost("TC = 10 + Q^2")
+production = ProductionFunction(linear=6, quadratic=3, cubic=-0.5)
+firm = Firm(cost=cost, production=production)
+
+firm.total_cost(2)  # 14
+firm.marginal_cost(2)  # 4
+firm.profit(2, price=8)  # 2
+```
+
+`ProductionFunction.from_callable(lambda labor: ...)` accepts a continuous Python function.
+`ProductionFunction.from_table(labor=[...], output=[...])` accepts a production schedule and
+uses straight segments between observations, so TP, AP, and interval MP can be drawn together.
+
+The `firm` domain contains only `production`, `costs`, `perfect_competition`, `monopoly`,
+`monopolistic_competition`, and `oligopoly`. Long-run cost belongs to `costs`; isoquants and
+isocost analysis belong to `production`; entry and pricing strategies live with the market
+structure that uses them.
+
 ### Dependency boundary
 
 `micro-viz` depends only on MosaicKit (`mosaickit>=1.0.0rc16,<2.0.0`); GlyphKit stays

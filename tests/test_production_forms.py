@@ -16,7 +16,8 @@ from micro_viz import (
     rational_production_region_grid,
     shared_theme,
 )
-from micro_viz.firm.visuals import production, production_forms
+from micro_viz.firm.production import visuals as production
+from micro_viz.firm.production.visuals import rational_forms as production_forms
 
 
 def test_chapter_package_preserves_legacy_production_form_imports() -> None:

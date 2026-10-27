@@ -13,8 +13,12 @@ import math
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from micro_viz.firm.competition import CompetitionError, LinearDemand, profit_maximizing_output
 from micro_viz.firm.costs import Cost, CostFunction
+from micro_viz.firm.perfect_competition import (
+    CompetitionError,
+    LinearDemand,
+    profit_maximizing_output,
+)
 from micro_viz.markets.demand import Demand, DemandLike, as_demand
 
 STEPS = 4000
@@ -104,7 +108,7 @@ class MonopolyOutcome:
 class Monopolist:
     """A monopolist with a demand curve and a cost function.
 
-    Pass the objects (:class:`~micro_viz.firm.competition.LinearDemand` or
+    Pass the objects (:class:`~micro_viz.firm.perfect_competition.LinearDemand` or
     :class:`~micro_viz.Demand`, and any cost function) or formulas for either:
     ``Monopolist("P = 100 - Q", "TC = 200 + 20Q")``. A straight-line ``Demand`` is held as a
     ``LinearDemand``.

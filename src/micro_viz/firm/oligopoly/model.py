@@ -12,7 +12,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from micro_viz.firm.competition import CompetitionError
+from micro_viz.firm.perfect_competition import CompetitionError
 
 Point = tuple[float, float]
 

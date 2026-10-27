@@ -7,9 +7,9 @@
     Demand("P = 100 - Q^2")        # nonlinear
 
 A straight line (in either form) is also available as the older
-:class:`~micro_viz.firm.competition.LinearDemand` through :attr:`Demand.linear`, and every model
-that takes a ``LinearDemand`` takes a linear ``Demand`` too. A curve that is not a straight line
-has its marginal revenue from exact derivatives; the direct form of a nonlinear curve is inverted
+:class:`~micro_viz.firm.perfect_competition.LinearDemand` through :attr:`Demand.linear`, and
+every model that takes a ``LinearDemand`` takes a linear ``Demand`` too. A curve that is not a
+straight line has its marginal revenue from exact derivatives; the direct form is inverted
 numerically.
 """
 
@@ -20,7 +20,7 @@ from collections.abc import Callable
 
 from micro_viz.core.expr import ExprError, Expression
 from micro_viz.core.formulas import PRICE, QUANTITY, REGISTRY, parse_formula, render_message
-from micro_viz.firm.competition.model import CompetitionError, LinearDemand
+from micro_viz.firm.perfect_competition.model import CompetitionError, LinearDemand
 
 _ROUNDS = 200
 _GRID = 401

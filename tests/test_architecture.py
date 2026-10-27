@@ -9,18 +9,26 @@ from pathlib import Path
 
 PACKAGE_ROOT = Path(__file__).parents[1] / "src" / "micro_viz"
 DOMAIN_MODULES = {
-    "firm/competition",
     "firm/costs",
+    "firm/monopolistic_competition",
     "firm/monopoly",
     "firm/oligopoly",
+    "firm/perfect_competition",
     "firm/production",
-    "firm/strategy/pricing",
     "markets/factors",
     "markets/information",
     "risk/uncertainty",
 }
 
 TOP_LEVEL_PACKAGES = {"_api", "animation", "core", "firm", "markets", "risk", "visuals"}
+FIRM_PACKAGES = {
+    "costs",
+    "monopolistic_competition",
+    "monopoly",
+    "oligopoly",
+    "perfect_competition",
+    "production",
+}
 
 
 def test_package_root_contains_only_broad_domains_and_required_files() -> None:
@@ -42,6 +50,17 @@ def test_shared_visuals_root_contains_only_rendering_infrastructure() -> None:
 
     assert directories == set()
     assert files == {"__init__.py", "axes.py", "common.py", "movement.py", "plane.py"}
+
+
+def test_firm_contains_only_the_two_foundations_and_four_market_structures() -> None:
+    root = PACKAGE_ROOT / "firm"
+    directories = {
+        path.name for path in root.iterdir() if path.is_dir() and path.name != "__pycache__"
+    }
+    files = {path.name for path in root.iterdir() if path.is_file()}
+
+    assert directories == FIRM_PACKAGES
+    assert files == {"__init__.py", "model.py"}
 
 
 def _imports(path: Path) -> set[str]:
@@ -81,6 +100,7 @@ def test_future_domain_modules_stay_independent_of_mosaickit() -> None:
         for module in DOMAIN_MODULES
         for path in (PACKAGE_ROOT / module).rglob("*.py")
         if (PACKAGE_ROOT / module).is_dir()
+        if "visuals" not in path.relative_to(PACKAGE_ROOT / module).parts
         if any(name == "mosaickit" or name.startswith("mosaickit.") for name in _imports(path))
     }
     assert offenders == {}
